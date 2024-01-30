@@ -5,7 +5,7 @@
 	"license": "ISC",
 	"main": "build/src/index.js",
 	"scripts": {
-		"start": "npm run build && node --env-file=.env build/src/index.js",
+		"start": "node --env-file=.env build/src/index.js",
 		"dev": "npx tsx ./src/index.ts",
 		"build": "rm -rf ./build && tsc --project tsconfig.build.json",
 		"prepare": "npm run build"
