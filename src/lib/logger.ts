@@ -2,26 +2,12 @@ import winston from 'winston'
 
 const levels = {
 	error: 0,
-	warn: 1,
-	info: 2,
-	http: 3,
-	debug: 4,
-}
-
-const NODE_ENV = process.env.NODE_ENV
-
-const level = (): string => {
-	const env = NODE_ENV != null || 'development'
-	const isDevelopment = env === 'development'
-	return isDevelopment ? 'debug' : 'warn'
+	info: 1,
 }
 
 const colors = {
 	error: 'red',
-	warn: 'yellow',
 	info: 'green',
-	http: 'magenta',
-	debug: 'white',
 }
 
 winston.addColors(colors)
@@ -35,16 +21,22 @@ const format = winston.format.combine(
 )
 
 const transports = [
-	new winston.transports.Console(),
-	new winston.transports.File({
-		filename: 'logs/error.log',
-		level: 'error',
-	}),
-	new winston.transports.File({ filename: 'logs/all.log' }),
+	winston.add(new winston.transports.Console()),
+	winston.add(
+		new winston.transports.File({
+			filename: 'logs/error.log',
+			level: 'error',
+		})
+	),
+	winston.add(
+		new winston.transports.File({
+			filename: 'logs/all.log',
+		})
+	),
 ]
 
 const Logger = winston.createLogger({
-	level: level(),
+	level: 'info',
 	levels,
 	format,
 	transports,
