@@ -50,6 +50,10 @@ const start = async (): Promise<void> => {
 					)
 				}
 			}
+			if (text === 'Пришли мне логи' && msg.chat.username === 'Nikiteo') {
+				await bot.sendDocument(chatId, 'logs/all.log')
+				await bot.sendDocument(chatId, 'logs/error.log')
+			}
 		} catch (e) {
 			Logger.error(e)
 			return await bot.sendMessage(chatId, 'Произошла какая-то ошибка')

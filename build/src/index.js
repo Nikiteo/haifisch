@@ -75,7 +75,7 @@ var start = function () { return __awaiter(void 0, void 0, void 0, function () {
                                 logger_1.default.info("\u0411\u043E\u0442 \u043F\u044B\u0442\u0430\u043B\u0441\u044F \u0437\u0430\u043F\u0443\u0441\u0442\u0438\u0442\u044C: ".concat(msg.chat.username, " \u0441 \u0442\u0435\u043A\u0441\u0442\u043E\u043C ").concat(msg.text));
                                 _a.label = 1;
                             case 1:
-                                _a.trys.push([1, 11, , 13]);
+                                _a.trys.push([1, 13, , 15]);
                                 if (!(text === '/start')) return [3 /*break*/, 3];
                                 return [4 /*yield*/, bot.sendMessage(chatId, 'Добро пожаловать в телеграм бот Haifisch')];
                             case 2: return [2 /*return*/, _a.sent()];
@@ -99,13 +99,19 @@ var start = function () { return __awaiter(void 0, void 0, void 0, function () {
                                 return [3 /*break*/, 10];
                             case 8: return [4 /*yield*/, bot.sendMessage(chatId, 'Прости, но ты не можешь использовать меня')];
                             case 9: return [2 /*return*/, _a.sent()];
-                            case 10: return [3 /*break*/, 13];
+                            case 10:
+                                if (!(text === 'Пришли мне логи' && msg.chat.username === 'Nikiteo')) return [3 /*break*/, 12];
+                                return [4 /*yield*/, bot.sendDocument(chatId, 'logs/all.log')];
                             case 11:
+                                _a.sent();
+                                _a.label = 12;
+                            case 12: return [3 /*break*/, 15];
+                            case 13:
                                 e_1 = _a.sent();
                                 logger_1.default.error(e_1);
                                 return [4 /*yield*/, bot.sendMessage(chatId, 'Произошла какая-то ошибка')];
-                            case 12: return [2 /*return*/, _a.sent()];
-                            case 13: return [2 /*return*/];
+                            case 14: return [2 /*return*/, _a.sent()];
+                            case 15: return [2 /*return*/];
                         }
                     });
                 }); });
