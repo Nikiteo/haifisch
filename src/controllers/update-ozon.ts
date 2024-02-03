@@ -54,6 +54,10 @@ import { prepareOzonPaymentin } from '../utils/ozon/prepareOzonPaymentin'
 import { prepareOzonPaymentout } from '../utils/ozon/prepareOzonPaymentout'
 import { prepareDemands } from '../utils/yandex/prepareDemands'
 import { prepareSalesReturn } from '../utils/yandex/prepareSalesreturn'
+import utc from 'dayjs/plugin/utc'
+import timezone from 'dayjs/plugin/timezone'
+dayjs.extend(utc)
+dayjs.extend(timezone)
 
 export const updateOzon = async (
 	store: string,
@@ -61,12 +65,12 @@ export const updateOzon = async (
 ): Promise<void> => {
 	try {
 		const dates = {
-			dateFrom: dayjs().subtract(4, 'month').format('YYYY-MM-DD'),
-			dateTo: dayjs().add(1, 'month').format('YYYY-MM-DD'),
+			dateFrom: dayjs().tz('Europe/Moscow').subtract(4, 'month').format('YYYY-MM-DD'),
+			dateTo: dayjs().tz('Europe/Moscow').add(1, 'month').format('YYYY-MM-DD'),
 		}
 		const filter = {
-			since: dayjs().subtract(4, 'month').toISOString(),
-			to: dayjs().add(1, 'month').toISOString(),
+			since: dayjs().tz('Europe/Moscow').subtract(4, 'month').toISOString(),
+			to: dayjs().tz('Europe/Moscow').add(1, 'month').toISOString(),
 		}
 		const ordersProps = {
 			dir: 'ASC',

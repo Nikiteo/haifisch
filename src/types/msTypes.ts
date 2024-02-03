@@ -30,6 +30,8 @@ export interface Meta {
 	href: string
 	type: string
 	mediaType: string
+	metadataHref?: string
+	uuidHref?: string
 }
 
 export interface Meta2 {
@@ -56,6 +58,7 @@ export interface Product {
 	archived: boolean
 	pathName: string
 	useParentVat: boolean
+	productFolder?: Meta
 	uom: Uom
 	images?: Images
 	minPrice: MinPrice

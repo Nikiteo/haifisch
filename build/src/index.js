@@ -43,6 +43,7 @@ var node_telegram_bot_api_1 = __importDefault(require("node-telegram-bot-api"));
 var update_ozon_1 = require("./controllers/update-ozon");
 var update_yandex_1 = require("./controllers/update-yandex");
 var logger_1 = __importDefault(require("./lib/logger"));
+var check_user_1 = require("./lib/check-user");
 var token = process.env.BOT_TOKEN;
 var bot = new node_telegram_bot_api_1.default(token !== null && token !== void 0 ? token : '', { polling: true });
 var start = function () { return __awaiter(void 0, void 0, void 0, function () {
@@ -52,16 +53,18 @@ var start = function () { return __awaiter(void 0, void 0, void 0, function () {
                 logger_1.default.info('Bot started!');
                 return [4 /*yield*/, bot.setMyCommands([
                         { command: '/sync', description: 'Синхронизировать' },
+                        { command: '/spend', description: 'Записать трату' },
                     ])];
             case 1:
                 _a.sent();
                 bot.on('message', function (msg) { return __awaiter(void 0, void 0, void 0, function () {
-                    var text, chatId, sendMessage, e_1;
+                    var text, chatId, username, sendMessage, e_1;
                     return __generator(this, function (_a) {
                         switch (_a.label) {
                             case 0:
                                 text = msg.text;
                                 chatId = msg.chat.id;
+                                username = msg.chat.username;
                                 sendMessage = function (text) { return __awaiter(void 0, void 0, void 0, function () {
                                     return __generator(this, function (_a) {
                                         switch (_a.label) {
@@ -75,15 +78,13 @@ var start = function () { return __awaiter(void 0, void 0, void 0, function () {
                                 logger_1.default.info("\u0411\u043E\u0442 \u043F\u044B\u0442\u0430\u043B\u0441\u044F \u0437\u0430\u043F\u0443\u0441\u0442\u0438\u0442\u044C: ".concat(msg.chat.username, " \u0441 \u0442\u0435\u043A\u0441\u0442\u043E\u043C ").concat(msg.text));
                                 _a.label = 1;
                             case 1:
-                                _a.trys.push([1, 13, , 15]);
+                                _a.trys.push([1, 17, , 19]);
                                 if (!(text === '/start')) return [3 /*break*/, 3];
                                 return [4 /*yield*/, bot.sendMessage(chatId, 'Добро пожаловать в телеграм бот Haifisch')];
                             case 2: return [2 /*return*/, _a.sent()];
                             case 3:
                                 if (!(text === '/sync')) return [3 /*break*/, 10];
-                                if (!(msg.chat.username === 'puleekdun' ||
-                                    msg.chat.username === 'Mi4ku' ||
-                                    msg.chat.username === 'Nikiteo')) return [3 /*break*/, 8];
+                                if (!(0, check_user_1.checkUser)(username)) return [3 /*break*/, 8];
                                 return [4 /*yield*/, bot.sendMessage(chatId, 'Начал обновление...')];
                             case 4:
                                 _a.sent();
@@ -100,18 +101,30 @@ var start = function () { return __awaiter(void 0, void 0, void 0, function () {
                             case 8: return [4 /*yield*/, bot.sendMessage(chatId, 'Прости, но ты не можешь использовать меня')];
                             case 9: return [2 /*return*/, _a.sent()];
                             case 10:
-                                if (!(text === 'Пришли мне логи' && msg.chat.username === 'Nikiteo')) return [3 /*break*/, 12];
+                                if (!(text === 'Пришли мне логи' && (0, check_user_1.checkUser)(username))) return [3 /*break*/, 13];
                                 return [4 /*yield*/, bot.sendDocument(chatId, 'logs/all.log')];
                             case 11:
                                 _a.sent();
-                                _a.label = 12;
-                            case 12: return [3 /*break*/, 15];
+                                return [4 /*yield*/, bot.sendDocument(chatId, 'logs/error.log')];
+                            case 12:
+                                _a.sent();
+                                _a.label = 13;
                             case 13:
+                                if (!(text === '/spend')) return [3 /*break*/, 16];
+                                return [4 /*yield*/, bot.sendMessage(chatId, 'Напишите мне текст в формате: магазин + описание траты + сумма + дата')];
+                            case 14:
+                                _a.sent();
+                                return [4 /*yield*/, bot.sendMessage(chatId, 'Например, Озон (ХФ/Тор) + закупка гелькоута + 6000 + 21.02.2024')];
+                            case 15:
+                                _a.sent();
+                                _a.label = 16;
+                            case 16: return [3 /*break*/, 19];
+                            case 17:
                                 e_1 = _a.sent();
                                 logger_1.default.error(e_1);
                                 return [4 /*yield*/, bot.sendMessage(chatId, 'Произошла какая-то ошибка')];
-                            case 14: return [2 /*return*/, _a.sent()];
-                            case 15: return [2 /*return*/];
+                            case 18: return [2 /*return*/, _a.sent()];
+                            case 19: return [2 /*return*/];
                         }
                     });
                 }); });

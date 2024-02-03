@@ -1,4 +1,4 @@
-import axios, { type AxiosError } from 'axios'
+import axios from 'axios'
 import {
 	type RequestOzonReturns,
 	type OzonReturnFbo,
@@ -18,7 +18,7 @@ export const getOzonFboReturns = async ({
 		.then(response => {
 			return response.data
 		})
-		.catch((error: AxiosError<ErrorResponse>) => {
+		.catch((error: ErrorResponse) => {
 			if (axios.isAxiosError(error)) {
 				if (error?.response == null || error.code === null) {
 					return {
@@ -43,7 +43,7 @@ export const getOzonFbsReturns = async ({
 		.then(response => {
 			return response.data
 		})
-		.catch((error: AxiosError<ErrorResponse>) => {
+		.catch((error: ErrorResponse) => {
 			if (axios.isAxiosError(error)) {
 				if (error?.response == null || error.code === null) {
 					return {

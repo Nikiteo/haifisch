@@ -6,7 +6,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.createPaymentin = void 0;
 var dayjs_1 = __importDefault(require("dayjs"));
 var database_1 = require("../../database");
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 var createStatusPaymentin = function (source) {
     switch (source) {
         case 'BUYER':
@@ -40,8 +39,10 @@ var createPaymentin = function (demand, payment) {
             },
         ],
         paymentPurpose: payment.source,
-        incomingNumber: payment.paymentOrder != null ? payment.paymentOrder.id : undefined,
-        incomingDate: payment.paymentOrder != null
+        incomingNumber: payment.paymentOrder !== undefined
+            ? payment.paymentOrder.id
+            : undefined,
+        incomingDate: payment.paymentOrder !== undefined
             ? (0, dayjs_1.default)(payment.paymentOrder.date).format('YYYY-MM-DD HH:mm:ss.SSS'
             // eslint-disable-next-line no-mixed-spaces-and-tabs
             )

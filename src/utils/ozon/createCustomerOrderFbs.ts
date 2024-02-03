@@ -1,5 +1,8 @@
 /* eslint-disable no-mixed-spaces-and-tabs */
 import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
+import timezone from 'dayjs/plugin/timezone'
+
 import {
 	states,
 	group,
@@ -11,7 +14,11 @@ import {
 	country,
 	ozonSalesChannel,
 } from '../../database'
-import { type Product, type CustomerOrder } from '../../types/msTypes'
+import {
+	type Product,
+	type CustomerOrder,
+	type State,
+} from '../../types/msTypes'
 import {
 	type FinancialDataFbs,
 	type ItemPrice,
@@ -20,19 +27,13 @@ import {
 } from '../../types/ozonTypes'
 import { prepareOzonFbsStatuses } from './prepareOzonFbsStatuses'
 import { prepareOzonPositions } from './prepareOzonPositions'
-
+dayjs.extend(utc)
+dayjs.extend(timezone)
 const prepareComissions = (
 	data: FinancialDataFbs,
 	prices: ItemPrice[],
 	prodsInOrder: OzonProduct[],
-	status: {
-		meta: {
-			href: string
-			metadataHref: string
-			type: string
-			mediaType: string
-		}
-	}
+	status: State
 ): number => {
 	if (data.products.length === 0) {
 		return 0
@@ -112,7 +113,7 @@ export const createCustomerOrderFbs = (
 		name: order.posting_number,
 		moment: dayjs(order.in_process_at)
 			.subtract(3, 'hour')
-			.format('YYYY-MM-DD HH:mm:ss.SSS'),
+			.tz('Europe/Moscow').format('YYYY-MM-DD HH:mm:ss.SSS'),
 		applicable: true,
 		rate: {
 			currency,
@@ -190,7 +191,7 @@ export const createCustomerOrderFbs = (
 		deliveryPlannedMoment: dayjs(order.shipment_date)
 			.subtract(3, 'hour')
 			.add(7, 'hour')
-			.format('YYYY-MM-DD HH:mm:ss.SSS'),
+			.tz('Europe/Moscow').format('YYYY-MM-DD HH:mm:ss.SSS'),
 		shipmentAddressFull: {
 			country,
 			city: order?.analytics_data.city,

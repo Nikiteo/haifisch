@@ -1,4 +1,4 @@
-import axios, { type AxiosError } from 'axios'
+import axios from 'axios'
 import {
 	type ProductPricesRequest,
 	type ErrorResponse,
@@ -16,7 +16,7 @@ export const getProductPrices = async ({
 		.then(response => {
 			return response.data
 		})
-		.catch((error: AxiosError<ErrorResponse>) => {
+		.catch((error: ErrorResponse) => {
 			if (axios.isAxiosError(error)) {
 				if (error?.response == null || error.code === null) {
 					return {

@@ -9,10 +9,10 @@ import {
 	country,
 } from '../../database'
 import { type OfferMapping } from '../../types/marketTypes'
+import { type Product } from '../../types/msTypes'
 import { getAttributes } from './getAttributes'
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export const createProduct = (domain: string, offer: OfferMapping) => {
+export const createProduct = (domain: string, offer: OfferMapping): Product => {
 	return {
 		name: offer.offer.name,
 		description: offer.offer.description,
@@ -28,7 +28,7 @@ export const createProduct = (domain: string, offer: OfferMapping) => {
 		vatEnabled: false,
 		useParentVat: false,
 		uom,
-		productFolder,
+		productFolder: productFolder.meta,
 		minPrice: {
 			value: 0,
 			currency,

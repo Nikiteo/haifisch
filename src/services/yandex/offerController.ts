@@ -24,7 +24,7 @@ export const getOffers = async (
 		.then(response => {
 			return response.data
 		})
-		.catch((error: AxiosError<ErrorResponse>) => {
+		.catch((error: ErrorResponse) => {
 			if (axios.isAxiosError(error)) {
 				if (error?.response == null || error.code === null) {
 					return {

@@ -1,8 +1,8 @@
 import { states } from '../../database'
+import { type State } from '../../types/msTypes'
 import { OrderFbsOzonStatus } from '../../types/ozonTypes'
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const refundCheck = (after?: boolean) => {
+const refundCheck = (after?: boolean): State => {
 	if (after !== undefined && after) {
 		return states.RETURNED
 	}
@@ -12,8 +12,7 @@ const refundCheck = (after?: boolean) => {
 export const prepareOzonFbsStatuses = (
 	status: OrderFbsOzonStatus,
 	refund?: boolean
-	// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-) => {
+): State => {
 	switch (status) {
 		case OrderFbsOzonStatus.cancelled:
 		case OrderFbsOzonStatus.cancelled_from_split_pending:

@@ -1,8 +1,8 @@
 import { states } from '../../database'
+import { type State } from '../../types/msTypes'
 import { OrderStatusEnum } from '../../types/ozonTypes'
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export const prepareOzonStatuses = (status: OrderStatusEnum) => {
+export const prepareOzonStatuses = (status: OrderStatusEnum): State => {
 	switch (status) {
 		case OrderStatusEnum.cancelled:
 			return states.CANCELLED

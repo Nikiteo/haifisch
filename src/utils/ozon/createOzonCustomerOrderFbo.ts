@@ -1,4 +1,7 @@
 import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
+import timezone from 'dayjs/plugin/timezone'
+
 import {
 	states,
 	group,
@@ -10,7 +13,11 @@ import {
 	country,
 	ozonSalesChannel,
 } from '../../database'
-import { type Product, type CustomerOrder } from '../../types/msTypes'
+import {
+	type Product,
+	type CustomerOrder,
+	type State,
+} from '../../types/msTypes'
 import {
 	type Product2,
 	type ItemPrice,
@@ -19,18 +26,12 @@ import {
 } from '../../types/ozonTypes'
 import { prepareOzonPositions } from './prepareOzonPositions'
 import { prepareOzonStatuses } from './prepareOzonStatuses'
-
+dayjs.extend(utc)
+dayjs.extend(timezone)
 const prepareComissions = (
 	products: Product2[],
 	prices: ItemPrice[],
-	status: {
-		meta: {
-			href: string
-			metadataHref: string
-			type: string
-			mediaType: string
-		}
-	},
+	status: State,
 	prodsInOrder: OzonProduct[]
 ): number => {
 	if (products.length === 0) {
@@ -107,11 +108,11 @@ export const createCustomerOrderFbo = (
 		name: order.posting_number,
 		moment: dayjs(order.created_at)
 			.subtract(3, 'hour')
-			.format('YYYY-MM-DD HH:mm:ss.SSS'),
+			.tz('Europe/Moscow').format('YYYY-MM-DD HH:mm:ss.SSS'),
 		deliveryPlannedMoment: dayjs(order.created_at)
 			.subtract(3, 'hour')
 			.add(1, 'day')
-			.format('YYYY-MM-DD HH:mm:ss.SSS'),
+			.tz('Europe/Moscow').format('YYYY-MM-DD HH:mm:ss.SSS'),
 		applicable: true,
 		rate: {
 			currency,

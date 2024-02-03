@@ -1,3 +1,4 @@
+import { type Attribute } from '../../types/msTypes'
 import { type OfferOzonWithAttributes } from '../../types/ozonTypes'
 
 const prepareVolume = (
@@ -10,8 +11,7 @@ const prepareVolume = (
 	)}x${parseFloat((height / 10).toFixed(2))}`
 }
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export const getAttributes = (offer: OfferOzonWithAttributes) => {
+export const getAttributes = (offer: OfferOzonWithAttributes): Attribute[] => {
 	return [
 		{
 			meta: {

@@ -24,25 +24,20 @@ var __rest = (this && this.__rest) || function (s, e) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createSalesReturn = void 0;
 var database_1 = require("../../database");
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 var prepareStore = function (store) {
-    if ((store === null || store === void 0 ? void 0 : store.meta.href) === database_1.fbyTopStore.meta.href) {
-        return database_1.fbyTopRefund;
-    }
-    if ((store === null || store === void 0 ? void 0 : store.meta.href) === database_1.fbyHfStore.meta.href) {
-        return database_1.fbyHfRefund;
-    }
-    if ((store === null || store === void 0 ? void 0 : store.meta.href) === database_1.fbsTopStore.meta.href) {
-        return database_1.fbsTopRefund;
-    }
-    if ((store === null || store === void 0 ? void 0 : store.meta.href) === database_1.fbsHfStore.meta.href) {
-        return database_1.fbsHfRefund;
-    }
-    if ((store === null || store === void 0 ? void 0 : store.meta.href) === database_1.fboOzonStore.meta.href) {
-        return database_1.fboOzonRefund;
-    }
-    if ((store === null || store === void 0 ? void 0 : store.meta.href) === database_1.fbsOzonStore.meta.href) {
-        return database_1.fbsOzonRefund;
+    switch (store === null || store === void 0 ? void 0 : store.meta.href) {
+        case database_1.fbyTopStore.meta.href:
+            return database_1.fbyTopRefund;
+        case database_1.fbyHfStore.meta.href:
+            return database_1.fbyHfRefund;
+        case database_1.fbsTopStore.meta.href:
+            return database_1.fbsTopRefund;
+        case database_1.fbsHfStore.meta.href:
+            return database_1.fbsHfRefund;
+        case database_1.fboOzonStore.meta.href:
+            return database_1.fboOzonRefund;
+        case database_1.fbsOzonStore.meta.href:
+            return database_1.fbsOzonRefund;
     }
 };
 var createSalesReturn = function (demand) {

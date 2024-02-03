@@ -1,9 +1,12 @@
 import dayjs from 'dayjs'
 import { type OfferMapping } from '../../types/marketTypes'
+import { type Attribute } from '../../types/msTypes'
 dayjs().format()
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export const getAttributes = (domain: string, offer: OfferMapping) => {
+export const getAttributes = (
+	domain: string,
+	offer: OfferMapping
+): Attribute[] => {
 	if (domain === 'Haifisch') {
 		return [
 			{
@@ -50,7 +53,7 @@ export const getAttributes = (domain: string, offer: OfferMapping) => {
 			},
 			{
 				meta: {
-					href: 'https://api.moysklad.ru/api/remap/1.2/entity/product/metadata/attributes/dee3a537-94dd-11ee-0a80-03920020a493',
+					href: 'https://api.moysklad.ru/api/remap/1.2/entity/product/metadata//dee3a537-94dd-11ee-0a80-03920020a493',
 					type: 'attributemetadata',
 					mediaType: 'application/json',
 				},

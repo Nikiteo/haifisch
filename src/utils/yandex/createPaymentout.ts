@@ -1,10 +1,13 @@
 import dayjs from 'dayjs'
 import { paymentoutState } from '../../database'
 import { type Payment } from '../../types/marketTypes'
-import { type SalesReturn, type Paymentout } from '../../types/msTypes'
+import {
+	type SalesReturn,
+	type Paymentout,
+	type State,
+} from '../../types/msTypes'
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const createStatusPaymentout = (source?: string) => {
+const createStatusPaymentout = (source?: string): State | undefined => {
 	switch (source) {
 		case 'BUYER':
 			return paymentoutState.BUYER

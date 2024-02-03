@@ -1,14 +1,3 @@
-export const files = {
-	meta: {
-		href: 'https://api.moysklad.ru/api/remap/1.2/entity/product/d89382b9-9269-11ee-0a80-145a0035c5c9/files',
-		type: 'files',
-		mediaType: 'application/json',
-		size: 0,
-		limit: 1000,
-		offset: 0,
-	},
-}
-
 export const hfSupplier = {
 	meta: {
 		href: 'https://api.moysklad.ru/api/remap/1.2/entity/organization/4f9c637b-f557-11ed-0a80-11cd001da709',
@@ -157,64 +146,6 @@ export const owner = {
 			'https://online.moysklad.ru/app/#employee/edit?id=4f894604-f557-11ed-0a80-11cd001da6bd',
 	},
 }
-
-export const productData = {
-	context: {
-		employee: {
-			meta: {
-				href: 'https://api.moysklad.ru/api/remap/1.2/context/employee',
-				metadataHref:
-					'https://api.moysklad.ru/api/remap/1.2/entity/employee/metadata',
-				type: 'employee',
-				mediaType: 'application/json',
-			},
-		},
-	},
-	meta: {
-		href: 'https://api.moysklad.ru/api/remap/1.2/entity/product',
-		type: 'product',
-		mediaType: 'application/json',
-		size: 1,
-		limit: 1000,
-		offset: 0,
-	},
-}
-
-export const attributes = [
-	{
-		meta: {
-			href: 'https://api.moysklad.ru/api/remap/1.2/entity/product/metadata/attributes/47e80e11-9269-11ee-0a80-022f00336d0b',
-			type: 'attributemetadata',
-			mediaType: 'application/json',
-		},
-		id: '47e80e11-9269-11ee-0a80-022f00336d0b',
-		name: 'Название Тор',
-		type: 'string',
-		value: 'Каменный держатель для бумажных полотенец Haifisch, Серый мрамор',
-	},
-	{
-		meta: {
-			href: 'https://api.moysklad.ru/api/remap/1.2/entity/product/metadata/attributes/47e81023-9269-11ee-0a80-022f00336d0c',
-			type: 'attributemetadata',
-			mediaType: 'application/json',
-		},
-		id: '47e81023-9269-11ee-0a80-022f00336d0c',
-		name: 'Название ХФ',
-		type: 'string',
-		value: 'Держатель для бумажных полотенец из литьевого мрамора Haifisch, серый мрамор',
-	},
-	{
-		meta: {
-			href: 'https://api.moysklad.ru/api/remap/1.2/entity/product/metadata/attributes/e94ca09b-9269-11ee-0a80-0fee00353147',
-			type: 'attributemetadata',
-			mediaType: 'application/json',
-		},
-		id: 'e94ca09b-9269-11ee-0a80-0fee00353147',
-		name: 'Размеры (ДШВ)',
-		type: 'string',
-		value: '30x15x15',
-	},
-]
 
 export const fboOzonStore = {
 	meta: {
@@ -671,86 +602,6 @@ export const fbyHfProject = {
 			'https://online.moysklad.ru/app/#project/edit?id=e76ac9c9-f558-11ed-0a80-0267001dbec5',
 	},
 }
-
-export const customerOrdersAttributes = [
-	{
-		meta: {
-			href: 'https://api.moysklad.ru/api/remap/1.2/entity/customerorder/metadata/attributes/ee32b906-95a7-11ee-0a80-107d000a1171',
-			type: 'attributemetadata',
-			mediaType: 'application/json',
-		},
-		id: 'ee32b906-95a7-11ee-0a80-107d000a1171',
-		name: 'Размещение товаров на витрине',
-		type: 'double',
-		value: 0,
-	},
-	{
-		meta: {
-			href: 'https://api.moysklad.ru/api/remap/1.2/entity/customerorder/metadata/attributes/ee32bb61-95a7-11ee-0a80-107d000a1172',
-			type: 'attributemetadata',
-			mediaType: 'application/json',
-		},
-		id: 'ee32bb61-95a7-11ee-0a80-107d000a1172',
-		name: 'Участие в программе лояльности',
-		type: 'double',
-		value: 0,
-	},
-	{
-		meta: {
-			href: 'https://api.moysklad.ru/api/remap/1.2/entity/customerorder/metadata/attributes/ee32bc6d-95a7-11ee-0a80-107d000a1173',
-			type: 'attributemetadata',
-			mediaType: 'application/json',
-		},
-		id: 'ee32bc6d-95a7-11ee-0a80-107d000a1173',
-		name: 'Приём платежа покупателя',
-		type: 'double',
-		value: 0,
-	},
-	{
-		meta: {
-			href: 'https://api.moysklad.ru/api/remap/1.2/entity/customerorder/metadata/attributes/ee32bd45-95a7-11ee-0a80-107d000a1174',
-			type: 'attributemetadata',
-			mediaType: 'application/json',
-		},
-		id: 'ee32bd45-95a7-11ee-0a80-107d000a1174',
-		name: 'Буст продаж',
-		type: 'double',
-		value: 0,
-	},
-	{
-		meta: {
-			href: 'https://api.moysklad.ru/api/remap/1.2/entity/customerorder/metadata/attributes/ee32c117-95a7-11ee-0a80-107d000a1175',
-			type: 'attributemetadata',
-			mediaType: 'application/json',
-		},
-		id: 'ee32c117-95a7-11ee-0a80-107d000a1175',
-		name: 'Доставка покупателю',
-		type: 'double',
-		value: 0,
-	},
-	{
-		meta: {
-			href: 'https://api.moysklad.ru/api/remap/1.2/entity/customerorder/metadata/attributes/4136c718-95a8-11ee-0a80-0834000a4aba',
-			type: 'attributemetadata',
-			mediaType: 'application/json',
-		},
-		id: '4136c718-95a8-11ee-0a80-0834000a4aba',
-		name: 'Обработка заказа',
-		type: 'double',
-		value: 0,
-	},
-	{
-		meta: {
-			href: 'https://api.moysklad.ru/api/remap/1.2/entity/customerorder/metadata/attributes/66dd48c7-95a8-11ee-0a80-0e9e0009fc78',
-			type: 'attributemetadata',
-			mediaType: 'application/json',
-		},
-		id: '66dd48c7-95a8-11ee-0a80-0e9e0009fc78',
-		name: 'Хранение невыкупов и возвратов',
-		type: 'double',
-		value: 0,
-	},
-]
 
 export const consignee = {
 	meta: {

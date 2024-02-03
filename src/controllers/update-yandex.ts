@@ -38,6 +38,11 @@ import { prepareDemands } from '../utils/yandex/prepareDemands'
 import { preparePaymentin } from '../utils/yandex/preparePaymentin'
 import { preparePaymentout } from '../utils/yandex/preparePaymentout'
 import { prepareSalesReturn } from '../utils/yandex/prepareSalesreturn'
+import utc from 'dayjs/plugin/utc'
+import timezone from 'dayjs/plugin/timezone'
+
+dayjs.extend(utc)
+dayjs.extend(timezone)
 
 export const updateYandex = async (
 	store: string,
@@ -45,8 +50,8 @@ export const updateYandex = async (
 ): Promise<void> => {
 	try {
 		const dates = {
-			dateFrom: dayjs().subtract(4, 'month').format('YYYY-MM-DD'),
-			dateTo: dayjs().add(1, 'month').format('YYYY-MM-DD'),
+			dateFrom: dayjs().tz('Europe/Moscow').subtract(4, 'month').format('YYYY-MM-DD'),
+			dateTo: dayjs().tz('Europe/Moscow').add(1, 'month').format('YYYY-MM-DD'),
 		}
 
 		const products = (await getProducts()) as ResponseMS<Product>

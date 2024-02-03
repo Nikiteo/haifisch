@@ -4,9 +4,9 @@ import {
 	fbyHfStore,
 	fbyTopStore,
 } from '../../database'
+import { type Store } from '../../types/msTypes'
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export const getStore = (domain: string, type: string) => {
+export const getStore = (domain: string, type: string): Store => {
 	if (domain === 'Haifisch') {
 		if (type === 'FBY') {
 			return fbyHfStore

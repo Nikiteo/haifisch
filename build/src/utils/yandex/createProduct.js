@@ -3,7 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.createProduct = void 0;
 var database_1 = require("../../database");
 var getAttributes_1 = require("./getAttributes");
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 var createProduct = function (domain, offer) {
     return {
         name: offer.offer.name,
@@ -20,7 +19,7 @@ var createProduct = function (domain, offer) {
         vatEnabled: false,
         useParentVat: false,
         uom: database_1.uom,
-        productFolder: database_1.productFolder,
+        productFolder: database_1.productFolder.meta,
         minPrice: {
             value: 0,
             currency: database_1.currency,

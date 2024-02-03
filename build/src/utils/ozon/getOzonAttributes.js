@@ -4,7 +4,6 @@ exports.getAttributes = void 0;
 var prepareVolume = function (depth, width, height) {
     return "".concat(parseFloat((depth / 10).toFixed(2)), "x").concat(parseFloat((width / 10).toFixed(2)), "x").concat(parseFloat((height / 10).toFixed(2)));
 };
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 var getAttributes = function (offer) {
     return [
         {

@@ -6,7 +6,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getAttributes = void 0;
 var dayjs_1 = __importDefault(require("dayjs"));
 (0, dayjs_1.default)().format();
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 var getAttributes = function (domain, offer) {
     var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v;
     if (domain === 'Haifisch') {
@@ -53,7 +52,7 @@ var getAttributes = function (domain, offer) {
             },
             {
                 meta: {
-                    href: 'https://api.moysklad.ru/api/remap/1.2/entity/product/metadata/attributes/dee3a537-94dd-11ee-0a80-03920020a493',
+                    href: 'https://api.moysklad.ru/api/remap/1.2/entity/product/metadata//dee3a537-94dd-11ee-0a80-03920020a493',
                     type: 'attributemetadata',
                     mediaType: 'application/json',
                 },

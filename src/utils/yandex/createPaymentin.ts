@@ -1,10 +1,9 @@
 import dayjs from 'dayjs'
 import { paymentinState } from '../../database'
 import { type Payment } from '../../types/marketTypes'
-import { type Demand, type Paymentin } from '../../types/msTypes'
+import { type State, type Demand, type Paymentin } from '../../types/msTypes'
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const createStatusPaymentin = (source?: string) => {
+const createStatusPaymentin = (source?: string): State | undefined => {
 	switch (source) {
 		case 'BUYER':
 			return paymentinState.BUYER
@@ -51,9 +50,11 @@ export const createPaymentin = (
 		],
 		paymentPurpose: payment.source,
 		incomingNumber:
-			payment.paymentOrder != null ? payment.paymentOrder.id : undefined,
+			payment.paymentOrder !== undefined
+				? payment.paymentOrder.id
+				: undefined,
 		incomingDate:
-			payment.paymentOrder != null
+			payment.paymentOrder !== undefined
 				? dayjs(payment.paymentOrder.date).format(
 						'YYYY-MM-DD HH:mm:ss.SSS'
 						// eslint-disable-next-line no-mixed-spaces-and-tabs

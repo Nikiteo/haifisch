@@ -3,7 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.prepareStatusesForCustomerOrders = void 0;
 var database_1 = require("../../database");
 var marketTypes_1 = require("../../types/marketTypes");
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 var prepareSubstatuses = function (substatus) {
     if (substatus === 'READY_TO_SHIP') {
         return database_1.states.READY_TO_SHIP;
@@ -13,9 +12,7 @@ var prepareSubstatuses = function (substatus) {
     }
     return database_1.states.PROCESSING;
 };
-var prepareStatusesForCustomerOrders = function (status, substatus
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-) {
+var prepareStatusesForCustomerOrders = function (status, substatus) {
     switch (status) {
         case marketTypes_1.OrderStatusEnum.CANCELLED_IN_PROCESSING:
             return database_1.states.CANCELLED;

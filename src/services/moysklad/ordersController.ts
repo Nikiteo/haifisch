@@ -1,6 +1,6 @@
 import { apiService } from './service'
 
-import axios, { type AxiosError } from 'axios'
+import axios from 'axios'
 import {
 	type ResponseMS,
 	type CustomerOrder,
@@ -20,7 +20,7 @@ export const getCustomerOrders = async (dates: {
 		.then(response => {
 			return response.data
 		})
-		.catch((error: AxiosError<ErrorResponse>) => {
+		.catch((error: ErrorResponse) => {
 			if (axios.isAxiosError(error)) {
 				if (error?.response == null || error.code === null) {
 					return {
@@ -47,7 +47,7 @@ export const createCustomerOrder = async (
 				return response.data
 			}
 		})
-		.catch((error: AxiosError<ErrorResponse>) => {
+		.catch((error: ErrorResponse) => {
 			if (axios.isAxiosError(error)) {
 				if (error?.response == null || error.code === null) {
 					return {

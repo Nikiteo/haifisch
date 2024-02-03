@@ -6,7 +6,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.createPaymentout = void 0;
 var dayjs_1 = __importDefault(require("dayjs"));
 var database_1 = require("../../database");
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 var createStatusPaymentout = function (source) {
     switch (source) {
         case 'BUYER':

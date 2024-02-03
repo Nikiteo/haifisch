@@ -14,7 +14,7 @@ export const getProducts = async (): Promise<
 		.then(response => {
 			return response.data
 		})
-		.catch((error: AxiosError<ErrorResponse>) => {
+		.catch((error: ErrorResponse) => {
 			if (axios.isAxiosError(error)) {
 				if (error?.response == null || error.code === null) {
 					return {
@@ -45,7 +45,7 @@ export const createProducts = async (
 				return response.data
 			}
 		})
-		.catch((error: AxiosError<ErrorResponse>) => {
+		.catch((error: ErrorResponse) => {
 			if (axios.isAxiosError(error)) {
 				if (error?.response == null || error.code === null) {
 					return {

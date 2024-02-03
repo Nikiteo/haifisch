@@ -14,25 +14,20 @@ import {
 } from '../../database'
 import { type Store, type Demand, type SalesReturn } from '../../types/msTypes'
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const prepareStore = (store?: Store) => {
-	if (store?.meta.href === fbyTopStore.meta.href) {
-		return fbyTopRefund
-	}
-	if (store?.meta.href === fbyHfStore.meta.href) {
-		return fbyHfRefund
-	}
-	if (store?.meta.href === fbsTopStore.meta.href) {
-		return fbsTopRefund
-	}
-	if (store?.meta.href === fbsHfStore.meta.href) {
-		return fbsHfRefund
-	}
-	if (store?.meta.href === fboOzonStore.meta.href) {
-		return fboOzonRefund
-	}
-	if (store?.meta.href === fbsOzonStore.meta.href) {
-		return fbsOzonRefund
+const prepareStore = (store?: Store): Store | undefined => {
+	switch (store?.meta.href) {
+		case fbyTopStore.meta.href:
+			return fbyTopRefund
+		case fbyHfStore.meta.href:
+			return fbyHfRefund
+		case fbsTopStore.meta.href:
+			return fbsTopRefund
+		case fbsHfStore.meta.href:
+			return fbsHfRefund
+		case fboOzonStore.meta.href:
+			return fboOzonRefund
+		case fbsOzonStore.meta.href:
+			return fbsOzonRefund
 	}
 }
 

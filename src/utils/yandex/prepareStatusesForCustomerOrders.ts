@@ -1,8 +1,8 @@
 import { states } from '../../database'
 import { OrderStatusEnum } from '../../types/marketTypes'
+import { type State } from '../../types/msTypes'
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const prepareSubstatuses = (substatus?: string) => {
+const prepareSubstatuses = (substatus?: string): State => {
 	if (substatus === 'READY_TO_SHIP') {
 		return states.READY_TO_SHIP
 	}
@@ -15,8 +15,7 @@ const prepareSubstatuses = (substatus?: string) => {
 export const prepareStatusesForCustomerOrders = (
 	status?: OrderStatusEnum,
 	substatus?: string
-	// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-) => {
+): State => {
 	switch (status) {
 		case OrderStatusEnum.CANCELLED_IN_PROCESSING:
 			return states.CANCELLED

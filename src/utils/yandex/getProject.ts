@@ -4,9 +4,9 @@ import {
 	fbyTopProject,
 	fbsTopProject,
 } from '../../database'
+import { type Project } from '../../types/msTypes'
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export const getProject = (domain: string, type: string) => {
+export const getProject = (domain: string, type: string): Project => {
 	if (domain === 'Haifisch') {
 		if (type === 'FBY') {
 			return fbyHfProject

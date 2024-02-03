@@ -3,16 +3,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.prepareOzonFbsStatuses = void 0;
 var database_1 = require("../../database");
 var ozonTypes_1 = require("../../types/ozonTypes");
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 var refundCheck = function (after) {
     if (after !== undefined && after) {
         return database_1.states.RETURNED;
     }
     return database_1.states.CANCELLED;
 };
-var prepareOzonFbsStatuses = function (status, refund
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-) {
+var prepareOzonFbsStatuses = function (status, refund) {
     switch (status) {
         case ozonTypes_1.OrderFbsOzonStatus.cancelled:
         case ozonTypes_1.OrderFbsOzonStatus.cancelled_from_split_pending:
