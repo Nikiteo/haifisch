@@ -1,61 +1,53 @@
-import axios, { type AxiosResponse, type AxiosError } from 'axios'
+import axios from 'axios'
 import {
 	type ErrorResponse,
 	type ResponseMS,
 	type Product,
 } from '../../types/msTypes'
 import { apiService } from './service'
+import Logger from '../../lib/logger'
 
 export const getProducts = async (): Promise<
-	ResponseMS<Product> | ErrorResponse | { message: string }
+	ResponseMS<Product> | undefined
 > => {
-	return await apiService
-		.get<ResponseMS<Product>>('entity/product?filter=pathName=Изделия')
-		.then(response => {
-			return response.data
-		})
-		.catch((error: ErrorResponse) => {
-			if (axios.isAxiosError(error)) {
-				if (error?.response == null || error.code === null) {
-					return {
-						message: 'No response',
-					}
-				} else {
-					return error.response.data
-				}
+	try {
+		const response = await apiService.get<ResponseMS<Product>>(
+			'entity/product?filter=pathName=Изделия'
+		)
+		return response.data
+	} catch (error: unknown) {
+		const err = error as ErrorResponse
+		if (axios.isAxiosError(err)) {
+			if (err?.response == null || err.code === null) {
+				Logger.error('No response')
 			} else {
-				throw new Error('different error than axios')
+				Logger.error(err.response.data)
 			}
-		})
+		} else {
+			Logger.error('different error than axios')
+		}
+	}
 }
 
 export const createProducts = async (
 	products: Product[]
-): Promise<
-	| ErrorResponse
-	| AxiosResponse<ResponseMS<Product>, any>
-	| { message: string }
-> => {
-	return await apiService
-		.post<AxiosResponse<ResponseMS<Product>>>('entity/product', products)
-		.then(response => {
-			if (response.status !== 200) {
-				throw new Error('Кажется, что в entity/product ошибки')
+): Promise<ResponseMS<Product> | undefined> => {
+	try {
+		const response = await apiService.post<ResponseMS<Product>>(
+			'entity/product',
+			products
+		)
+		return response.data
+	} catch (error: unknown) {
+		const err = error as ErrorResponse
+		if (axios.isAxiosError(err)) {
+			if (err?.response == null || err.code === null) {
+				Logger.error('No response')
 			} else {
-				return response.data
+				Logger.error(err.response.data)
 			}
-		})
-		.catch((error: ErrorResponse) => {
-			if (axios.isAxiosError(error)) {
-				if (error?.response == null || error.code === null) {
-					return {
-						message: 'No response',
-					}
-				} else {
-					return error.response.data
-				}
-			} else {
-				throw new Error('different error than axios')
-			}
-		})
+		} else {
+			Logger.error('different error than axios')
+		}
+	}
 }

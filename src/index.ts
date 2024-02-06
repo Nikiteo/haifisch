@@ -54,9 +54,15 @@ const start = async (): Promise<void> => {
 				await bot.sendDocument(chatId, 'logs/all.log')
 				await bot.sendDocument(chatId, 'logs/error.log')
 			}
-			if (text === '/spend') {
-				await bot.sendMessage(chatId, 'Напишите мне текст в формате: магазин + описание траты + сумма + дата')
-				await bot.sendMessage(chatId, 'Например, Озон (ХФ/Тор) + закупка гелькоута + 6000 + 21.02.2024')
+			if (text === '/spend' && checkUser(username)) {
+				await bot.sendMessage(
+					chatId,
+					'Напишите мне текст в формате: магазин + описание траты + сумма + дата'
+				)
+				await bot.sendMessage(
+					chatId,
+					'Например, Озон (ХФ/Тор) + закупка гелькоута + 6000 + 21.02.2024'
+				)
 			}
 		} catch (e) {
 			Logger.error(e)

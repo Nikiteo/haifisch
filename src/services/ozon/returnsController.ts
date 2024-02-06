@@ -7,53 +7,50 @@ import {
 	type Returns,
 } from '../../types/ozonTypes'
 import { apiService } from './service'
+import Logger from '../../lib/logger'
 
 export const getOzonFboReturns = async ({
 	...props
-}: RequestOzonReturns): Promise<
-	Returns<OzonReturnFbo> | ErrorResponse | { message: string }
-> => {
-	return await apiService
-		.post<Returns<OzonReturnFbo>>('v3/returns/company/fbo', { ...props })
-		.then(response => {
-			return response.data
-		})
-		.catch((error: ErrorResponse) => {
-			if (axios.isAxiosError(error)) {
-				if (error?.response == null || error.code === null) {
-					return {
-						message: 'No response',
-					}
-				} else {
-					return error.response.data
-				}
+}: RequestOzonReturns): Promise<Returns<OzonReturnFbo> | undefined> => {
+	try {
+		const response = await apiService.post<Returns<OzonReturnFbo>>(
+			'v3/returns/company/fbo',
+			{ ...props }
+		)
+		return response.data
+	} catch (error: unknown) {
+		const err = error as ErrorResponse
+		if (axios.isAxiosError(err)) {
+			if (err?.response == null || err.code === null) {
+				Logger.error('No response')
 			} else {
-				throw new Error('different error than axios')
+				Logger.error(err.response.data)
 			}
-		})
+		} else {
+			Logger.error('different error than axios')
+		}
+	}
 }
 
 export const getOzonFbsReturns = async ({
 	...props
-}: RequestOzonReturns): Promise<
-	ErrorResponse | Returns<OzonReturnFbs> | { message: string }
-> => {
-	return await apiService
-		.post<Returns<OzonReturnFbs>>('v3/returns/company/fbs', { ...props })
-		.then(response => {
-			return response.data
-		})
-		.catch((error: ErrorResponse) => {
-			if (axios.isAxiosError(error)) {
-				if (error?.response == null || error.code === null) {
-					return {
-						message: 'No response',
-					}
-				} else {
-					return error.response.data
-				}
+}: RequestOzonReturns): Promise<Returns<OzonReturnFbs> | undefined> => {
+	try {
+		const response = await apiService.post<Returns<OzonReturnFbs>>(
+			'v3/returns/company/fbs',
+			{ ...props }
+		)
+		return response.data
+	} catch (error: unknown) {
+		const err = error as ErrorResponse
+		if (axios.isAxiosError(err)) {
+			if (err?.response == null || err.code === null) {
+				Logger.error('No response')
 			} else {
-				throw new Error('different error than axios')
+				Logger.error(err.response.data)
 			}
-		})
+		} else {
+			Logger.error('different error than axios')
+		}
+	}
 }

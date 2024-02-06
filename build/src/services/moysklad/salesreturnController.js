@@ -42,63 +42,78 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.createSalesReturn = exports.getSalesReturn = void 0;
 var axios_1 = __importDefault(require("axios"));
 var service_1 = require("./service");
-var getSalesReturn = function (dates) { return __awaiter(void 0, void 0, void 0, function () {
+var logger_1 = __importDefault(require("../../lib/logger"));
+var getSalesReturn = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var getSalereturn_1, error_1, err;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, service_1.apiService
-                    .get("entity/salesreturn?filter=moment>".concat(dates.dateFrom, ";moment<").concat(dates.dateTo))
-                    .then(function (response) {
-                    return response.data;
-                })
-                    .catch(function (error) {
-                    if (axios_1.default.isAxiosError(error)) {
-                        if ((error === null || error === void 0 ? void 0 : error.response) == null || error.code === null) {
-                            return {
-                                message: 'No response',
-                            };
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                getSalereturn_1 = function (offset) { return __awaiter(void 0, void 0, void 0, function () {
+                    var response, salesreturns, _a, _b;
+                    return __generator(this, function (_c) {
+                        switch (_c.label) {
+                            case 0: return [4 /*yield*/, service_1.apiService.get("entity/salesreturn?offset=".concat(offset))];
+                            case 1:
+                                response = _c.sent();
+                                salesreturns = response.data.rows;
+                                if (!(response.data.meta.size >
+                                    response.data.meta.limit + response.data.meta.offset)) return [3 /*break*/, 3];
+                                _b = (_a = salesreturns).concat;
+                                return [4 /*yield*/, getSalereturn_1(1000)];
+                            case 2: return [2 /*return*/, _b.apply(_a, [_c.sent()])];
+                            case 3: return [2 /*return*/, salesreturns];
                         }
-                        else {
-                            return error.response.data;
-                        }
+                    });
+                }); };
+                return [4 /*yield*/, getSalereturn_1(0)];
+            case 1: return [2 /*return*/, _a.sent()];
+            case 2:
+                error_1 = _a.sent();
+                err = error_1;
+                if (axios_1.default.isAxiosError(err)) {
+                    if ((err === null || err === void 0 ? void 0 : err.response) == null || err.code === null) {
+                        logger_1.default.error('No response');
                     }
                     else {
-                        throw new Error('different error than axios');
+                        logger_1.default.error(err.response.data);
                     }
-                })];
-            case 1: return [2 /*return*/, _a.sent()];
+                }
+                else {
+                    logger_1.default.error('different error than axios');
+                }
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
         }
     });
 }); };
 exports.getSalesReturn = getSalesReturn;
 var createSalesReturn = function (salesReturns) { return __awaiter(void 0, void 0, void 0, function () {
+    var response, error_2, err;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, service_1.apiService
-                    .post('entity/salesreturn', salesReturns)
-                    .then(function (response) {
-                    if (response.status !== 200) {
-                        throw new Error('Кажется, что в entity/salesreturn ошибки');
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, service_1.apiService.post('entity/salesreturn', salesReturns)];
+            case 1:
+                response = _a.sent();
+                return [2 /*return*/, response.data];
+            case 2:
+                error_2 = _a.sent();
+                err = error_2;
+                if (axios_1.default.isAxiosError(err)) {
+                    if ((err === null || err === void 0 ? void 0 : err.response) == null || err.code === null) {
+                        logger_1.default.error('No response');
                     }
                     else {
-                        return response.data;
+                        logger_1.default.error(err.response.data);
                     }
-                })
-                    .catch(function (error) {
-                    if (axios_1.default.isAxiosError(error)) {
-                        if ((error === null || error === void 0 ? void 0 : error.response) == null || error.code === null) {
-                            return {
-                                message: 'No response',
-                            };
-                        }
-                        else {
-                            return error.response.data;
-                        }
-                    }
-                    else {
-                        throw new Error('different error than axios');
-                    }
-                })];
-            case 1: return [2 /*return*/, _a.sent()];
+                }
+                else {
+                    logger_1.default.error('different error than axios');
+                }
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
         }
     });
 }); };

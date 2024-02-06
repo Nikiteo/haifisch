@@ -9,53 +9,50 @@ import {
 	type Posting,
 } from '../../types/ozonTypes'
 import { apiService } from './service'
+import Logger from '../../lib/logger'
 
 export const getOzonFboOrders = async ({
 	...props
-}: RequestOzonFboOrders): Promise<
-	FboOrderResponse<FboOrder> | ErrorResponse | { message: string }
-> => {
-	return await apiService
-		.post<FboOrderResponse<FboOrder>>('v2/posting/fbo/list', { ...props })
-		.then(response => {
-			return response.data
-		})
-		.catch((error: ErrorResponse) => {
-			if (axios.isAxiosError(error)) {
-				if (error?.response == null || error.code === null) {
-					return {
-						message: 'No response',
-					}
-				} else {
-					return error.response.data
-				}
+}: RequestOzonFboOrders): Promise<FboOrderResponse<FboOrder> | undefined> => {
+	try {
+		const response = await apiService.post<FboOrderResponse<FboOrder>>(
+			'v2/posting/fbo/list',
+			{ ...props }
+		)
+		return response.data
+	} catch (error: unknown) {
+		const err = error as ErrorResponse
+		if (axios.isAxiosError(err)) {
+			if (err?.response == null || err.code === null) {
+				Logger.error('No response')
 			} else {
-				throw new Error('different error than axios')
+				Logger.error(err.response.data)
 			}
-		})
+		} else {
+			Logger.error('different error than axios')
+		}
+	}
 }
 
 export const getOzonFbsOrders = async ({
 	...props
-}: RequestOzonFbsOrders): Promise<
-	ErrorResponse | FbsOrderResponse<Posting> | { message: string }
-> => {
-	return await apiService
-		.post<FbsOrderResponse<Posting>>('v3/posting/fbs/list', { ...props })
-		.then(response => {
-			return response.data
-		})
-		.catch((error: ErrorResponse) => {
-			if (axios.isAxiosError(error)) {
-				if (error?.response == null || error.code === null) {
-					return {
-						message: 'No response',
-					}
-				} else {
-					return error.response.data
-				}
+}: RequestOzonFbsOrders): Promise<FbsOrderResponse<Posting> | undefined> => {
+	try {
+		const response = await apiService.post<FbsOrderResponse<Posting>>(
+			'v3/posting/fbs/list',
+			{ ...props }
+		)
+		return response.data
+	} catch (error: unknown) {
+		const err = error as ErrorResponse
+		if (axios.isAxiosError(err)) {
+			if (err?.response == null || err.code === null) {
+				Logger.error('No response')
 			} else {
-				throw new Error('different error than axios')
+				Logger.error(err.response.data)
 			}
-		})
+		} else {
+			Logger.error('different error than axios')
+		}
+	}
 }

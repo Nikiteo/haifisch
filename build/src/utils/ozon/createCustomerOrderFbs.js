@@ -6,9 +6,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.createCustomerOrderFbs = void 0;
 /* eslint-disable no-mixed-spaces-and-tabs */
 var dayjs_1 = __importDefault(require("dayjs"));
+var utc_1 = __importDefault(require("dayjs/plugin/utc"));
 var database_1 = require("../../database");
 var prepareOzonFbsStatuses_1 = require("./prepareOzonFbsStatuses");
 var prepareOzonPositions_1 = require("./prepareOzonPositions");
+dayjs_1.default.extend(utc_1.default);
 var prepareComissions = function (data, prices, prodsInOrder, status) {
     if (data.products.length === 0) {
         return 0;
@@ -117,7 +119,7 @@ var createCustomerOrderFbs = function (order, boughtProducts, prices) {
         vatSum: 0.0,
         deliveryPlannedMoment: (0, dayjs_1.default)(order.shipment_date)
             .subtract(3, 'hour')
-            .add(7, 'hour')
+            .add(10, 'hour')
             .format('YYYY-MM-DD HH:mm:ss.SSS'),
         shipmentAddressFull: {
             country: database_1.country,

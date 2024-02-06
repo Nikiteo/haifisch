@@ -35,8 +35,8 @@ var prepareOzonPaymentout = function (returns, fboOrders, fbsOrders, paymentouts
             return [];
         }
         var allPaymentouts = [];
-        var unPaymentedReturns_1 = returns.filter(function (ret) { return ret.payments !== undefined; });
-        var paymentedReturns_1 = returns.filter(function (ret) { return !(ret.payments !== undefined); });
+        var unPaymentedReturns_1 = returns.filter(function (ret) { return ret.payments === undefined; });
+        var paymentedReturns_1 = returns.filter(function (ret) { return ret.payments !== undefined; });
         if (fboOrders.length !== 0) {
             var updatedPaymentin = fboOrders
                 .filter(function (order) { return order.status !== 'cancelled'; })

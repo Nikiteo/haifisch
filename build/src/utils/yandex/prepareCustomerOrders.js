@@ -24,7 +24,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.prepareCustomerOrders = void 0;
-var dayjs_1 = __importDefault(require("dayjs"));
 var logger_1 = __importDefault(require("../../lib/logger"));
 var createCustomerOrder_1 = require("./createCustomerOrder");
 var prepareCustomerOrders = function (products, fby, fbs, orders, domain) {
@@ -77,8 +76,15 @@ var prepareCustomerOrders = function (products, fby, fbs, orders, domain) {
                     .reduce(function (acc, cur) {
                     orders.forEach(function (order) {
                         var _a;
-                        if (order.name === ((_a = cur.id) === null || _a === void 0 ? void 0 : _a.toString()) &&
-                            (0, dayjs_1.default)(new Date()).diff((0, dayjs_1.default)(order.deliveryPlannedMoment), 'month') <= 1) {
+                        if (order.name === ((_a = cur.id) === null || _a === void 0 ? void 0 : _a.toString())
+                        // &&
+                        // dayjs()
+                        // 	.add(3, 'hour')
+                        // 	.diff(
+                        // 		dayjs(order.deliveryPlannedMoment),
+                        // 		'month'
+                        // 	) <= 1
+                        ) {
                             var items_1 = cur.items;
                             var boughtProducts = products.filter(function (product) {
                                 return items_1 === null || items_1 === void 0 ? void 0 : items_1.some(function (item) {
@@ -116,8 +122,15 @@ var prepareCustomerOrders = function (products, fby, fbs, orders, domain) {
                     .reduce(function (acc, cur) {
                     orders.forEach(function (order) {
                         var _a;
-                        if (order.name === ((_a = cur.id) === null || _a === void 0 ? void 0 : _a.toString()) &&
-                            (0, dayjs_1.default)(new Date()).diff((0, dayjs_1.default)(order.deliveryPlannedMoment), 'month') <= 1) {
+                        if (order.name === ((_a = cur.id) === null || _a === void 0 ? void 0 : _a.toString())
+                        // &&
+                        // dayjs()
+                        // 	.add(3, 'hour')
+                        // 	.diff(
+                        // 		dayjs(order.deliveryPlannedMoment),
+                        // 		'month'
+                        // 	) <= 1
+                        ) {
                             var items_2 = cur.items;
                             var boughtProducts = products.filter(function (product) {
                                 return items_2 === null || items_2 === void 0 ? void 0 : items_2.some(function (item) {

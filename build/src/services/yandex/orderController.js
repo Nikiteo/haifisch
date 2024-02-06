@@ -35,16 +35,24 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getOrders = void 0;
+var axios_1 = __importDefault(require("axios"));
 var service_1 = require("./service");
+var logger_1 = __importDefault(require("../../lib/logger"));
 var getOrders = function (store, id, data) { return __awaiter(void 0, void 0, void 0, function () {
-    var service, getOrder;
+    var service, getOrder_1, error_1, err;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 service = store === 'Haifisch' ? service_1.apiServiceHf : service_1.apiServiceTop;
-                getOrder = function (token) { return __awaiter(void 0, void 0, void 0, function () {
+                _a.label = 1;
+            case 1:
+                _a.trys.push([1, 3, , 4]);
+                getOrder_1 = function (token) { return __awaiter(void 0, void 0, void 0, function () {
                     var response, orders, _a, _b;
                     return __generator(this, function (_c) {
                         switch (_c.label) {
@@ -52,16 +60,33 @@ var getOrders = function (store, id, data) { return __awaiter(void 0, void 0, vo
                             case 1:
                                 response = _c.sent();
                                 orders = response.data.result;
-                                if (!(orders.orders.length > 0 && Object.keys(orders.paging).length > 0)) return [3 /*break*/, 3];
+                                if (!(orders.orders.length > 0 &&
+                                    Object.keys(orders.paging).length > 0)) return [3 /*break*/, 3];
                                 _b = (_a = orders.orders).concat;
-                                return [4 /*yield*/, getOrder(orders.paging.nextPageToken)];
+                                return [4 /*yield*/, getOrder_1(orders.paging.nextPageToken)];
                             case 2: return [2 /*return*/, _b.apply(_a, [_c.sent()])];
                             case 3: return [2 /*return*/, orders.orders];
                         }
                     });
                 }); };
-                return [4 /*yield*/, getOrder('')];
-            case 1: return [2 /*return*/, _a.sent()];
+                return [4 /*yield*/, getOrder_1('')];
+            case 2: return [2 /*return*/, _a.sent()];
+            case 3:
+                error_1 = _a.sent();
+                err = error_1;
+                if (axios_1.default.isAxiosError(err)) {
+                    if ((err === null || err === void 0 ? void 0 : err.response) == null || err.code === null) {
+                        logger_1.default.error('No response');
+                    }
+                    else {
+                        logger_1.default.error(err.response.data);
+                    }
+                }
+                else {
+                    logger_1.default.error('different error than axios');
+                }
+                return [3 /*break*/, 4];
+            case 4: return [2 /*return*/];
         }
     });
 }); };

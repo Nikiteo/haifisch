@@ -5,56 +5,62 @@ import {
 	type SalesReturn,
 } from '../../types/msTypes'
 import { apiService } from './service'
+import Logger from '../../lib/logger'
 
-export const getSalesReturn = async (dates: {
-	dateFrom: string
-	dateTo: string
-}): Promise<ResponseMS<SalesReturn> | ErrorResponse | { message: string }> => {
-	return await apiService
-		.get<ResponseMS<SalesReturn>>(
-			`entity/salesreturn?filter=moment>${dates.dateFrom};moment<${dates.dateTo}`
-		)
-		.then(response => {
-			return response.data
-		})
-		.catch((error: ErrorResponse) => {
-			if (axios.isAxiosError(error)) {
-				if (error?.response == null || error.code === null) {
-					return {
-						message: 'No response',
-					}
-				} else {
-					return error.response.data
-				}
+export const getSalesReturn = async (): Promise<SalesReturn[] | undefined> => {
+	try {
+		const getSalereturn = async (
+			offset: number
+		): Promise<SalesReturn[]> => {
+			const response = await apiService.get<ResponseMS<SalesReturn>>(
+				`entity/salesreturn?offset=${offset}`
+			)
+
+			const salesreturns = response.data.rows
+
+			if (
+				response.data.meta.size >
+				response.data.meta.limit + response.data.meta.offset
+			) {
+				return salesreturns.concat(await getSalereturn(1000))
 			} else {
-				throw new Error('different error than axios')
+				return salesreturns
 			}
-		})
+		}
+		return await getSalereturn(0)
+	} catch (error: unknown) {
+		const err = error as ErrorResponse
+		if (axios.isAxiosError(err)) {
+			if (err?.response == null || err.code === null) {
+				Logger.error('No response')
+			} else {
+				Logger.error(err.response.data)
+			}
+		} else {
+			Logger.error('different error than axios')
+		}
+	}
 }
 
 export const createSalesReturn = async (
 	salesReturns: SalesReturn[]
-): Promise<SalesReturn[] | ErrorResponse | { message: string }> => {
-	return await apiService
-		.post<SalesReturn[]>('entity/salesreturn', salesReturns)
-		.then(response => {
-			if (response.status !== 200) {
-				throw new Error('Кажется, что в entity/salesreturn ошибки')
+): Promise<SalesReturn[] | undefined> => {
+	try {
+		const response = await apiService.post<SalesReturn[]>(
+			'entity/salesreturn',
+			salesReturns
+		)
+		return response.data
+	} catch (error: unknown) {
+		const err = error as ErrorResponse
+		if (axios.isAxiosError(err)) {
+			if (err?.response == null || err.code === null) {
+				Logger.error('No response')
 			} else {
-				return response.data
+				Logger.error(err.response.data)
 			}
-		})
-		.catch((error: ErrorResponse) => {
-			if (axios.isAxiosError(error)) {
-				if (error?.response == null || error.code === null) {
-					return {
-						message: 'No response',
-					}
-				} else {
-					return error.response.data
-				}
-			} else {
-				throw new Error('different error than axios')
-			}
-		})
+		} else {
+			Logger.error('different error than axios')
+		}
+	}
 }

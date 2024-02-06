@@ -1,8 +1,3 @@
-export interface ApiResonse<T> {
-	data: T
-	limit: string
-}
-
 export interface ErrorResponse {
 	status: number
 	response: Response
@@ -19,20 +14,6 @@ export interface OrdersResult {
 }
 
 export type AddedOrder = Order & Pick<NewOrder, 'delivery' | 'substatus'>
-
-export interface getOffersQuery {
-	token: string
-	businessId: number
-}
-
-export interface getOrdersQuery {
-	token: string
-	campaignId: number
-	body?: {
-		dateFrom: string
-		dateTo: string
-	}
-}
 
 export interface CampaignResponse {
 	campaigns: Campaign[]

@@ -1,6 +1,4 @@
 import dayjs from 'dayjs'
-import utc from 'dayjs/plugin/utc'
-import timezone from 'dayjs/plugin/timezone'
 
 import {
 	states,
@@ -26,8 +24,7 @@ import {
 } from '../../types/ozonTypes'
 import { prepareOzonPositions } from './prepareOzonPositions'
 import { prepareOzonStatuses } from './prepareOzonStatuses'
-dayjs.extend(utc)
-dayjs.extend(timezone)
+
 const prepareComissions = (
 	products: Product2[],
 	prices: ItemPrice[],
@@ -108,11 +105,11 @@ export const createCustomerOrderFbo = (
 		name: order.posting_number,
 		moment: dayjs(order.created_at)
 			.subtract(3, 'hour')
-			.tz('Europe/Moscow').format('YYYY-MM-DD HH:mm:ss.SSS'),
+			.format('YYYY-MM-DD HH:mm:ss.SSS'),
 		deliveryPlannedMoment: dayjs(order.created_at)
 			.subtract(3, 'hour')
 			.add(1, 'day')
-			.tz('Europe/Moscow').format('YYYY-MM-DD HH:mm:ss.SSS'),
+			.format('YYYY-MM-DD HH:mm:ss.SSS'),
 		applicable: true,
 		rate: {
 			currency,

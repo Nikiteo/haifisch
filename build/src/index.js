@@ -40,7 +40,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var node_telegram_bot_api_1 = __importDefault(require("node-telegram-bot-api"));
-var update_ozon_1 = require("./controllers/update-ozon");
 var update_yandex_1 = require("./controllers/update-yandex");
 var logger_1 = __importDefault(require("./lib/logger"));
 var check_user_1 = require("./lib/check-user");
@@ -78,53 +77,52 @@ var start = function () { return __awaiter(void 0, void 0, void 0, function () {
                                 logger_1.default.info("\u0411\u043E\u0442 \u043F\u044B\u0442\u0430\u043B\u0441\u044F \u0437\u0430\u043F\u0443\u0441\u0442\u0438\u0442\u044C: ".concat(msg.chat.username, " \u0441 \u0442\u0435\u043A\u0441\u0442\u043E\u043C ").concat(msg.text));
                                 _a.label = 1;
                             case 1:
-                                _a.trys.push([1, 17, , 19]);
+                                _a.trys.push([1, 16, , 18]);
                                 if (!(text === '/start')) return [3 /*break*/, 3];
                                 return [4 /*yield*/, bot.sendMessage(chatId, 'Добро пожаловать в телеграм бот Haifisch')];
                             case 2: return [2 /*return*/, _a.sent()];
                             case 3:
-                                if (!(text === '/sync')) return [3 /*break*/, 10];
-                                if (!(0, check_user_1.checkUser)(username)) return [3 /*break*/, 8];
+                                if (!(text === '/sync')) return [3 /*break*/, 9];
+                                if (!(0, check_user_1.checkUser)(username)) return [3 /*break*/, 7];
                                 return [4 /*yield*/, bot.sendMessage(chatId, 'Начал обновление...')];
                             case 4:
                                 _a.sent();
                                 return [4 /*yield*/, (0, update_yandex_1.updateYandex)('Haifisch', sendMessage)];
                             case 5:
                                 _a.sent();
-                                return [4 /*yield*/, (0, update_yandex_1.updateYandex)('Top', sendMessage)];
+                                return [4 /*yield*/, (0, update_yandex_1.updateYandex)('Top', sendMessage)
+                                    // await updateOzon('Ozon', sendMessage)
+                                ];
                             case 6:
                                 _a.sent();
-                                return [4 /*yield*/, (0, update_ozon_1.updateOzon)('Ozon', sendMessage)];
-                            case 7:
-                                _a.sent();
-                                return [3 /*break*/, 10];
-                            case 8: return [4 /*yield*/, bot.sendMessage(chatId, 'Прости, но ты не можешь использовать меня')];
-                            case 9: return [2 /*return*/, _a.sent()];
-                            case 10:
-                                if (!(text === 'Пришли мне логи' && (0, check_user_1.checkUser)(username))) return [3 /*break*/, 13];
+                                return [3 /*break*/, 9];
+                            case 7: return [4 /*yield*/, bot.sendMessage(chatId, 'Прости, но ты не можешь использовать меня')];
+                            case 8: return [2 /*return*/, _a.sent()];
+                            case 9:
+                                if (!(text === 'Пришли мне логи' && (0, check_user_1.checkUser)(username))) return [3 /*break*/, 12];
                                 return [4 /*yield*/, bot.sendDocument(chatId, 'logs/all.log')];
-                            case 11:
+                            case 10:
                                 _a.sent();
                                 return [4 /*yield*/, bot.sendDocument(chatId, 'logs/error.log')];
-                            case 12:
+                            case 11:
                                 _a.sent();
-                                _a.label = 13;
-                            case 13:
-                                if (!(text === '/spend')) return [3 /*break*/, 16];
+                                _a.label = 12;
+                            case 12:
+                                if (!(text === '/spend' && (0, check_user_1.checkUser)(username))) return [3 /*break*/, 15];
                                 return [4 /*yield*/, bot.sendMessage(chatId, 'Напишите мне текст в формате: магазин + описание траты + сумма + дата')];
-                            case 14:
+                            case 13:
                                 _a.sent();
                                 return [4 /*yield*/, bot.sendMessage(chatId, 'Например, Озон (ХФ/Тор) + закупка гелькоута + 6000 + 21.02.2024')];
-                            case 15:
+                            case 14:
                                 _a.sent();
-                                _a.label = 16;
-                            case 16: return [3 /*break*/, 19];
-                            case 17:
+                                _a.label = 15;
+                            case 15: return [3 /*break*/, 18];
+                            case 16:
                                 e_1 = _a.sent();
                                 logger_1.default.error(e_1);
                                 return [4 /*yield*/, bot.sendMessage(chatId, 'Произошла какая-то ошибка')];
-                            case 18: return [2 /*return*/, _a.sent()];
-                            case 19: return [2 /*return*/];
+                            case 17: return [2 /*return*/, _a.sent()];
+                            case 18: return [2 /*return*/];
                         }
                     });
                 }); });

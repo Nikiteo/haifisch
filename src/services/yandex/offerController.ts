@@ -1,13 +1,12 @@
-import axios, { type AxiosResponse, type AxiosError } from 'axios'
+import axios from 'axios'
 import { type OfferResponse, type ErrorResponse } from '../../types/marketTypes'
 import { apiServiceHf, apiServiceTop } from './service'
+import Logger from '../../lib/logger'
 
 export const getOffers = async (
 	store: string,
 	businessId: string
-): Promise<
-	AxiosResponse<OfferResponse, any> | ErrorResponse | { message: string }
-> => {
+): Promise<OfferResponse | undefined> => {
 	const service = store === 'Haifisch' ? apiServiceHf : apiServiceTop
 
 	const data = {
@@ -16,25 +15,22 @@ export const getOffers = async (
 		tags: ['Мрамор', 'мрамор'],
 	}
 
-	return await service
-		.post<AxiosResponse<OfferResponse>>(
+	try {
+		const response = await service.post<OfferResponse>(
 			`businesses/${businessId}/offer-mappings`,
 			data
 		)
-		.then(response => {
-			return response.data
-		})
-		.catch((error: ErrorResponse) => {
-			if (axios.isAxiosError(error)) {
-				if (error?.response == null || error.code === null) {
-					return {
-						message: 'No response',
-					}
-				} else {
-					return error.response.data
-				}
+		return response.data
+	} catch (error: unknown) {
+		const err = error as ErrorResponse
+		if (axios.isAxiosError(err)) {
+			if (err?.response == null || err.code === null) {
+				Logger.error('No response')
 			} else {
-				throw new Error('different error than axios')
+				Logger.error(err.response.data)
 			}
-		})
+		} else {
+			Logger.error('different error than axios')
+		}
+	}
 }

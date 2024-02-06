@@ -72,7 +72,9 @@ var prepareOzonCustomerOrders = function (products, fboOrders, fbsOrders, orders
                 var ordersFbo = fboOrders.reduce(function (acc, cur) {
                     orders.forEach(function (order) {
                         if (order.name === cur.posting_number &&
-                            (0, dayjs_1.default)(new Date()).diff((0, dayjs_1.default)(order.deliveryPlannedMoment), 'month') <= 1) {
+                            (0, dayjs_1.default)()
+                                .add(3, 'hour')
+                                .diff((0, dayjs_1.default)(order.deliveryPlannedMoment), 'month') <= 1) {
                             var boughtProducts_1 = cur.products;
                             var boughtItems = products.filter(function (product) {
                                 return boughtProducts_1.some(function (item) {
@@ -106,7 +108,9 @@ var prepareOzonCustomerOrders = function (products, fboOrders, fbsOrders, orders
                 var ordersFbs = fbsOrders.reduce(function (acc, cur) {
                     orders.forEach(function (order) {
                         if (order.name === cur.posting_number &&
-                            (0, dayjs_1.default)(new Date()).diff((0, dayjs_1.default)(order.deliveryPlannedMoment), 'month') <= 1) {
+                            (0, dayjs_1.default)()
+                                .add(3, 'hour')
+                                .diff((0, dayjs_1.default)(order.deliveryPlannedMoment), 'month') <= 1) {
                             var boughtProducts_2 = cur.products;
                             var boughtItems = products.filter(function (product) {
                                 return boughtProducts_2.some(function (item) {

@@ -21,16 +21,8 @@ import {
 import { getCampaigns } from '../services/yandex/campaignController'
 import { getOrders } from '../services/yandex/orderController'
 import { getNewOrders } from '../services/yandex/orderNewController'
-import { type AddedOrder, type CampaignResponse } from '../types/marketTypes'
-import {
-	type ResponseMS,
-	type Product,
-	type CustomerOrder,
-	type Demand,
-	type Paymentin,
-	type SalesReturn,
-	type Paymentout,
-} from '../types/msTypes'
+import { type AddedOrder } from '../types/marketTypes'
+import { type CustomerOrder } from '../types/msTypes'
 import { filterYandexOrders } from '../utils/yandex/filterYandexOrders'
 import { getCampaignIds } from '../utils/yandex/getCampaignIds'
 import { prepareCustomerOrders } from '../utils/yandex/prepareCustomerOrders'
@@ -39,10 +31,8 @@ import { preparePaymentin } from '../utils/yandex/preparePaymentin'
 import { preparePaymentout } from '../utils/yandex/preparePaymentout'
 import { prepareSalesReturn } from '../utils/yandex/prepareSalesreturn'
 import utc from 'dayjs/plugin/utc'
-import timezone from 'dayjs/plugin/timezone'
 
 dayjs.extend(utc)
-dayjs.extend(timezone)
 
 export const updateYandex = async (
 	store: string,
@@ -50,72 +40,84 @@ export const updateYandex = async (
 ): Promise<void> => {
 	try {
 		const dates = {
-			dateFrom: dayjs().tz('Europe/Moscow').subtract(4, 'month').format('YYYY-MM-DD'),
-			dateTo: dayjs().tz('Europe/Moscow').add(1, 'month').format('YYYY-MM-DD'),
+			dateFrom: dayjs()
+				.set('hour', 0)
+				.set('minute', 0)
+				.set('second', 0)
+				.set('milliseconds', 0)
+				.subtract(4, 'month')
+				.format('YYYY-MM-DD'),
+			dateTo: dayjs()
+				.set('hour', 23)
+				.set('minute', 59)
+				.set('second', 59)
+				.set('milliseconds', 59)
+				.add(1, 'month')
+				.format('YYYY-MM-DD'),
 		}
 
-		const products = (await getProducts()) as ResponseMS<Product>
+		const products = await getProducts()
 
 		Logger.info(`[${store}]: Получены данные по продуктам из МС...`)
 
-		const customerOrders = (await getCustomerOrders(
-			dates
-		)) as ResponseMS<CustomerOrder>
+		const customerOrders = await getCustomerOrders()
 
 		Logger.info(`[${store}]: Получены данные по заказам из МС...`)
 
-		const campaigns = (await getCampaigns(store)) as CampaignResponse
-		const campaignIds = getCampaignIds(campaigns.campaigns)
+		const campaigns = await getCampaigns(store)
+		const campaignIds = getCampaignIds(campaigns?.campaigns)
 
 		Logger.info(`[${store}]: Получены данные по кампаниям магазина...`)
 
-		const fbsOrders = await getOrders(store, campaignIds.FBS, dates)
-		const fbyOrders = await getOrders(store, campaignIds.FBY, dates)
-		const fbsNewOrders = await getNewOrders(store, campaignIds.FBS)
-		const fbyNewOrders = await getNewOrders(store, campaignIds.FBY)
+		if (campaignIds !== undefined && campaigns !== undefined) {
+			const fbsOrders = await getOrders(store, campaignIds.FBS, dates)
+			const fbyOrders = await getOrders(store, campaignIds.FBY, dates)
+			const fbsNewOrders = await getNewOrders(store, campaignIds.FBS)
+			const fbyNewOrders = await getNewOrders(store, campaignIds.FBY)
 
-		Logger.info(`[${store}]: Получены данные по заказам магазина...`)
+			Logger.info(`[${store}]: Получены данные по заказам магазина...`)
 
-		const {
-			ordersWithNewData: fbsOrdersWithNewData,
-			filteredOrders: fbsFilteredOrders,
-		} = filterYandexOrders(fbsOrders, fbsNewOrders)
+			const {
+				ordersWithNewData: fbsOrdersWithNewData,
+				filteredOrders: fbsFilteredOrders,
+			} = filterYandexOrders(fbsOrders, fbsNewOrders)
 
-		const {
-			ordersWithNewData: fbyOrdersWithNewData,
-			filteredOrders: fbyFilteredOrders,
-		} = filterYandexOrders(fbyOrders, fbyNewOrders)
+			const {
+				ordersWithNewData: fbyOrdersWithNewData,
+				filteredOrders: fbyFilteredOrders,
+			} = filterYandexOrders(fbyOrders, fbyNewOrders)
 
-		const fby = [
-			...fbyOrdersWithNewData,
-			...fbyFilteredOrders,
-		] as AddedOrder[]
-		const fbs = [
-			...fbsOrdersWithNewData,
-			...fbsFilteredOrders,
-		] as AddedOrder[]
-		const domain = campaigns.campaigns[0].domain
+			const fby = [
+				...fbyOrdersWithNewData,
+				...fbyFilteredOrders,
+			] as AddedOrder[]
+			const fbs = [
+				...fbsOrdersWithNewData,
+				...fbsFilteredOrders,
+			] as AddedOrder[]
+			const domain = campaigns.campaigns[0].domain
 
-		const preparedCustomerOrders = prepareCustomerOrders(
-			products.rows,
-			fby,
-			fbs,
-			customerOrders.rows,
-			domain
-		)
+			const preparedCustomerOrders = prepareCustomerOrders(
+				products?.rows ?? [],
+				fby,
+				fbs,
+				customerOrders ?? [],
+				domain
+			)
 
-		Logger.info(`[${store}]: Создаю заказы покупателей...`)
+			Logger.info(`[${store}]: Создаю заказы покупателей...`)
 
-		const createdCustomerOrders = (await createCustomerOrder(
-			preparedCustomerOrders
-		)) as CustomerOrder[]
+			const createdCustomerOrders = await createCustomerOrder(
+				preparedCustomerOrders
+			)
 
-		const demands = (await getDemands(dates)) as ResponseMS<Demand>
+			const demands = await getDemands()
 
-		Logger.info(`[${store}]: Получаю документы отгрузок...`)
+			Logger.info(`[${store}]: Получаю документы отгрузок...`)
 
-		const ordersForDemands = createdCustomerOrders.reduce<CustomerOrder[]>(
-			(acc, cur) => {
+			const ordersForDemands = createdCustomerOrders?.reduce<
+				CustomerOrder[]
+			>((acc, cur) => {
 				preparedCustomerOrders.forEach(order => {
 					if (order.name === cur.name) {
 						acc.push({
@@ -125,67 +127,63 @@ export const updateYandex = async (
 					}
 				})
 				return acc
-			},
-			[]
-		)
+			}, [])
 
-		const preparedDemands = prepareDemands(ordersForDemands, demands.rows)
+			const preparedDemands = prepareDemands(
+				ordersForDemands ?? [],
+				demands ?? []
+			)
 
-		const newDemands = (await createDemand(preparedDemands)) as Demand[]
+			const newDemands = await createDemand(preparedDemands)
 
-		Logger.info(`[${store}]: Создаю документы отгрузок...`)
+			Logger.info(`[${store}]: Создаю документы отгрузок...`)
 
-		const paymentins = (await getPaymentin(dates)) as ResponseMS<Paymentin>
+			const paymentins = await getPaymentin()
 
-		Logger.info(`[${store}]: Получаю документы входящих платежей...`)
+			Logger.info(`[${store}]: Получаю документы входящих платежей...`)
 
-		const preparedPaymentins = preparePaymentin(
-			newDemands,
-			[...fbyOrders, ...fbsOrders],
-			paymentins.rows
-		)
+			const preparedPaymentins = preparePaymentin(
+				newDemands ?? [],
+				[...(fbyOrders ?? []), ...(fbsOrders ?? [])],
+				paymentins ?? []
+			)
 
-		await createPaymentin(preparedPaymentins)
+			await createPaymentin(preparedPaymentins)
 
-		Logger.info(`[${store}]: Создаю документы входящих платежей...`)
+			Logger.info(`[${store}]: Создаю документы входящих платежей...`)
 
-		const salesReturn = (await getSalesReturn(
-			dates
-		)) as ResponseMS<SalesReturn>
+			const salesReturn = await getSalesReturn()
 
-		Logger.info(`[${store}]: Получаю документы возвратов...`)
+			Logger.info(`[${store}]: Получаю документы возвратов...`)
 
-		const preparedSalesReturn = prepareSalesReturn(
-			newDemands,
-			ordersForDemands,
-			salesReturn.rows
-		)
+			const preparedSalesReturn = prepareSalesReturn(
+				newDemands ?? [],
+				ordersForDemands ?? [],
+				salesReturn ?? []
+			)
 
-		const newSalesReturns = (await createSalesReturn(
-			preparedSalesReturn
-		)) as SalesReturn[]
+			const newSalesReturns = await createSalesReturn(preparedSalesReturn)
 
-		Logger.info(`[${store}]: Создаю документы возвратов...`)
+			Logger.info(`[${store}]: Создаю документы возвратов...`)
 
-		const paymentouts = (await getPaymentout(
-			dates
-		)) as ResponseMS<Paymentout>
+			const paymentouts = await getPaymentout()
 
-		Logger.info(`[${store}]: Получаю документы исходящих платежей...`)
+			Logger.info(`[${store}]: Получаю документы исходящих платежей...`)
 
-		const preparedPaymentouts = preparePaymentout(
-			newSalesReturns,
-			[...fbyOrders, ...fbsOrders],
-			paymentouts.rows
-		)
+			const preparedPaymentouts = preparePaymentout(
+				newSalesReturns ?? [],
+				[...(fbyOrders ?? []), ...(fbsOrders ?? [])],
+				paymentouts ?? []
+			)
 
-		if (preparedPaymentouts.length > 0) {
-			await createPaymentout(preparedPaymentouts)
+			if (preparedPaymentouts.length > 0) {
+				await createPaymentout(preparedPaymentouts)
+			}
+
+			Logger.info(`[${store}]: Создаю документы исходящих платежей...`)
+			await sendMessage(`[${store}]: Магазин синхронизирован`)
+			Logger.info(`[${store}]: Магазин синхронизирован`)
 		}
-
-		Logger.info(`[${store}]: Создаю документы исходящих платежей...`)
-		await sendMessage(`[${store}]: Магазин синхронизирован`)
-		Logger.info(`[${store}]: Магазин синхронизирован`)
 	} catch (err) {
 		Logger.error(`[${store}]: ${err as string}`)
 	}

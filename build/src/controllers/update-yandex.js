@@ -78,57 +78,73 @@ var prepareDemands_1 = require("../utils/yandex/prepareDemands");
 var preparePaymentin_1 = require("../utils/yandex/preparePaymentin");
 var preparePaymentout_1 = require("../utils/yandex/preparePaymentout");
 var prepareSalesreturn_1 = require("../utils/yandex/prepareSalesreturn");
+var utc_1 = __importDefault(require("dayjs/plugin/utc"));
+dayjs_1.default.extend(utc_1.default);
 var updateYandex = function (store, sendMessage) { return __awaiter(void 0, void 0, void 0, function () {
     var dates, products, customerOrders, campaigns, campaignIds, fbsOrders, fbyOrders, fbsNewOrders, fbyNewOrders, _a, fbsOrdersWithNewData, fbsFilteredOrders, _b, fbyOrdersWithNewData, fbyFilteredOrders, fby, fbs, domain, preparedCustomerOrders_1, createdCustomerOrders, demands, ordersForDemands, preparedDemands, newDemands, paymentins, preparedPaymentins, salesReturn, preparedSalesReturn, newSalesReturns, paymentouts, preparedPaymentouts, err_1;
-    return __generator(this, function (_c) {
-        switch (_c.label) {
+    var _c;
+    return __generator(this, function (_d) {
+        switch (_d.label) {
             case 0:
-                _c.trys.push([0, 19, , 20]);
+                _d.trys.push([0, 20, , 21]);
                 dates = {
-                    dateFrom: (0, dayjs_1.default)().subtract(4, 'month').format('YYYY-MM-DD'),
-                    dateTo: (0, dayjs_1.default)().add(1, 'month').format('YYYY-MM-DD'),
+                    dateFrom: (0, dayjs_1.default)()
+                        .set('hour', 0)
+                        .set('minute', 0)
+                        .set('second', 0)
+                        .set('milliseconds', 0)
+                        .subtract(4, 'month')
+                        .format('YYYY-MM-DD'),
+                    dateTo: (0, dayjs_1.default)()
+                        .set('hour', 23)
+                        .set('minute', 59)
+                        .set('second', 59)
+                        .set('milliseconds', 59)
+                        .add(1, 'month')
+                        .format('YYYY-MM-DD'),
                 };
                 return [4 /*yield*/, (0, productController_1.getProducts)()];
             case 1:
-                products = (_c.sent());
+                products = _d.sent();
                 logger_1.default.info("[".concat(store, "]: \u041F\u043E\u043B\u0443\u0447\u0435\u043D\u044B \u0434\u0430\u043D\u043D\u044B\u0435 \u043F\u043E \u043F\u0440\u043E\u0434\u0443\u043A\u0442\u0430\u043C \u0438\u0437 \u041C\u0421..."));
-                return [4 /*yield*/, (0, ordersController_1.getCustomerOrders)(dates)];
+                return [4 /*yield*/, (0, ordersController_1.getCustomerOrders)()];
             case 2:
-                customerOrders = (_c.sent());
+                customerOrders = _d.sent();
                 logger_1.default.info("[".concat(store, "]: \u041F\u043E\u043B\u0443\u0447\u0435\u043D\u044B \u0434\u0430\u043D\u043D\u044B\u0435 \u043F\u043E \u0437\u0430\u043A\u0430\u0437\u0430\u043C \u0438\u0437 \u041C\u0421..."));
                 return [4 /*yield*/, (0, campaignController_1.getCampaigns)(store)];
             case 3:
-                campaigns = (_c.sent());
-                campaignIds = (0, getCampaignIds_1.getCampaignIds)(campaigns.campaigns);
+                campaigns = _d.sent();
+                campaignIds = (0, getCampaignIds_1.getCampaignIds)(campaigns === null || campaigns === void 0 ? void 0 : campaigns.campaigns);
                 logger_1.default.info("[".concat(store, "]: \u041F\u043E\u043B\u0443\u0447\u0435\u043D\u044B \u0434\u0430\u043D\u043D\u044B\u0435 \u043F\u043E \u043A\u0430\u043C\u043F\u0430\u043D\u0438\u044F\u043C \u043C\u0430\u0433\u0430\u0437\u0438\u043D\u0430..."));
+                if (!(campaignIds !== undefined && campaigns !== undefined)) return [3 /*break*/, 19];
                 return [4 /*yield*/, (0, orderController_1.getOrders)(store, campaignIds.FBS, dates)];
             case 4:
-                fbsOrders = _c.sent();
+                fbsOrders = _d.sent();
                 return [4 /*yield*/, (0, orderController_1.getOrders)(store, campaignIds.FBY, dates)];
             case 5:
-                fbyOrders = _c.sent();
+                fbyOrders = _d.sent();
                 return [4 /*yield*/, (0, orderNewController_1.getNewOrders)(store, campaignIds.FBS)];
             case 6:
-                fbsNewOrders = _c.sent();
+                fbsNewOrders = _d.sent();
                 return [4 /*yield*/, (0, orderNewController_1.getNewOrders)(store, campaignIds.FBY)];
             case 7:
-                fbyNewOrders = _c.sent();
+                fbyNewOrders = _d.sent();
                 logger_1.default.info("[".concat(store, "]: \u041F\u043E\u043B\u0443\u0447\u0435\u043D\u044B \u0434\u0430\u043D\u043D\u044B\u0435 \u043F\u043E \u0437\u0430\u043A\u0430\u0437\u0430\u043C \u043C\u0430\u0433\u0430\u0437\u0438\u043D\u0430..."));
                 _a = (0, filterYandexOrders_1.filterYandexOrders)(fbsOrders, fbsNewOrders), fbsOrdersWithNewData = _a.ordersWithNewData, fbsFilteredOrders = _a.filteredOrders;
                 _b = (0, filterYandexOrders_1.filterYandexOrders)(fbyOrders, fbyNewOrders), fbyOrdersWithNewData = _b.ordersWithNewData, fbyFilteredOrders = _b.filteredOrders;
                 fby = __spreadArray(__spreadArray([], fbyOrdersWithNewData, true), fbyFilteredOrders, true);
                 fbs = __spreadArray(__spreadArray([], fbsOrdersWithNewData, true), fbsFilteredOrders, true);
                 domain = campaigns.campaigns[0].domain;
-                preparedCustomerOrders_1 = (0, prepareCustomerOrders_1.prepareCustomerOrders)(products.rows, fby, fbs, customerOrders.rows, domain);
+                preparedCustomerOrders_1 = (0, prepareCustomerOrders_1.prepareCustomerOrders)((_c = products === null || products === void 0 ? void 0 : products.rows) !== null && _c !== void 0 ? _c : [], fby, fbs, customerOrders !== null && customerOrders !== void 0 ? customerOrders : [], domain);
                 logger_1.default.info("[".concat(store, "]: \u0421\u043E\u0437\u0434\u0430\u044E \u0437\u0430\u043A\u0430\u0437\u044B \u043F\u043E\u043A\u0443\u043F\u0430\u0442\u0435\u043B\u0435\u0439..."));
                 return [4 /*yield*/, (0, ordersController_1.createCustomerOrder)(preparedCustomerOrders_1)];
             case 8:
-                createdCustomerOrders = (_c.sent());
-                return [4 /*yield*/, (0, demandController_1.getDemands)(dates)];
+                createdCustomerOrders = _d.sent();
+                return [4 /*yield*/, (0, demandController_1.getDemands)()];
             case 9:
-                demands = (_c.sent());
+                demands = _d.sent();
                 logger_1.default.info("[".concat(store, "]: \u041F\u043E\u043B\u0443\u0447\u0430\u044E \u0434\u043E\u043A\u0443\u043C\u0435\u043D\u0442\u044B \u043E\u0442\u0433\u0440\u0443\u0437\u043E\u043A..."));
-                ordersForDemands = createdCustomerOrders.reduce(function (acc, cur) {
+                ordersForDemands = createdCustomerOrders === null || createdCustomerOrders === void 0 ? void 0 : createdCustomerOrders.reduce(function (acc, cur) {
                     preparedCustomerOrders_1.forEach(function (order) {
                         if (order.name === cur.name) {
                             acc.push(__assign(__assign({}, order), { meta: cur.meta }));
@@ -136,51 +152,52 @@ var updateYandex = function (store, sendMessage) { return __awaiter(void 0, void
                     });
                     return acc;
                 }, []);
-                preparedDemands = (0, prepareDemands_1.prepareDemands)(ordersForDemands, demands.rows);
+                preparedDemands = (0, prepareDemands_1.prepareDemands)(ordersForDemands !== null && ordersForDemands !== void 0 ? ordersForDemands : [], demands !== null && demands !== void 0 ? demands : []);
                 return [4 /*yield*/, (0, demandController_1.createDemand)(preparedDemands)];
             case 10:
-                newDemands = (_c.sent());
+                newDemands = _d.sent();
                 logger_1.default.info("[".concat(store, "]: \u0421\u043E\u0437\u0434\u0430\u044E \u0434\u043E\u043A\u0443\u043C\u0435\u043D\u0442\u044B \u043E\u0442\u0433\u0440\u0443\u0437\u043E\u043A..."));
-                return [4 /*yield*/, (0, paymentinController_1.getPaymentin)(dates)];
+                return [4 /*yield*/, (0, paymentinController_1.getPaymentin)()];
             case 11:
-                paymentins = (_c.sent());
+                paymentins = _d.sent();
                 logger_1.default.info("[".concat(store, "]: \u041F\u043E\u043B\u0443\u0447\u0430\u044E \u0434\u043E\u043A\u0443\u043C\u0435\u043D\u0442\u044B \u0432\u0445\u043E\u0434\u044F\u0449\u0438\u0445 \u043F\u043B\u0430\u0442\u0435\u0436\u0435\u0439..."));
-                preparedPaymentins = (0, preparePaymentin_1.preparePaymentin)(newDemands, __spreadArray(__spreadArray([], fbyOrders, true), fbsOrders, true), paymentins.rows);
+                preparedPaymentins = (0, preparePaymentin_1.preparePaymentin)(newDemands !== null && newDemands !== void 0 ? newDemands : [], __spreadArray(__spreadArray([], (fbyOrders !== null && fbyOrders !== void 0 ? fbyOrders : []), true), (fbsOrders !== null && fbsOrders !== void 0 ? fbsOrders : []), true), paymentins !== null && paymentins !== void 0 ? paymentins : []);
                 return [4 /*yield*/, (0, paymentinController_1.createPaymentin)(preparedPaymentins)];
             case 12:
-                _c.sent();
+                _d.sent();
                 logger_1.default.info("[".concat(store, "]: \u0421\u043E\u0437\u0434\u0430\u044E \u0434\u043E\u043A\u0443\u043C\u0435\u043D\u0442\u044B \u0432\u0445\u043E\u0434\u044F\u0449\u0438\u0445 \u043F\u043B\u0430\u0442\u0435\u0436\u0435\u0439..."));
-                return [4 /*yield*/, (0, salesreturnController_1.getSalesReturn)(dates)];
+                return [4 /*yield*/, (0, salesreturnController_1.getSalesReturn)()];
             case 13:
-                salesReturn = (_c.sent());
+                salesReturn = _d.sent();
                 logger_1.default.info("[".concat(store, "]: \u041F\u043E\u043B\u0443\u0447\u0430\u044E \u0434\u043E\u043A\u0443\u043C\u0435\u043D\u0442\u044B \u0432\u043E\u0437\u0432\u0440\u0430\u0442\u043E\u0432..."));
-                preparedSalesReturn = (0, prepareSalesreturn_1.prepareSalesReturn)(newDemands, ordersForDemands, salesReturn.rows);
+                preparedSalesReturn = (0, prepareSalesreturn_1.prepareSalesReturn)(newDemands !== null && newDemands !== void 0 ? newDemands : [], ordersForDemands !== null && ordersForDemands !== void 0 ? ordersForDemands : [], salesReturn !== null && salesReturn !== void 0 ? salesReturn : []);
                 return [4 /*yield*/, (0, salesreturnController_1.createSalesReturn)(preparedSalesReturn)];
             case 14:
-                newSalesReturns = (_c.sent());
+                newSalesReturns = _d.sent();
                 logger_1.default.info("[".concat(store, "]: \u0421\u043E\u0437\u0434\u0430\u044E \u0434\u043E\u043A\u0443\u043C\u0435\u043D\u0442\u044B \u0432\u043E\u0437\u0432\u0440\u0430\u0442\u043E\u0432..."));
-                return [4 /*yield*/, (0, paymentoutController_1.getPaymentout)(dates)];
+                return [4 /*yield*/, (0, paymentoutController_1.getPaymentout)()];
             case 15:
-                paymentouts = (_c.sent());
+                paymentouts = _d.sent();
                 logger_1.default.info("[".concat(store, "]: \u041F\u043E\u043B\u0443\u0447\u0430\u044E \u0434\u043E\u043A\u0443\u043C\u0435\u043D\u0442\u044B \u0438\u0441\u0445\u043E\u0434\u044F\u0449\u0438\u0445 \u043F\u043B\u0430\u0442\u0435\u0436\u0435\u0439..."));
-                preparedPaymentouts = (0, preparePaymentout_1.preparePaymentout)(newSalesReturns, __spreadArray(__spreadArray([], fbyOrders, true), fbsOrders, true), paymentouts.rows);
+                preparedPaymentouts = (0, preparePaymentout_1.preparePaymentout)(newSalesReturns !== null && newSalesReturns !== void 0 ? newSalesReturns : [], __spreadArray(__spreadArray([], (fbyOrders !== null && fbyOrders !== void 0 ? fbyOrders : []), true), (fbsOrders !== null && fbsOrders !== void 0 ? fbsOrders : []), true), paymentouts !== null && paymentouts !== void 0 ? paymentouts : []);
                 if (!(preparedPaymentouts.length > 0)) return [3 /*break*/, 17];
                 return [4 /*yield*/, (0, paymentoutController_1.createPaymentout)(preparedPaymentouts)];
             case 16:
-                _c.sent();
-                _c.label = 17;
+                _d.sent();
+                _d.label = 17;
             case 17:
                 logger_1.default.info("[".concat(store, "]: \u0421\u043E\u0437\u0434\u0430\u044E \u0434\u043E\u043A\u0443\u043C\u0435\u043D\u0442\u044B \u0438\u0441\u0445\u043E\u0434\u044F\u0449\u0438\u0445 \u043F\u043B\u0430\u0442\u0435\u0436\u0435\u0439..."));
                 return [4 /*yield*/, sendMessage("[".concat(store, "]: \u041C\u0430\u0433\u0430\u0437\u0438\u043D \u0441\u0438\u043D\u0445\u0440\u043E\u043D\u0438\u0437\u0438\u0440\u043E\u0432\u0430\u043D"))];
             case 18:
-                _c.sent();
+                _d.sent();
                 logger_1.default.info("[".concat(store, "]: \u041C\u0430\u0433\u0430\u0437\u0438\u043D \u0441\u0438\u043D\u0445\u0440\u043E\u043D\u0438\u0437\u0438\u0440\u043E\u0432\u0430\u043D"));
-                return [3 /*break*/, 20];
-            case 19:
-                err_1 = _c.sent();
+                _d.label = 19;
+            case 19: return [3 /*break*/, 21];
+            case 20:
+                err_1 = _d.sent();
                 logger_1.default.error("[".concat(store, "]: ").concat(err_1));
-                return [3 /*break*/, 20];
-            case 20: return [2 /*return*/];
+                return [3 /*break*/, 21];
+            case 21: return [2 /*return*/];
         }
     });
 }); };

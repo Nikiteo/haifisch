@@ -20,10 +20,10 @@ export const prepareOzonPaymentout = (
 
 		const allPaymentouts = [] as Paymentout[]
 		const unPaymentedReturns = returns.filter(
-			ret => ret.payments !== undefined
+			ret => ret.payments === undefined
 		)
 		const paymentedReturns = returns.filter(
-			ret => !(ret.payments !== undefined)
+			ret => ret.payments !== undefined
 		)
 
 		if (fboOrders.length !== 0) {

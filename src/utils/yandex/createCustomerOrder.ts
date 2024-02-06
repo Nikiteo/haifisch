@@ -1,7 +1,5 @@
 import dayjs from 'dayjs'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
-import utc from 'dayjs/plugin/utc'
-import timezone from 'dayjs/plugin/timezone'
 
 import {
 	group,
@@ -18,9 +16,9 @@ import { getProject } from './getProject'
 import { getStore } from './getStore'
 import { preparePositions } from './preparePositions'
 import { prepareStatusesForCustomerOrders } from './prepareStatusesForCustomerOrders'
+
 dayjs.extend(customParseFormat)
-dayjs.extend(utc)
-dayjs.extend(timezone)
+
 const createMoment = (delivery: Delivery): string => {
 	return dayjs(
 		dayjs(dayjs(delivery.shipments[0].shipmentDate, 'DD-MM-YYYY'))
@@ -38,7 +36,7 @@ const createMoment = (delivery: Delivery): string => {
 					? Number(delivery.shipments[0]?.shipmentTime.split(':')[1])
 					: 0
 			)
-	).tz('Europe/Moscow').format('YYYY-MM-DD HH:mm:ss.SSS')
+	).format('YYYY-MM-DD HH:mm:ss.SSS')
 }
 
 export const createCustomerOrder = (
@@ -51,7 +49,7 @@ export const createCustomerOrder = (
 		shared: true,
 		group,
 		name: order.id?.toString(),
-		moment: dayjs(order.creationDate).tz('Europe/Moscow').format('YYYY-MM-DD HH:mm:ss.SSS'),
+		moment: dayjs(order.creationDate).format('YYYY-MM-DD HH:mm:ss.SSS'),
 		applicable: true,
 		rate: {
 			currency,
@@ -71,7 +69,7 @@ export const createCustomerOrder = (
 		// eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
 		deliveryPlannedMoment: order.delivery
 			? createMoment(order.delivery)
-			: dayjs(order.creationDate).tz('Europe/Moscow').format('YYYY-MM-DD HH:mm:ss.SSS'),
+			: dayjs(order.creationDate).format('YYYY-MM-DD HH:mm:ss.SSS'),
 		shipmentAddressFull: {
 			postalCode: order?.delivery?.address?.postcode,
 			country,

@@ -30,7 +30,9 @@ var createOverhadSum = function (attributes, place) {
         return 0;
     }
     if (place === 'OZON') {
-        return parseFloat((parseFloat(parseFloat(((_a = attributes.find(function (attribute) {
+        return parseFloat((parseFloat(parseFloat(
+        // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions, @typescript-eslint/no-unsafe-argument
+        ((_a = attributes === null || attributes === void 0 ? void 0 : attributes.find(function (attribute) {
             return attribute.id ===
                 '279ba9fa-9d67-11ee-0a80-09f500178da3';
         })) === null || _a === void 0 ? void 0 : _a.value) || 0).toFixed(2)) * 100).toFixed(2));

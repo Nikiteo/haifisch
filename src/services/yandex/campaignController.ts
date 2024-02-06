@@ -4,27 +4,25 @@ import {
 	type CampaignResponse,
 } from '../../types/marketTypes'
 import { apiServiceHf, apiServiceTop } from './service'
+import Logger from '../../lib/logger'
 
 export const getCampaigns = async (
 	store: string
-): Promise<CampaignResponse | ErrorResponse | { message: string }> => {
+): Promise<CampaignResponse | undefined> => {
 	const service = store === 'Haifisch' ? apiServiceHf : apiServiceTop
-	return await service
-		.get<CampaignResponse>('/campaigns')
-		.then(response => {
-			return response.data
-		})
-		.catch((error: ErrorResponse) => {
-			if (axios.isAxiosError(error)) {
-				if (error?.response == null || error.code === null) {
-					return {
-						message: 'No response',
-					}
-				} else {
-					return error.response.data
-				}
+	try {
+		const response = await service.get<CampaignResponse>('/campaigns')
+		return response.data
+	} catch (error: unknown) {
+		const err = error as ErrorResponse
+		if (axios.isAxiosError(err)) {
+			if (err?.response == null || err.code === null) {
+				Logger.error('No response')
 			} else {
-				throw new Error('different error than axios')
+				Logger.error(err.response.data)
 			}
-		})
+		} else {
+			Logger.error('different error than axios')
+		}
+	}
 }

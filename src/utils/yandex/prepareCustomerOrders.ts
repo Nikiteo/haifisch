@@ -92,10 +92,12 @@ export const prepareCustomerOrders = (
 						orders.forEach(order => {
 							if (
 								order.name === cur.id?.toString() &&
-								dayjs(new Date()).diff(
-									dayjs(order.deliveryPlannedMoment),
-									'month'
-								) <= 1
+								dayjs()
+									.add(3, 'hour')
+									.diff(
+										dayjs(order.deliveryPlannedMoment),
+										'month'
+									) <= 1
 							) {
 								const { items } = cur
 								const boughtProducts = products.filter(
@@ -163,10 +165,12 @@ export const prepareCustomerOrders = (
 						orders.forEach(order => {
 							if (
 								order.name === cur.id?.toString() &&
-								dayjs(new Date()).diff(
-									dayjs(order.deliveryPlannedMoment),
-									'month'
-								) <= 1
+								dayjs()
+									.add(3, 'hour')
+									.diff(
+										dayjs(order.deliveryPlannedMoment),
+										'month'
+									) <= 1
 							) {
 								const { items } = cur
 								const boughtProducts = products.filter(

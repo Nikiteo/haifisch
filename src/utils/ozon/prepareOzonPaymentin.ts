@@ -22,10 +22,10 @@ export const prepareOzonPaymentin = (
 
 		if (fboOrders.length !== 0) {
 			const unPaymentedDemands = demands.filter(
-				demand => demand.payments !== undefined
+				demand => demand.payments === undefined
 			)
 			const paymentedDemands = demands.filter(
-				demand => !(demand.payments !== undefined)
+				demand => demand.payments !== undefined
 			)
 
 			const updatedPaymentin = fboOrders.reduce<Paymentin[]>(
@@ -92,10 +92,10 @@ export const prepareOzonPaymentin = (
 
 		if (fbsOrders.length !== 0) {
 			const unPaymentedDemands = demands.filter(
-				demand => demand.payments !== undefined
+				demand => demand.payments === undefined
 			)
 			const paymentedDemands = demands.filter(
-				demand => !(demand.payments !== undefined)
+				demand => demand.payments !== undefined
 			)
 
 			const updatedPaymentin = fbsOrders.reduce<Paymentin[]>(

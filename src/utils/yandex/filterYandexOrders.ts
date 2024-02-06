@@ -10,9 +10,16 @@ interface Response {
 }
 
 export const filterYandexOrders = (
-	orders: Order[],
-	newOrders: NewOrder[]
+	orders?: Order[],
+	newOrders?: NewOrder[]
 ): Response => {
+	if (orders === undefined || newOrders === undefined) {
+		return {
+			ordersWithNewData: [],
+			filteredOrders: [],
+		}
+	}
+
 	const ordersWithNewData = orders.reduce<AddedOrder[]>((acc, cur) => {
 		newOrders.forEach(newOrder => {
 			if (newOrder.id === cur.id) {

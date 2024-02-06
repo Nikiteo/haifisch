@@ -34,8 +34,8 @@ var preparePaymentin = function (demands, orders, paymentins) {
         if (orders.length === 0) {
             return [];
         }
-        var unPaymentedDemands_1 = demands.filter(function (demand) { return demand.payments !== undefined; });
-        var paymentedDemands_1 = demands.filter(function (demand) { return !(demand.payments !== undefined); });
+        var unPaymentedDemands_1 = demands.filter(function (demand) { return demand.payments === undefined; });
+        var paymentedDemands_1 = demands.filter(function (demand) { return demand.payments !== undefined; });
         var updatedPaymentin = orders
             .filter(function (order) { return order.status !== 'CANCELLED_BEFORE_PROCESSING'; })
             .reduce(function (acc, cur) {

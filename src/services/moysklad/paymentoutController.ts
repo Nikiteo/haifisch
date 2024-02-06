@@ -5,56 +5,60 @@ import {
 	type ErrorResponse,
 } from '../../types/msTypes'
 import { apiService } from './service'
+import Logger from '../../lib/logger'
 
-export const getPaymentout = async (dates: {
-	dateFrom: string
-	dateTo: string
-}): Promise<ResponseMS<Paymentout> | ErrorResponse | { message: string }> => {
-	return await apiService
-		.get<ResponseMS<Paymentout>>(
-			`entity/paymentout?filter=moment>${dates.dateFrom};moment<${dates.dateTo}`
-		)
-		.then(response => {
-			return response.data
-		})
-		.catch((error: ErrorResponse) => {
-			if (axios.isAxiosError(error)) {
-				if (error?.response == null || error.code === null) {
-					return {
-						message: 'No response',
-					}
-				} else {
-					return error.response.data
-				}
+export const getPaymentout = async (): Promise<Paymentout[] | undefined> => {
+	try {
+		const getPaymentout = async (offset: number): Promise<Paymentout[]> => {
+			const response = await apiService.get<ResponseMS<Paymentout>>(
+				`entity/paymentout?offset=${offset}`
+			)
+
+			const paymentouts = response.data.rows
+
+			if (
+				response.data.meta.size >
+				response.data.meta.limit + response.data.meta.offset
+			) {
+				return paymentouts.concat(await getPaymentout(1000))
 			} else {
-				throw new Error('different error than axios')
+				return paymentouts
 			}
-		})
+		}
+		return await getPaymentout(0)
+	} catch (error: unknown) {
+		const err = error as ErrorResponse
+		if (axios.isAxiosError(err)) {
+			if (err?.response == null || err.code === null) {
+				Logger.error('No response')
+			} else {
+				Logger.error(err.response.data)
+			}
+		} else {
+			Logger.error('different error than axios')
+		}
+	}
 }
 
 export const createPaymentout = async (
 	paymentouts: Paymentout[]
-): Promise<ResponseMS<Paymentout> | ErrorResponse | { message: string }> => {
-	return await apiService
-		.post<ResponseMS<Paymentout>>('entity/paymentout', paymentouts)
-		.then(response => {
-			if (response.status !== 200) {
-				throw new Error('Кажется, что в entity/paymentout ошибки')
+): Promise<ResponseMS<Paymentout> | undefined> => {
+	try {
+		const response = await apiService.post<ResponseMS<Paymentout>>(
+			'entity/paymentout',
+			paymentouts
+		)
+		return response.data
+	} catch (error: unknown) {
+		const err = error as ErrorResponse
+		if (axios.isAxiosError(err)) {
+			if (err?.response == null || err.code === null) {
+				Logger.error('No response')
 			} else {
-				return response.data
+				Logger.error(err.response.data)
 			}
-		})
-		.catch((error: ErrorResponse) => {
-			if (axios.isAxiosError(error)) {
-				if (error?.response == null || error.code === null) {
-					return {
-						message: 'No response',
-					}
-				} else {
-					return error.response.data
-				}
-			} else {
-				throw new Error('different error than axios')
-			}
-		})
+		} else {
+			Logger.error('different error than axios')
+		}
+	}
 }

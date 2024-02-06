@@ -21,7 +21,7 @@ export const preparePaymentout = (
 			ret => ret.payments === undefined
 		)
 		const paymentedReturns = returns.filter(
-			ret => !(ret.payments === undefined)
+			ret => ret.payments !== undefined
 		)
 
 		const updatedPaymentout = orders

@@ -18,10 +18,10 @@ export const preparePaymentin = (
 		}
 
 		const unPaymentedDemands = demands.filter(
-			demand => demand.payments !== undefined
+			demand => demand.payments === undefined
 		)
 		const paymentedDemands = demands.filter(
-			demand => !(demand.payments !== undefined)
+			demand => demand.payments !== undefined
 		)
 
 		const updatedPaymentin = orders

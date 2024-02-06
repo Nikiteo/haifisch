@@ -42,63 +42,63 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.createProducts = exports.getProducts = void 0;
 var axios_1 = __importDefault(require("axios"));
 var service_1 = require("./service");
+var logger_1 = __importDefault(require("../../lib/logger"));
 var getProducts = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var response, error_1, err;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, service_1.apiService
-                    .get('entity/product?filter=pathName=Изделия')
-                    .then(function (response) {
-                    return response.data;
-                })
-                    .catch(function (error) {
-                    if (axios_1.default.isAxiosError(error)) {
-                        if ((error === null || error === void 0 ? void 0 : error.response) == null || error.code === null) {
-                            return {
-                                message: 'No response',
-                            };
-                        }
-                        else {
-                            return error.response.data;
-                        }
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, service_1.apiService.get('entity/product?filter=pathName=Изделия')];
+            case 1:
+                response = _a.sent();
+                return [2 /*return*/, response.data];
+            case 2:
+                error_1 = _a.sent();
+                err = error_1;
+                if (axios_1.default.isAxiosError(err)) {
+                    if ((err === null || err === void 0 ? void 0 : err.response) == null || err.code === null) {
+                        logger_1.default.error('No response');
                     }
                     else {
-                        throw new Error('different error than axios');
+                        logger_1.default.error(err.response.data);
                     }
-                })];
-            case 1: return [2 /*return*/, _a.sent()];
+                }
+                else {
+                    logger_1.default.error('different error than axios');
+                }
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
         }
     });
 }); };
 exports.getProducts = getProducts;
 var createProducts = function (products) { return __awaiter(void 0, void 0, void 0, function () {
+    var response, error_2, err;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, service_1.apiService
-                    .post('entity/product', products)
-                    .then(function (response) {
-                    if (response.status !== 200) {
-                        throw new Error('Кажется, что в entity/product ошибки');
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, service_1.apiService.post('entity/product', products)];
+            case 1:
+                response = _a.sent();
+                return [2 /*return*/, response.data];
+            case 2:
+                error_2 = _a.sent();
+                err = error_2;
+                if (axios_1.default.isAxiosError(err)) {
+                    if ((err === null || err === void 0 ? void 0 : err.response) == null || err.code === null) {
+                        logger_1.default.error('No response');
                     }
                     else {
-                        return response.data;
+                        logger_1.default.error(err.response.data);
                     }
-                })
-                    .catch(function (error) {
-                    if (axios_1.default.isAxiosError(error)) {
-                        if ((error === null || error === void 0 ? void 0 : error.response) == null || error.code === null) {
-                            return {
-                                message: 'No response',
-                            };
-                        }
-                        else {
-                            return error.response.data;
-                        }
-                    }
-                    else {
-                        throw new Error('different error than axios');
-                    }
-                })];
-            case 1: return [2 /*return*/, _a.sent()];
+                }
+                else {
+                    logger_1.default.error('different error than axios');
+                }
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
         }
     });
 }); };

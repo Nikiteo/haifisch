@@ -20,7 +20,8 @@ export const createOverhadSum = (
 			(
 				parseFloat(
 					parseFloat(
-						attributes.find(
+						// eslint-disable-next-line @typescript-eslint/strict-boolean-expressions, @typescript-eslint/no-unsafe-argument
+						attributes?.find(
 							attribute =>
 								attribute.id ===
 								'279ba9fa-9d67-11ee-0a80-09f500178da3'

@@ -28,24 +28,10 @@ import {
 	getOzonFbsReturns,
 } from '../services/ozon/returnsController'
 
+import { type CustomerOrder, type SalesReturn } from '../types/msTypes'
 import {
-	type ResponseMS,
-	type Product,
-	type CustomerOrder,
-	type Demand,
-	type Paymentin,
-	type SalesReturn,
-	type Paymentout,
-} from '../types/msTypes'
-import {
-	type FboOrderResponse,
 	type FboOrder,
-	type FbsOrderResponse,
 	type Posting,
-	type OzonReturnFbo,
-	type OzonReturnFbs,
-	type Returns,
-	type ProductPrices,
 	OrderStatusEnum,
 	OrderFbsOzonStatus,
 } from '../types/ozonTypes'
@@ -55,22 +41,29 @@ import { prepareOzonPaymentout } from '../utils/ozon/prepareOzonPaymentout'
 import { prepareDemands } from '../utils/yandex/prepareDemands'
 import { prepareSalesReturn } from '../utils/yandex/prepareSalesreturn'
 import utc from 'dayjs/plugin/utc'
-import timezone from 'dayjs/plugin/timezone'
+
 dayjs.extend(utc)
-dayjs.extend(timezone)
 
 export const updateOzon = async (
 	store: string,
 	sendMessage: (text: string) => Promise<void>
 ): Promise<void> => {
 	try {
-		const dates = {
-			dateFrom: dayjs().tz('Europe/Moscow').subtract(4, 'month').format('YYYY-MM-DD'),
-			dateTo: dayjs().tz('Europe/Moscow').add(1, 'month').format('YYYY-MM-DD'),
-		}
 		const filter = {
-			since: dayjs().tz('Europe/Moscow').subtract(4, 'month').toISOString(),
-			to: dayjs().tz('Europe/Moscow').add(1, 'month').toISOString(),
+			since: dayjs()
+				.set('hour', 0)
+				.set('minute', 0)
+				.set('second', 0)
+				.set('milliseconds', 0)
+				.subtract(4, 'month')
+				.toISOString(),
+			to: dayjs()
+				.set('hour', 23)
+				.set('minute', 59)
+				.set('second', 59)
+				.set('milliseconds', 59)
+				.add(1, 'month')
+				.toISOString(),
 		}
 		const ordersProps = {
 			dir: 'ASC',
@@ -85,52 +78,46 @@ export const updateOzon = async (
 			offset: 0,
 		}
 
-		const products = (await getProducts()) as ResponseMS<Product>
+		const products = await getProducts()
 
 		Logger.info(`[${store}]: Получены данные по продуктам из МС...`)
 
-		const customerOrders = (await getCustomerOrders(
-			dates
-		)) as ResponseMS<CustomerOrder>
+		const customerOrders = await getCustomerOrders()
 
 		Logger.info(`[${store}]: Получены данные по заказам из МС...`)
 
-		const fboOrders = (await getOzonFboOrders(
-			ordersProps
-		)) as FboOrderResponse<FboOrder>
-		const fbsOrders = (await getOzonFbsOrders(
-			ordersProps
-		)) as FbsOrderResponse<Posting>
+		const fboOrders = await getOzonFboOrders(ordersProps)
+		const fbsOrders = await getOzonFbsOrders(ordersProps)
 
 		Logger.info(`[${store}]: Получены данные по заказам магазина...`)
 
-		const fboReturns = (await getOzonFboReturns({
+		const fboReturns = await getOzonFboReturns({
 			filter: {},
 			last_id: 0,
 			limit: 1000,
-		})) as Returns<OzonReturnFbo>
-		const fbsReturns = (await getOzonFbsReturns({
+		})
+		const fbsReturns = await getOzonFbsReturns({
 			filter: {},
 			last_id: 0,
 			limit: 1000,
-		})) as Returns<OzonReturnFbs>
+		})
 
 		Logger.info(`[${store}]: Получены данные по возвратам магазина...`)
 
-		const articlesFromMS = products.rows.map(row => row.article)
+		const articlesFromMS = products?.rows.map(row => row.article)
 
-		const prices = (await getProductPrices({
+		const prices = await getProductPrices({
 			filter: {
-				offer_id: articlesFromMS,
+				offer_id: articlesFromMS ?? [],
 				visibility: 'ALL',
 			},
 			last_id: '',
 			limit: 1000,
-		})) as ProductPrices
+		})
 
-		const fboAfterReturns = fboOrders.result.reduce<FboOrder[]>(
+		const fboAfterReturns = fboOrders?.result.reduce<FboOrder[]>(
 			(acc, cur) => {
-				fboReturns.returns.forEach(item => {
+				fboReturns?.returns.forEach(item => {
 					if (item.posting_number === cur.posting_number) {
 						acc.push({
 							...cur,
@@ -143,9 +130,9 @@ export const updateOzon = async (
 			[]
 		)
 
-		const fbsAfterReturns = fbsOrders.result.postings.reduce<Posting[]>(
+		const fbsAfterReturns = fbsOrders?.result.postings.reduce<Posting[]>(
 			(acc, cur) => {
-				fbsReturns.returns.forEach(item => {
+				fbsReturns?.returns.forEach(item => {
 					if (item.posting_number === cur.posting_number) {
 						acc.push({
 							...cur,
@@ -158,40 +145,40 @@ export const updateOzon = async (
 			[]
 		)
 
-		const filteredFboOrders = fboOrders.result.filter(order =>
-			fboAfterReturns.every(
+		const filteredFboOrders = fboOrders?.result.filter(order =>
+			fboAfterReturns?.every(
 				fbo => fbo.posting_number !== order.posting_number
 			)
 		)
 
-		const filteredFbsOrders = fbsOrders.result.postings.filter(order =>
-			fbsAfterReturns.every(
+		const filteredFbsOrders = fbsOrders?.result.postings.filter(order =>
+			fbsAfterReturns?.every(
 				fbs => fbs.posting_number !== order.posting_number
 			)
 		)
 
 		const preparedCustomerOrders = prepareOzonCustomerOrders(
-			products.rows,
-			[...filteredFboOrders, ...fboAfterReturns],
-			[...filteredFbsOrders, ...fbsAfterReturns]
+			products?.rows ?? [],
+			[...(filteredFboOrders ?? []), ...(fboAfterReturns ?? [])],
+			[...(filteredFbsOrders ?? []), ...(fbsAfterReturns ?? [])]
 				.filter(item => item.posting_number !== '0145992433-0031-1')
 				.filter(item => item.posting_number !== '28059370-0058-6')
 				.filter(item => item.posting_number !== '0122683245-0020-1'),
-			customerOrders.rows,
-			prices.result.items
+			customerOrders ?? [],
+			prices?.result.items ?? []
 		)
 
 		Logger.info(`[${store}]: Создаю заказы покупателей...`)
 
-		const createdCustomerOrders = (await createCustomerOrder(
+		const createdCustomerOrders = await createCustomerOrder(
 			preparedCustomerOrders
-		)) as CustomerOrder[]
+		)
 
-		const demands = (await getDemands(dates)) as ResponseMS<Demand>
+		const demands = await getDemands()
 
 		Logger.info(`[${store}]: Получаю документы отгрузок...`)
 
-		const ordersForDemands = createdCustomerOrders.reduce<CustomerOrder[]>(
+		const ordersForDemands = createdCustomerOrders?.reduce<CustomerOrder[]>(
 			(acc, cur) => {
 				preparedCustomerOrders.forEach(order => {
 					if (order.name === cur.name) {
@@ -207,43 +194,41 @@ export const updateOzon = async (
 		)
 
 		const preparedDemands = prepareDemands(
-			ordersForDemands,
-			demands.rows,
+			ordersForDemands ?? [],
+			demands ?? [],
 			'OZON'
 		)
 
-		const newDemands = (await createDemand(preparedDemands)) as Demand[]
+		const newDemands = await createDemand(preparedDemands)
 
 		Logger.info(`[${store}]: Создаю документы отгрузок...`)
 
-		const paymentins = (await getPaymentin(dates)) as ResponseMS<Paymentin>
+		const paymentins = await getPaymentin()
 
 		Logger.info(`[${store}]: Получаю документы входящих платежей...`)
 
 		const preparedPaymentins = prepareOzonPaymentin(
-			newDemands,
-			[...filteredFboOrders, ...fboAfterReturns],
-			[...filteredFbsOrders, ...fbsAfterReturns]
+			newDemands ?? [],
+			[...(filteredFboOrders ?? []), ...(fboAfterReturns ?? [])],
+			[...(filteredFbsOrders ?? []), ...(fbsAfterReturns ?? [])]
 				.filter(item => item.posting_number !== '0145992433-0031-1')
 				.filter(item => item.posting_number !== '28059370-0058-6')
 				.filter(item => item.posting_number !== '0122683245-0020-1'),
-			paymentins.rows
+			paymentins ?? []
 		)
 
 		await createPaymentin(preparedPaymentins)
 
 		Logger.info(`[${store}]: Создаю документы входящих платежей...`)
 
-		const salesReturn = (await getSalesReturn(
-			dates
-		)) as ResponseMS<SalesReturn>
+		const salesReturn = await getSalesReturn()
 
 		Logger.info(`[${store}]: Получаю документы возвратов...`)
 
 		const preparedSalesReturn = prepareSalesReturn(
-			newDemands,
-			ordersForDemands,
-			salesReturn.rows,
+			newDemands ?? [],
+			ordersForDemands ?? [],
+			salesReturn ?? [],
 			'OZON'
 		)
 
@@ -264,26 +249,22 @@ export const updateOzon = async (
 			}
 		).uniqReturns
 
-		const newSalesReturns = (await createSalesReturn(
-			uniqReturns
-		)) as SalesReturn[]
+		const newSalesReturns = await createSalesReturn(uniqReturns)
 
 		Logger.info(`[${store}]: Создаю документы возвратов...`)
 
-		const paymentouts = (await getPaymentout(
-			dates
-		)) as ResponseMS<Paymentout>
+		const paymentouts = await getPaymentout()
 
 		Logger.info(`[${store}]: Получаю документы исходящих платежей...`)
 
 		const preparedPaymentouts = prepareOzonPaymentout(
-			newSalesReturns,
-			[...filteredFboOrders, ...fboAfterReturns],
-			[...filteredFbsOrders, ...fbsAfterReturns]
+			newSalesReturns ?? [],
+			[...(filteredFboOrders ?? []), ...(fboAfterReturns ?? [])],
+			[...(filteredFbsOrders ?? []), ...(fbsAfterReturns ?? [])]
 				.filter(item => item.posting_number !== '0145992433-0031-1')
 				.filter(item => item.posting_number !== '28059370-0058-6')
 				.filter(item => item.posting_number !== '0122683245-0020-1'),
-			paymentouts.rows
+			paymentouts ?? []
 		)
 
 		if (preparedPaymentouts.length > 0) {

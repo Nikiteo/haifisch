@@ -36,8 +36,8 @@ var prepareOzonPaymentin = function (demands, fboOrders, fbsOrders, paymentins) 
         }
         var allPaymentins = [];
         if (fboOrders.length !== 0) {
-            var unPaymentedDemands_1 = demands.filter(function (demand) { return demand.payments !== undefined; });
-            var paymentedDemands_1 = demands.filter(function (demand) { return !(demand.payments !== undefined); });
+            var unPaymentedDemands_1 = demands.filter(function (demand) { return demand.payments === undefined; });
+            var paymentedDemands_1 = demands.filter(function (demand) { return demand.payments !== undefined; });
             var updatedPaymentin = fboOrders.reduce(function (acc, cur) {
                 paymentedDemands_1.forEach(function (demand) {
                     if (demand.name === cur.posting_number) {

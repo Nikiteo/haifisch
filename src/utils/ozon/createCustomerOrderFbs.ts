@@ -1,7 +1,6 @@
 /* eslint-disable no-mixed-spaces-and-tabs */
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
-import timezone from 'dayjs/plugin/timezone'
 
 import {
 	states,
@@ -27,8 +26,9 @@ import {
 } from '../../types/ozonTypes'
 import { prepareOzonFbsStatuses } from './prepareOzonFbsStatuses'
 import { prepareOzonPositions } from './prepareOzonPositions'
+
 dayjs.extend(utc)
-dayjs.extend(timezone)
+
 const prepareComissions = (
 	data: FinancialDataFbs,
 	prices: ItemPrice[],
@@ -113,7 +113,7 @@ export const createCustomerOrderFbs = (
 		name: order.posting_number,
 		moment: dayjs(order.in_process_at)
 			.subtract(3, 'hour')
-			.tz('Europe/Moscow').format('YYYY-MM-DD HH:mm:ss.SSS'),
+			.format('YYYY-MM-DD HH:mm:ss.SSS'),
 		applicable: true,
 		rate: {
 			currency,
@@ -190,8 +190,8 @@ export const createCustomerOrderFbs = (
 		vatSum: 0.0,
 		deliveryPlannedMoment: dayjs(order.shipment_date)
 			.subtract(3, 'hour')
-			.add(7, 'hour')
-			.tz('Europe/Moscow').format('YYYY-MM-DD HH:mm:ss.SSS'),
+			.add(10, 'hour')
+			.format('YYYY-MM-DD HH:mm:ss.SSS'),
 		shipmentAddressFull: {
 			country,
 			city: order?.analytics_data.city,

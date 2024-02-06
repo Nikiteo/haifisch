@@ -35,7 +35,7 @@ var preparePaymentout = function (returns, orders, paymentouts) {
             return [];
         }
         var unPaymentedReturns_1 = returns.filter(function (ret) { return ret.payments === undefined; });
-        var paymentedReturns_1 = returns.filter(function (ret) { return !(ret.payments === undefined); });
+        var paymentedReturns_1 = returns.filter(function (ret) { return ret.payments !== undefined; });
         var updatedPaymentout = orders
             .filter(function (order) { return order.status !== 'CANCELLED_BEFORE_PROCESSING'; })
             .reduce(function (acc, cur) {

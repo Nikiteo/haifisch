@@ -82,10 +82,12 @@ export const prepareOzonCustomerOrders = (
 						orders.forEach(order => {
 							if (
 								order.name === cur.posting_number &&
-								dayjs(new Date()).diff(
-									dayjs(order.deliveryPlannedMoment),
-									'month'
-								) <= 1
+								dayjs()
+									.add(3, 'hour')
+									.diff(
+										dayjs(order.deliveryPlannedMoment),
+										'month'
+									) <= 1
 							) {
 								const { products: boughtProducts } = cur
 								const boughtItems = products.filter(product =>
@@ -143,10 +145,12 @@ export const prepareOzonCustomerOrders = (
 						orders.forEach(order => {
 							if (
 								order.name === cur.posting_number &&
-								dayjs(new Date()).diff(
-									dayjs(order.deliveryPlannedMoment),
-									'month'
-								) <= 1
+								dayjs()
+									.add(3, 'hour')
+									.diff(
+										dayjs(order.deliveryPlannedMoment),
+										'month'
+									) <= 1
 							) {
 								const { products: boughtProducts } = cur
 								const boughtItems = products.filter(product =>

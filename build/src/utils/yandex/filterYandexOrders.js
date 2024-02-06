@@ -13,6 +13,12 @@ var __assign = (this && this.__assign) || function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.filterYandexOrders = void 0;
 var filterYandexOrders = function (orders, newOrders) {
+    if (orders === undefined || newOrders === undefined) {
+        return {
+            ordersWithNewData: [],
+            filteredOrders: [],
+        };
+    }
     var ordersWithNewData = orders.reduce(function (acc, cur) {
         newOrders.forEach(function (newOrder) {
             if (newOrder.id === cur.id) {
