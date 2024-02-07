@@ -51,7 +51,7 @@ var createCustomerOrder = function (domain, order, boughtProducts, type) {
         // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
         deliveryPlannedMoment: order.delivery
             ? createMoment(order.delivery)
-            : (0, dayjs_1.default)(order.creationDate).set('hour', 17).format('YYYY-MM-DD HH:mm:ss.SSS'),
+            : (0, dayjs_1.default)(order.creationDate).format('YYYY-MM-DD HH:mm:ss.SSS'),
         shipmentAddressFull: {
             postalCode: (_c = (_b = order === null || order === void 0 ? void 0 : order.delivery) === null || _b === void 0 ? void 0 : _b.address) === null || _c === void 0 ? void 0 : _c.postcode,
             country: database_1.country,

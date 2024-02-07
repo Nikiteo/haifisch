@@ -492,3 +492,31 @@ export interface SourceStore {
 export interface TargetStore {
 	meta: Meta
 }
+
+export interface Cashout {
+	meta?: Meta
+	id?: string
+	accountId?: string
+	owner?: Owner
+	shared?: boolean
+	group?: Group
+	updated?: string
+	name?: string
+	externalCode?: string
+	moment?: string
+	applicable?: boolean
+	rate?: Rate
+	sum?: number
+	project?: Project
+	agent?: Agent
+	organization?: Organization
+	state?: State
+	created?: string
+	printed?: boolean
+	published?: boolean
+	files?: Files
+	salesChannel?: SalesChannel
+	paymentPurpose?: string
+	vatSum?: number
+	expenseItem?: ExpenseItem
+}

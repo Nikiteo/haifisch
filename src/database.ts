@@ -147,6 +147,30 @@ export const owner = {
 	},
 }
 
+export const mishaOwner = {
+	meta: {
+		href: 'https://api.moysklad.ru/api/remap/1.2/entity/employee/5905057e-f558-11ed-0a80-1411001d633f',
+		metadataHref:
+			'https://api.moysklad.ru/api/remap/1.2/entity/employee/metadata',
+		type: 'employee',
+		mediaType: 'application/json',
+		uuidHref:
+			'https://online.moysklad.ru/app/#employee/edit?id=5905057e-f558-11ed-0a80-1411001d633f',
+	},
+}
+
+export const anyaOwner = {
+	meta: {
+		href: 'https://api.moysklad.ru/api/remap/1.2/entity/employee/81d8f5fb-f558-11ed-0a80-1411001d6a6c',
+		metadataHref:
+			'https://api.moysklad.ru/api/remap/1.2/entity/employee/metadata',
+		type: 'employee',
+		mediaType: 'application/json',
+		uuidHref:
+			'https://online.moysklad.ru/app/#employee/edit?id=81d8f5fb-f558-11ed-0a80-1411001d6a6c',
+	},
+}
+
 export const fboOzonStore = {
 	meta: {
 		href: 'https://api.moysklad.ru/api/remap/1.2/entity/store/702fc37a-9037-11ee-0a80-0d6b00124713',
@@ -750,5 +774,85 @@ export const paymentinState = {
 		color: 10066329,
 		stateType: 'Regular',
 		entityType: 'paymentin',
+	},
+}
+
+export const purchase = {
+	meta: {
+		href: 'https://api.moysklad.ru/api/remap/1.2/entity/expenseitem/8dbf9374-0a01-11e4-b9bf-002590a32f46',
+		metadataHref:
+			'https://api.moysklad.ru/api/remap/1.2/entity/expenseitem/metadata',
+		type: 'expenseitem',
+		mediaType: 'application/json',
+	},
+}
+
+export const taxes = {
+	meta: {
+		href: 'https://api.moysklad.ru/api/remap/1.2/entity/expenseitem/8dbf9a86-0a01-11e4-a190-002590a32f46',
+		metadataHref:
+			'https://api.moysklad.ru/api/remap/1.2/entity/expenseitem/metadata',
+		type: 'expenseitem',
+		mediaType: 'application/json',
+	},
+}
+
+export const moving = {
+	meta: {
+		href: 'https://api.moysklad.ru/api/remap/1.2/entity/expenseitem/4e1c05f2-0673-11e6-a655-0cc47a342ca4',
+		metadataHref:
+			'https://api.moysklad.ru/api/remap/1.2/entity/expenseitem/metadata',
+		type: 'expenseitem',
+		mediaType: 'application/json',
+	},
+}
+
+export const rent = {
+	meta: {
+		href: 'https://api.moysklad.ru/api/remap/1.2/entity/expenseitem/50098823-f557-11ed-0a80-11cd001da725',
+		metadataHref:
+			'https://api.moysklad.ru/api/remap/1.2/entity/expenseitem/metadata',
+		type: 'expenseitem',
+		mediaType: 'application/json',
+	},
+}
+
+export const salary = {
+	meta: {
+		href: 'https://api.moysklad.ru/api/remap/1.2/entity/expenseitem/500a2395-f557-11ed-0a80-11cd001da726',
+		metadataHref:
+			'https://api.moysklad.ru/api/remap/1.2/entity/expenseitem/metadata',
+		type: 'expenseitem',
+		mediaType: 'application/json',
+	},
+}
+
+export const entertainment = {
+	meta: {
+		href: 'https://api.moysklad.ru/api/remap/1.2/entity/expenseitem/500a70cd-f557-11ed-0a80-11cd001da727',
+		metadataHref:
+			'https://api.moysklad.ru/api/remap/1.2/entity/expenseitem/metadata',
+		type: 'expenseitem',
+		mediaType: 'application/json',
+	},
+}
+
+export const services = {
+	meta: {
+		href: 'https://api.moysklad.ru/api/remap/1.2/entity/expenseitem/780256d2-afc6-11ee-0a80-01b80015a3f4',
+		metadataHref:
+			'https://api.moysklad.ru/api/remap/1.2/entity/expenseitem/metadata',
+		type: 'expenseitem',
+		mediaType: 'application/json',
+	},
+}
+
+export const refund = {
+	meta: {
+		href: 'https://api.moysklad.ru/api/remap/1.2/entity/expenseitem/8dbf99a0-0a01-11e4-a743-002590a32f46',
+		metadataHref:
+			'https://api.moysklad.ru/api/remap/1.2/entity/expenseitem/metadata',
+		type: 'expenseitem',
+		mediaType: 'application/json',
 	},
 }

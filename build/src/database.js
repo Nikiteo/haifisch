@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.paymentinState = exports.paymentoutState = exports.carrier = exports.consignee = exports.fbyHfProject = exports.fbsHfProject = exports.fbyTopProject = exports.fbosOzonProject = exports.fboOzonProject = exports.fbsTopProject = exports.ozonAgent = exports.agent = exports.salesChannels = exports.states = exports.productFolder = exports.fbsOzonRefund = exports.fboOzonRefund = exports.fbyTopRefund = exports.fbsTopRefund = exports.fbyHfRefund = exports.fbsHfRefund = exports.sourceStore = exports.fbyTopStore = exports.fbyHfStore = exports.fbsTopStore = exports.fbsHfStore = exports.fbsOzonStore = exports.fboOzonStore = exports.owner = exports.group = exports.uom = exports.priceTypeOzon = exports.priceTypeTop = exports.priceTypeHF = exports.currency = exports.country = exports.organization = exports.ozonSupplier = exports.ozonSalesChannel = exports.topSupplier = exports.hfSupplier = void 0;
+exports.services = exports.entertainment = exports.salary = exports.rent = exports.moving = exports.taxes = exports.purchase = exports.paymentinState = exports.paymentoutState = exports.carrier = exports.consignee = exports.fbyHfProject = exports.fbsHfProject = exports.fbyTopProject = exports.fbosOzonProject = exports.fboOzonProject = exports.fbsTopProject = exports.ozonAgent = exports.agent = exports.salesChannels = exports.states = exports.productFolder = exports.fbsOzonRefund = exports.fboOzonRefund = exports.fbyTopRefund = exports.fbsTopRefund = exports.fbyHfRefund = exports.fbsHfRefund = exports.sourceStore = exports.fbyTopStore = exports.fbyHfStore = exports.fbsTopStore = exports.fbsHfStore = exports.fbsOzonStore = exports.fboOzonStore = exports.anyaOwner = exports.mishaOwner = exports.owner = exports.group = exports.uom = exports.priceTypeOzon = exports.priceTypeTop = exports.priceTypeHF = exports.currency = exports.country = exports.organization = exports.ozonSupplier = exports.ozonSalesChannel = exports.topSupplier = exports.hfSupplier = void 0;
+exports.refund = void 0;
 exports.hfSupplier = {
     meta: {
         href: 'https://api.moysklad.ru/api/remap/1.2/entity/organization/4f9c637b-f557-11ed-0a80-11cd001da709',
@@ -117,6 +118,24 @@ exports.owner = {
         type: 'employee',
         mediaType: 'application/json',
         uuidHref: 'https://online.moysklad.ru/app/#employee/edit?id=4f894604-f557-11ed-0a80-11cd001da6bd',
+    },
+};
+exports.mishaOwner = {
+    meta: {
+        href: 'https://api.moysklad.ru/api/remap/1.2/entity/employee/5905057e-f558-11ed-0a80-1411001d633f',
+        metadataHref: 'https://api.moysklad.ru/api/remap/1.2/entity/employee/metadata',
+        type: 'employee',
+        mediaType: 'application/json',
+        uuidHref: 'https://online.moysklad.ru/app/#employee/edit?id=5905057e-f558-11ed-0a80-1411001d633f',
+    },
+};
+exports.anyaOwner = {
+    meta: {
+        href: 'https://api.moysklad.ru/api/remap/1.2/entity/employee/81d8f5fb-f558-11ed-0a80-1411001d6a6c',
+        metadataHref: 'https://api.moysklad.ru/api/remap/1.2/entity/employee/metadata',
+        type: 'employee',
+        mediaType: 'application/json',
+        uuidHref: 'https://online.moysklad.ru/app/#employee/edit?id=81d8f5fb-f558-11ed-0a80-1411001d6a6c',
     },
 };
 exports.fboOzonStore = {
@@ -628,5 +647,69 @@ exports.paymentinState = {
         color: 10066329,
         stateType: 'Regular',
         entityType: 'paymentin',
+    },
+};
+exports.purchase = {
+    meta: {
+        href: 'https://api.moysklad.ru/api/remap/1.2/entity/expenseitem/8dbf9374-0a01-11e4-b9bf-002590a32f46',
+        metadataHref: 'https://api.moysklad.ru/api/remap/1.2/entity/expenseitem/metadata',
+        type: 'expenseitem',
+        mediaType: 'application/json',
+    },
+};
+exports.taxes = {
+    meta: {
+        href: 'https://api.moysklad.ru/api/remap/1.2/entity/expenseitem/8dbf9a86-0a01-11e4-a190-002590a32f46',
+        metadataHref: 'https://api.moysklad.ru/api/remap/1.2/entity/expenseitem/metadata',
+        type: 'expenseitem',
+        mediaType: 'application/json',
+    },
+};
+exports.moving = {
+    meta: {
+        href: 'https://api.moysklad.ru/api/remap/1.2/entity/expenseitem/4e1c05f2-0673-11e6-a655-0cc47a342ca4',
+        metadataHref: 'https://api.moysklad.ru/api/remap/1.2/entity/expenseitem/metadata',
+        type: 'expenseitem',
+        mediaType: 'application/json',
+    },
+};
+exports.rent = {
+    meta: {
+        href: 'https://api.moysklad.ru/api/remap/1.2/entity/expenseitem/50098823-f557-11ed-0a80-11cd001da725',
+        metadataHref: 'https://api.moysklad.ru/api/remap/1.2/entity/expenseitem/metadata',
+        type: 'expenseitem',
+        mediaType: 'application/json',
+    },
+};
+exports.salary = {
+    meta: {
+        href: 'https://api.moysklad.ru/api/remap/1.2/entity/expenseitem/500a2395-f557-11ed-0a80-11cd001da726',
+        metadataHref: 'https://api.moysklad.ru/api/remap/1.2/entity/expenseitem/metadata',
+        type: 'expenseitem',
+        mediaType: 'application/json',
+    },
+};
+exports.entertainment = {
+    meta: {
+        href: 'https://api.moysklad.ru/api/remap/1.2/entity/expenseitem/500a70cd-f557-11ed-0a80-11cd001da727',
+        metadataHref: 'https://api.moysklad.ru/api/remap/1.2/entity/expenseitem/metadata',
+        type: 'expenseitem',
+        mediaType: 'application/json',
+    },
+};
+exports.services = {
+    meta: {
+        href: 'https://api.moysklad.ru/api/remap/1.2/entity/expenseitem/780256d2-afc6-11ee-0a80-01b80015a3f4',
+        metadataHref: 'https://api.moysklad.ru/api/remap/1.2/entity/expenseitem/metadata',
+        type: 'expenseitem',
+        mediaType: 'application/json',
+    },
+};
+exports.refund = {
+    meta: {
+        href: 'https://api.moysklad.ru/api/remap/1.2/entity/expenseitem/8dbf99a0-0a01-11e4-a743-002590a32f46',
+        metadataHref: 'https://api.moysklad.ru/api/remap/1.2/entity/expenseitem/metadata',
+        type: 'expenseitem',
+        mediaType: 'application/json',
     },
 };
