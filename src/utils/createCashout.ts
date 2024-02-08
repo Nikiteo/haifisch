@@ -108,7 +108,7 @@ export const createCashoutObject = ({
 		salesChannel: project.includes('Ozon')
 			? ozonSalesChannel
 			: salesChannels,
-		sum: parseFloat((+sum * 100).toFixed(2)),
+		sum: parseFloat((parseFloat(sum) * 100).toFixed(2)),
 		paymentPurpose: description,
 		expenseItem: getExpenseItem(expenseItem),
 		state: {

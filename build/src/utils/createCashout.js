@@ -65,7 +65,7 @@ var createCashoutObject = function (_a) {
         salesChannel: project.includes('Ozon')
             ? database_1.ozonSalesChannel
             : database_1.salesChannels,
-        sum: parseFloat((+sum * 100).toFixed(2)),
+        sum: parseFloat((parseFloat(sum) * 100).toFixed(2)),
         paymentPurpose: description,
         expenseItem: getExpenseItem(expenseItem),
         state: {

@@ -76,7 +76,6 @@ void bot.telegram.setMyCommands([
     { command: '/spend', description: 'Записать трату' },
 ]);
 logger_1.default.info('Bot started!');
-console.log(store);
 bot.start(function (ctx) { return __awaiter(void 0, void 0, void 0, function () {
     var username, text;
     return __generator(this, function (_a) {
@@ -129,28 +128,6 @@ bot.command('sync', function (ctx) { return __awaiter(void 0, void 0, void 0, fu
         }
     });
 }); });
-bot.hears('Логи', function (ctx) { return __awaiter(void 0, void 0, void 0, function () {
-    var username, text;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                username = ctx.from.username;
-                text = ctx.message.text;
-                logger_1.default.info("\u0411\u043E\u0442 \u043F\u044B\u0442\u0430\u043B\u0441\u044F \u0437\u0430\u043F\u0443\u0441\u0442\u0438\u0442\u044C: ".concat(username, " \u0441 \u0442\u0435\u043A\u0441\u0442\u043E\u043C ").concat(text));
-                if (!(0, check_user_1.checkUser)(username)) return [3 /*break*/, 3];
-                return [4 /*yield*/, ctx.sendDocument('logs/all.log')];
-            case 1:
-                _a.sent();
-                return [4 /*yield*/, ctx.sendDocument('logs/error.log')];
-            case 2:
-                _a.sent();
-                return [3 /*break*/, 5];
-            case 3: return [4 /*yield*/, ctx.reply('Прости, но ты не можешь использовать меня')];
-            case 4: return [2 /*return*/, _a.sent()];
-            case 5: return [2 /*return*/];
-        }
-    });
-}); });
 bot.command('spend', function (ctx) { return __awaiter(void 0, void 0, void 0, function () {
     var username, text;
     return __generator(this, function (_a) {
@@ -182,11 +159,12 @@ bot.command('spend', function (ctx) { return __awaiter(void 0, void 0, void 0, f
     });
 }); });
 bot.action(['fbyOzon', 'fbsOzon', 'fbyHf', 'fbsHf', 'fbyTop', 'fbsTop'], function (ctx) { return __awaiter(void 0, void 0, void 0, function () {
-    var username, chatId;
+    var username, chatId, err_1;
     var _a, _b;
     return __generator(this, function (_c) {
         switch (_c.label) {
             case 0:
+                _c.trys.push([0, 6, , 7]);
                 username = (_a = ctx.from) === null || _a === void 0 ? void 0 : _a.username;
                 chatId = (_b = ctx.chat) === null || _b === void 0 ? void 0 : _b.id;
                 if (!(chatId !== undefined)) return [3 /*break*/, 5];
@@ -213,7 +191,12 @@ bot.action(['fbyOzon', 'fbsOzon', 'fbyHf', 'fbsHf', 'fbyTop', 'fbsTop'], functio
             case 2: return [2 /*return*/, _c.sent()];
             case 3: return [4 /*yield*/, ctx.reply('Прости, но ты не можешь использовать меня')];
             case 4: return [2 /*return*/, _c.sent()];
-            case 5: return [2 /*return*/];
+            case 5: return [3 /*break*/, 7];
+            case 6:
+                err_1 = _c.sent();
+                logger_1.default.error(err_1);
+                return [3 /*break*/, 7];
+            case 7: return [2 /*return*/];
         }
     });
 }); });
@@ -226,11 +209,12 @@ bot.action([
     'purchase',
     'taxes',
 ], function (ctx) { return __awaiter(void 0, void 0, void 0, function () {
-    var username, chatId, cachOutQuestion;
+    var username, chatId, cachOutQuestion, err_2;
     var _a, _b;
     return __generator(this, function (_c) {
         switch (_c.label) {
             case 0:
+                _c.trys.push([0, 6, , 7]);
                 username = (_a = ctx.from) === null || _a === void 0 ? void 0 : _a.username;
                 chatId = (_b = ctx.chat) === null || _b === void 0 ? void 0 : _b.id;
                 if (!(chatId !== undefined)) return [3 /*break*/, 5];
@@ -250,34 +234,56 @@ bot.action([
                 return [3 /*break*/, 5];
             case 3: return [4 /*yield*/, ctx.reply('Прости, но ты не можешь использовать меня')];
             case 4: return [2 /*return*/, _c.sent()];
-            case 5: return [2 /*return*/];
+            case 5: return [3 /*break*/, 7];
+            case 6:
+                err_2 = _c.sent();
+                logger_1.default.error(err_2);
+                return [3 /*break*/, 7];
+            case 7: return [2 /*return*/];
         }
     });
 }); });
 bot.on((0, filters_1.message)('text'), function (ctx) { return __awaiter(void 0, void 0, void 0, function () {
-    var username, whatBuyedQuestion, newCashOut, createdCashOut;
-    var _a, _b;
-    return __generator(this, function (_c) {
-        switch (_c.label) {
+    var username, text, whatBuyedQuestion, newCashOut, createdCashOut, err_3;
+    var _a;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
             case 0:
-                username = (_a = ctx.from) === null || _a === void 0 ? void 0 : _a.username;
-                if (!(ctx.update.message.message_id === store.cashOutQuestionId + 1)) return [3 /*break*/, 4];
-                if (!(0, check_user_1.checkUser)(username)) return [3 /*break*/, 2];
+                _b.trys.push([0, 15, , 16]);
+                username = ctx.from.username;
+                text = ctx.message.text;
+                if (!(text.toLocaleLowerCase() === 'логи')) return [3 /*break*/, 5];
+                logger_1.default.info("\u0411\u043E\u0442 \u043F\u044B\u0442\u0430\u043B\u0441\u044F \u0437\u0430\u043F\u0443\u0441\u0442\u0438\u0442\u044C: ".concat(username, " \u0441 \u0442\u0435\u043A\u0441\u0442\u043E\u043C ").concat(text));
+                if (!(0, check_user_1.checkUser)(username)) return [3 /*break*/, 3];
+                return [4 /*yield*/, ctx.sendDocument({ source: 'logs/all.log' })];
+            case 1:
+                _b.sent();
+                return [4 /*yield*/, ctx.sendDocument({ source: 'logs/error.log' })];
+            case 2:
+                _b.sent();
+                return [3 /*break*/, 5];
+            case 3: return [4 /*yield*/, ctx.reply('Прости, но ты не можешь использовать меня')];
+            case 4:
+                _b.sent();
+                _b.label = 5;
+            case 5:
+                if (!(ctx.update.message.message_id === store.cashOutQuestionId + 1)) return [3 /*break*/, 9];
+                if (!(0, check_user_1.checkUser)(username)) return [3 /*break*/, 7];
                 return [4 /*yield*/, ctx.reply('На что потратили?', {
                         reply_markup: {
                             force_reply: true,
                         },
                     })];
-            case 1:
-                whatBuyedQuestion = _c.sent();
+            case 6:
+                whatBuyedQuestion = _b.sent();
                 store.whatBuyedQuestion = whatBuyedQuestion.message_id;
                 store.sum = ctx.update.message.text;
-                return [3 /*break*/, 4];
-            case 2: return [4 /*yield*/, ctx.reply('Прости, но ты не можешь использовать меня')];
-            case 3: return [2 /*return*/, _c.sent()];
-            case 4:
-                if (!(ctx.update.message.message_id === store.whatBuyedQuestion + 1)) return [3 /*break*/, 9];
-                if (!(0, check_user_1.checkUser)(username)) return [3 /*break*/, 7];
+                return [3 /*break*/, 9];
+            case 7: return [4 /*yield*/, ctx.reply('Прости, но ты не можешь использовать меня')];
+            case 8: return [2 /*return*/, _b.sent()];
+            case 9:
+                if (!(ctx.update.message.message_id === store.whatBuyedQuestion + 1)) return [3 /*break*/, 14];
+                if (!(0, check_user_1.checkUser)(username)) return [3 /*break*/, 12];
                 newCashOut = (0, createCashout_1.createCashoutObject)({
                     username: store.username,
                     project: store.project,
@@ -286,16 +292,21 @@ bot.on((0, filters_1.message)('text'), function (ctx) { return __awaiter(void 0,
                     expenseItem: store.expenseItem,
                 });
                 return [4 /*yield*/, (0, cashoutController_1.createCashout)(newCashOut)];
-            case 5:
-                createdCashOut = _c.sent();
-                return [4 /*yield*/, ctx.reply("\u0414\u0435\u0440\u0436\u0438 \u0441\u0441\u044B\u043B\u043A\u0443 \u043D\u0430 \u0441\u043E\u0437\u0434\u0430\u043D\u043D\u044B\u0439 \u0434\u043E\u043A\u0443\u043C\u0435\u043D\u0442 \u0438 \u043F\u0440\u043E\u0432\u0435\u0440\u044C \u043F\u0440\u0430\u0432\u0438\u043B\u044C\u043D\u043E\u0441\u0442\u044C - ".concat((_b = createdCashOut === null || createdCashOut === void 0 ? void 0 : createdCashOut.meta) === null || _b === void 0 ? void 0 : _b.uuidHref))];
-            case 6:
-                _c.sent();
-                logger_1.default.info("".concat(store.username, " \u0441\u043E\u0437\u0434\u0430\u043B \u0440\u0430\u0441\u0445\u043E\u0434\u043D\u044B\u0439 \u043E\u0440\u0434\u0435\u0440: ").concat(store.project, " - ").concat(store.sum, " - ").concat(store.description, " - ").concat(store.expenseItem));
-                return [3 /*break*/, 9];
-            case 7: return [4 /*yield*/, ctx.reply('Прости, но ты не можешь использовать меня')];
-            case 8: return [2 /*return*/, _c.sent()];
-            case 9: return [2 /*return*/];
+            case 10:
+                createdCashOut = _b.sent();
+                return [4 /*yield*/, ctx.reply("\u0414\u0435\u0440\u0436\u0438 \u0441\u0441\u044B\u043B\u043A\u0443 \u043D\u0430 \u0441\u043E\u0437\u0434\u0430\u043D\u043D\u044B\u0439 \u0434\u043E\u043A\u0443\u043C\u0435\u043D\u0442 \u0438 \u043F\u0440\u043E\u0432\u0435\u0440\u044C \u043F\u0440\u0430\u0432\u0438\u043B\u044C\u043D\u043E\u0441\u0442\u044C - ".concat((_a = createdCashOut === null || createdCashOut === void 0 ? void 0 : createdCashOut.meta) === null || _a === void 0 ? void 0 : _a.uuidHref))];
+            case 11:
+                _b.sent();
+                logger_1.default.info("".concat(store.username, " \u0441\u043E\u0437\u0434\u0430\u043B \u0440\u0430\u0441\u0445\u043E\u0434\u043D\u044B\u0439 \u043E\u0440\u0434\u0435\u0440: ").concat(store.project, " - ").concat(store.sum, " - ").concat(ctx.message.text, " - ").concat(store.expenseItem));
+                return [3 /*break*/, 14];
+            case 12: return [4 /*yield*/, ctx.reply('Прости, но ты не можешь использовать меня')];
+            case 13: return [2 /*return*/, _b.sent()];
+            case 14: return [3 /*break*/, 16];
+            case 15:
+                err_3 = _b.sent();
+                logger_1.default.error(err_3);
+                return [3 /*break*/, 16];
+            case 16: return [2 /*return*/];
         }
     });
 }); });
