@@ -1,4 +1,15 @@
 "use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -38,605 +49,254 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
+var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
-var node_telegram_bot_api_1 = __importDefault(require("node-telegram-bot-api"));
+var telegraf_1 = require("telegraf");
+var logger_1 = __importDefault(require("./lib/logger"));
 var update_ozon_1 = require("./controllers/update-ozon");
 var update_yandex_1 = require("./controllers/update-yandex");
-var logger_1 = __importDefault(require("./lib/logger"));
 var check_user_1 = require("./lib/check-user");
 var createCashout_1 = require("./utils/createCashout");
+var filters_1 = require("telegraf/filters");
 var cashoutController_1 = require("./services/moysklad/cashoutController");
-var token = process.env.BOT_TOKEN;
-var bot = new node_telegram_bot_api_1.default(token !== null && token !== void 0 ? token : '', { polling: true });
-var inlineService = {
-    reply_markup: {
-        inline_keyboard: [
-            [
-                {
-                    text: 'Перемещение',
-                    callback_data: 'moving',
-                },
-                {
-                    text: 'Аренда',
-                    callback_data: 'rent',
-                },
-            ],
-            [
-                {
-                    text: 'Зарплата',
-                    callback_data: 'salary',
-                },
-                {
-                    text: 'Маркетинг и реклама',
-                    callback_data: 'entertainment',
-                },
-            ],
-            [
-                {
-                    text: 'Услуги',
-                    callback_data: 'services',
-                },
-                {
-                    text: 'Закупка товаров',
-                    callback_data: 'purchase',
-                },
-            ],
-            [
-                {
-                    text: 'Налоги и сборы',
-                    callback_data: 'taxes',
-                },
-            ],
-        ],
-        resize_keyboard: true,
-        one_time_keyboard: true,
-    },
+var store = {
+    username: '',
+    project: '',
+    sum: '',
+    description: '',
+    expenseItem: '',
+    cashOutQuestionId: 0,
+    whatBuyedQuestion: 0,
 };
-var start = function () { return __awaiter(void 0, void 0, void 0, function () {
+var bot = new telegraf_1.Telegraf((_a = process.env.BOT_TOKEN) !== null && _a !== void 0 ? _a : '', {
+    handlerTimeout: Infinity,
+});
+void bot.telegram.setMyCommands([
+    { command: '/sync', description: 'Синхронизировать' },
+    { command: '/spend', description: 'Записать трату' },
+]);
+logger_1.default.info('Bot started!');
+console.log(store);
+bot.start(function (ctx) { return __awaiter(void 0, void 0, void 0, function () {
+    var username, text;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                logger_1.default.info('Bot started!');
-                return [4 /*yield*/, bot.setMyCommands([
-                        { command: '/sync', description: 'Синхронизировать' },
-                        { command: '/spend', description: 'Записать трату' },
-                    ])];
+                username = ctx.from.username;
+                text = ctx.message.text;
+                logger_1.default.info("\u0411\u043E\u0442 \u043F\u044B\u0442\u0430\u043B\u0441\u044F \u0437\u0430\u043F\u0443\u0441\u0442\u0438\u0442\u044C: ".concat(username, " \u0441 \u0442\u0435\u043A\u0441\u0442\u043E\u043C ").concat(text));
+                return [4 /*yield*/, ctx.reply('Добро пожаловать в телеграм бот Haifisch')];
             case 1:
                 _a.sent();
-                bot.on('message', function (msg) { return __awaiter(void 0, void 0, void 0, function () {
-                    var text, chatId, username, sendMessage, e_1;
-                    return __generator(this, function (_a) {
-                        switch (_a.label) {
-                            case 0:
-                                text = msg.text;
-                                chatId = msg.chat.id;
-                                username = msg.chat.username;
-                                sendMessage = function (text) { return __awaiter(void 0, void 0, void 0, function () {
-                                    return __generator(this, function (_a) {
-                                        switch (_a.label) {
-                                            case 0: return [4 /*yield*/, bot.sendMessage(chatId, text)];
-                                            case 1:
-                                                _a.sent();
-                                                return [2 /*return*/];
-                                        }
-                                    });
-                                }); };
-                                _a.label = 1;
-                            case 1:
-                                _a.trys.push([1, 16, , 18]);
-                                if (!(text === '/start')) return [3 /*break*/, 3];
-                                logger_1.default.info("\u0411\u043E\u0442 \u043F\u044B\u0442\u0430\u043B\u0441\u044F \u0437\u0430\u043F\u0443\u0441\u0442\u0438\u0442\u044C: ".concat(msg.chat.username, " \u0441 \u0442\u0435\u043A\u0441\u0442\u043E\u043C ").concat(msg.text));
-                                return [4 /*yield*/, bot.sendMessage(chatId, 'Добро пожаловать в телеграм бот Haifisch')];
-                            case 2: return [2 /*return*/, _a.sent()];
-                            case 3:
-                                if (!(text === '/sync')) return [3 /*break*/, 10];
-                                logger_1.default.info("\u0411\u043E\u0442 \u043F\u044B\u0442\u0430\u043B\u0441\u044F \u0437\u0430\u043F\u0443\u0441\u0442\u0438\u0442\u044C: ".concat(msg.chat.username, " \u0441 \u0442\u0435\u043A\u0441\u0442\u043E\u043C ").concat(msg.text));
-                                if (!(0, check_user_1.checkUser)(username)) return [3 /*break*/, 8];
-                                return [4 /*yield*/, bot.sendMessage(chatId, 'Начал обновление...')];
-                            case 4:
-                                _a.sent();
-                                return [4 /*yield*/, (0, update_yandex_1.updateYandex)('Haifisch', sendMessage)];
-                            case 5:
-                                _a.sent();
-                                return [4 /*yield*/, (0, update_yandex_1.updateYandex)('Top', sendMessage)];
-                            case 6:
-                                _a.sent();
-                                return [4 /*yield*/, (0, update_ozon_1.updateOzon)('Ozon', sendMessage)];
-                            case 7:
-                                _a.sent();
-                                return [3 /*break*/, 10];
-                            case 8: return [4 /*yield*/, bot.sendMessage(chatId, 'Прости, но ты не можешь использовать меня')];
-                            case 9: return [2 /*return*/, _a.sent()];
-                            case 10:
-                                if (!(text === 'Пришли мне логи' && (0, check_user_1.checkUser)(username))) return [3 /*break*/, 13];
-                                logger_1.default.info("\u0411\u043E\u0442 \u043F\u044B\u0442\u0430\u043B\u0441\u044F \u0437\u0430\u043F\u0443\u0441\u0442\u0438\u0442\u044C: ".concat(msg.chat.username, " \u0441 \u0442\u0435\u043A\u0441\u0442\u043E\u043C ").concat(msg.text));
-                                return [4 /*yield*/, bot.sendDocument(chatId, 'logs/all.log')];
-                            case 11:
-                                _a.sent();
-                                return [4 /*yield*/, bot.sendDocument(chatId, 'logs/error.log')];
-                            case 12:
-                                _a.sent();
-                                _a.label = 13;
-                            case 13:
-                                if (!(text === '/spend' && (0, check_user_1.checkUser)(username))) return [3 /*break*/, 15];
-                                logger_1.default.info("\u0411\u043E\u0442 \u043F\u044B\u0442\u0430\u043B\u0441\u044F \u0437\u0430\u043F\u0443\u0441\u0442\u0438\u0442\u044C: ".concat(msg.chat.username, " \u0441 \u0442\u0435\u043A\u0441\u0442\u043E\u043C ").concat(msg.text));
-                                return [4 /*yield*/, bot.sendMessage(chatId, 'Выбери магазин:', {
-                                        reply_markup: {
-                                            inline_keyboard: [
-                                                [
-                                                    {
-                                                        text: '🚀 ФБУ ОЗОН',
-                                                        callback_data: 'fbyOzon',
-                                                    },
-                                                    {
-                                                        text: '🚀 ФБС ОЗОН',
-                                                        callback_data: 'fbsOzon',
-                                                    },
-                                                ],
-                                                [
-                                                    { text: '💻 ФБУ ХФ', callback_data: 'fbyHf' },
-                                                    { text: '💻 ФБС ХФ', callback_data: 'fbsHf' },
-                                                ],
-                                                [
-                                                    { text: '💄 ФБУ ТОР', callback_data: 'fbyTop' },
-                                                    { text: '💄 ФБС ТОР', callback_data: 'fbsTop' },
-                                                ],
-                                            ],
-                                            resize_keyboard: true,
-                                            one_time_keyboard: true,
-                                        },
-                                    })];
-                            case 14:
-                                _a.sent();
-                                _a.label = 15;
-                            case 15:
-                                bot.on('callback_query', function (ctx) { return __awaiter(void 0, void 0, void 0, function () {
-                                    var e_2;
-                                    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
-                                    return __generator(this, function (_o) {
-                                        switch (_o.label) {
-                                            case 0:
-                                                _o.trys.push([0, 25, , 26]);
-                                                if (!(ctx.data === 'fbyOzon')) return [3 /*break*/, 4];
-                                                if (!(((_a = ctx.message) === null || _a === void 0 ? void 0 : _a.message_id) !== undefined)) return [3 /*break*/, 2];
-                                                return [4 /*yield*/, bot.deleteMessage(chatId, (_b = ctx.message) === null || _b === void 0 ? void 0 : _b.message_id)];
-                                            case 1:
-                                                _o.sent();
-                                                _o.label = 2;
-                                            case 2: return [4 /*yield*/, bot.sendMessage(chatId, 'Выбери статью расходов:', inlineService)];
-                                            case 3:
-                                                _o.sent();
-                                                bot.on('callback_query', function (context) { return __awaiter(void 0, void 0, void 0, function () {
-                                                    var _a, _b;
-                                                    return __generator(this, function (_c) {
-                                                        switch (_c.label) {
-                                                            case 0:
-                                                                if (!(((_a = context.message) === null || _a === void 0 ? void 0 : _a.message_id) !== undefined)) return [3 /*break*/, 2];
-                                                                return [4 /*yield*/, bot.deleteMessage(chatId, (_b = context.message) === null || _b === void 0 ? void 0 : _b.message_id)];
-                                                            case 1:
-                                                                _c.sent();
-                                                                _c.label = 2;
-                                                            case 2: return [4 /*yield*/, bot.sendMessage(chatId, 'Сколько потратили?')];
-                                                            case 3:
-                                                                _c.sent();
-                                                                bot.on('message', function (msg) { return __awaiter(void 0, void 0, void 0, function () {
-                                                                    var cashOut;
-                                                                    return __generator(this, function (_a) {
-                                                                        switch (_a.label) {
-                                                                            case 0:
-                                                                                cashOut = msg.text;
-                                                                                return [4 /*yield*/, bot.sendMessage(chatId, 'На что потратили?')];
-                                                                            case 1:
-                                                                                _a.sent();
-                                                                                bot.removeAllListeners();
-                                                                                bot.on('message', function (message) { return __awaiter(void 0, void 0, void 0, function () {
-                                                                                    var newCashOut, createdCashOut;
-                                                                                    var _a;
-                                                                                    return __generator(this, function (_b) {
-                                                                                        switch (_b.label) {
-                                                                                            case 0:
-                                                                                                newCashOut = (0, createCashout_1.createCashoutObject)({
-                                                                                                    username: username,
-                                                                                                    project: ctx.data,
-                                                                                                    sum: cashOut,
-                                                                                                    description: message.text,
-                                                                                                    expenseItem: context.data,
-                                                                                                });
-                                                                                                return [4 /*yield*/, bot.sendMessage(chatId, 'Принял! Создаю расходный ордер...')];
-                                                                                            case 1:
-                                                                                                _b.sent();
-                                                                                                return [4 /*yield*/, (0, cashoutController_1.createCashout)(newCashOut)];
-                                                                                            case 2:
-                                                                                                createdCashOut = _b.sent();
-                                                                                                return [4 /*yield*/, bot.sendMessage(chatId, "\u0414\u0435\u0440\u0436\u0438 \u0441\u0441\u044B\u043B\u043A\u0443 \u043D\u0430 \u0441\u043E\u0437\u0434\u0430\u043D\u043D\u044B\u0439 \u0434\u043E\u043A\u0443\u043C\u0435\u043D\u0442 \u0438 \u043F\u0440\u043E\u0432\u0435\u0440\u044C \u043F\u0440\u0430\u0432\u0438\u043B\u044C\u043D\u043E\u0441\u0442\u044C - ".concat((_a = createdCashOut === null || createdCashOut === void 0 ? void 0 : createdCashOut.meta) === null || _a === void 0 ? void 0 : _a.uuidHref))];
-                                                                                            case 3:
-                                                                                                _b.sent();
-                                                                                                logger_1.default.info("".concat(username, " \u0441\u043E\u0437\u0434\u0430\u043B \u0440\u0430\u0441\u0445\u043E\u0434\u043D\u044B\u0439 \u043E\u0440\u0434\u0435\u0440: ").concat(ctx.data, " - ").concat(cashOut, " - ").concat(message.text, " - ").concat(context.data));
-                                                                                                bot.removeAllListeners();
-                                                                                                return [2 /*return*/];
-                                                                                        }
-                                                                                    });
-                                                                                }); });
-                                                                                return [2 /*return*/];
-                                                                        }
-                                                                    });
-                                                                }); });
-                                                                return [2 /*return*/];
-                                                        }
-                                                    });
-                                                }); });
-                                                _o.label = 4;
-                                            case 4:
-                                                if (!(ctx.data === 'fbsOzon')) return [3 /*break*/, 8];
-                                                if (!(((_c = ctx.message) === null || _c === void 0 ? void 0 : _c.message_id) !== undefined)) return [3 /*break*/, 6];
-                                                return [4 /*yield*/, bot.deleteMessage(chatId, (_d = ctx.message) === null || _d === void 0 ? void 0 : _d.message_id)];
-                                            case 5:
-                                                _o.sent();
-                                                _o.label = 6;
-                                            case 6: return [4 /*yield*/, bot.sendMessage(chatId, 'Выбери статью расходов:', inlineService)];
-                                            case 7:
-                                                _o.sent();
-                                                bot.on('callback_query', function (context) { return __awaiter(void 0, void 0, void 0, function () {
-                                                    var _a, _b;
-                                                    return __generator(this, function (_c) {
-                                                        switch (_c.label) {
-                                                            case 0:
-                                                                if (!(((_a = context.message) === null || _a === void 0 ? void 0 : _a.message_id) !== undefined)) return [3 /*break*/, 2];
-                                                                return [4 /*yield*/, bot.deleteMessage(chatId, (_b = context.message) === null || _b === void 0 ? void 0 : _b.message_id)];
-                                                            case 1:
-                                                                _c.sent();
-                                                                _c.label = 2;
-                                                            case 2: return [4 /*yield*/, bot.sendMessage(chatId, 'Сколько потратили?')];
-                                                            case 3:
-                                                                _c.sent();
-                                                                bot.on('message', function (msg) { return __awaiter(void 0, void 0, void 0, function () {
-                                                                    var cashOut;
-                                                                    return __generator(this, function (_a) {
-                                                                        switch (_a.label) {
-                                                                            case 0:
-                                                                                cashOut = msg.text;
-                                                                                return [4 /*yield*/, bot.sendMessage(chatId, 'На что потратили?')];
-                                                                            case 1:
-                                                                                _a.sent();
-                                                                                bot.removeAllListeners();
-                                                                                bot.on('message', function (message) { return __awaiter(void 0, void 0, void 0, function () {
-                                                                                    var newCashOut, createdCashOut;
-                                                                                    var _a;
-                                                                                    return __generator(this, function (_b) {
-                                                                                        switch (_b.label) {
-                                                                                            case 0:
-                                                                                                newCashOut = (0, createCashout_1.createCashoutObject)({
-                                                                                                    username: username,
-                                                                                                    project: ctx.data,
-                                                                                                    sum: cashOut,
-                                                                                                    description: message.text,
-                                                                                                    expenseItem: context.data,
-                                                                                                });
-                                                                                                return [4 /*yield*/, bot.sendMessage(chatId, 'Принял! Создаю расходный ордер...')];
-                                                                                            case 1:
-                                                                                                _b.sent();
-                                                                                                return [4 /*yield*/, (0, cashoutController_1.createCashout)(newCashOut)];
-                                                                                            case 2:
-                                                                                                createdCashOut = _b.sent();
-                                                                                                return [4 /*yield*/, bot.sendMessage(chatId, "\u0414\u0435\u0440\u0436\u0438 \u0441\u0441\u044B\u043B\u043A\u0443 \u043D\u0430 \u0441\u043E\u0437\u0434\u0430\u043D\u043D\u044B\u0439 \u0434\u043E\u043A\u0443\u043C\u0435\u043D\u0442 \u0438 \u043F\u0440\u043E\u0432\u0435\u0440\u044C \u043F\u0440\u0430\u0432\u0438\u043B\u044C\u043D\u043E\u0441\u0442\u044C - ".concat((_a = createdCashOut === null || createdCashOut === void 0 ? void 0 : createdCashOut.meta) === null || _a === void 0 ? void 0 : _a.uuidHref))];
-                                                                                            case 3:
-                                                                                                _b.sent();
-                                                                                                logger_1.default.info("".concat(username, " \u0441\u043E\u0437\u0434\u0430\u043B \u0440\u0430\u0441\u0445\u043E\u0434\u043D\u044B\u0439 \u043E\u0440\u0434\u0435\u0440: ").concat(ctx.data, " - ").concat(cashOut, " - ").concat(message.text, " - ").concat(context.data));
-                                                                                                bot.removeAllListeners();
-                                                                                                return [2 /*return*/];
-                                                                                        }
-                                                                                    });
-                                                                                }); });
-                                                                                return [2 /*return*/];
-                                                                        }
-                                                                    });
-                                                                }); });
-                                                                return [2 /*return*/];
-                                                        }
-                                                    });
-                                                }); });
-                                                _o.label = 8;
-                                            case 8:
-                                                if (!(ctx.data === 'fbyHf')) return [3 /*break*/, 12];
-                                                if (!(((_e = ctx.message) === null || _e === void 0 ? void 0 : _e.message_id) !== undefined)) return [3 /*break*/, 10];
-                                                return [4 /*yield*/, bot.deleteMessage(chatId, (_f = ctx.message) === null || _f === void 0 ? void 0 : _f.message_id)];
-                                            case 9:
-                                                _o.sent();
-                                                _o.label = 10;
-                                            case 10: return [4 /*yield*/, bot.sendMessage(chatId, 'Выбери статью расходов:', inlineService)];
-                                            case 11:
-                                                _o.sent();
-                                                bot.on('callback_query', function (context) { return __awaiter(void 0, void 0, void 0, function () {
-                                                    var _a, _b;
-                                                    return __generator(this, function (_c) {
-                                                        switch (_c.label) {
-                                                            case 0:
-                                                                if (!(((_a = context.message) === null || _a === void 0 ? void 0 : _a.message_id) !== undefined)) return [3 /*break*/, 2];
-                                                                return [4 /*yield*/, bot.deleteMessage(chatId, (_b = context.message) === null || _b === void 0 ? void 0 : _b.message_id)];
-                                                            case 1:
-                                                                _c.sent();
-                                                                _c.label = 2;
-                                                            case 2: return [4 /*yield*/, bot.sendMessage(chatId, 'Сколько потратили?')];
-                                                            case 3:
-                                                                _c.sent();
-                                                                bot.on('message', function (msg) { return __awaiter(void 0, void 0, void 0, function () {
-                                                                    var cashOut;
-                                                                    return __generator(this, function (_a) {
-                                                                        switch (_a.label) {
-                                                                            case 0:
-                                                                                cashOut = msg.text;
-                                                                                return [4 /*yield*/, bot.sendMessage(chatId, 'На что потратили?')];
-                                                                            case 1:
-                                                                                _a.sent();
-                                                                                bot.removeAllListeners();
-                                                                                bot.on('message', function (message) { return __awaiter(void 0, void 0, void 0, function () {
-                                                                                    var newCashOut, createdCashOut;
-                                                                                    var _a;
-                                                                                    return __generator(this, function (_b) {
-                                                                                        switch (_b.label) {
-                                                                                            case 0:
-                                                                                                newCashOut = (0, createCashout_1.createCashoutObject)({
-                                                                                                    username: username,
-                                                                                                    project: ctx.data,
-                                                                                                    sum: cashOut,
-                                                                                                    description: message.text,
-                                                                                                    expenseItem: context.data,
-                                                                                                });
-                                                                                                return [4 /*yield*/, bot.sendMessage(chatId, 'Принял! Создаю расходный ордер...')];
-                                                                                            case 1:
-                                                                                                _b.sent();
-                                                                                                return [4 /*yield*/, (0, cashoutController_1.createCashout)(newCashOut)];
-                                                                                            case 2:
-                                                                                                createdCashOut = _b.sent();
-                                                                                                return [4 /*yield*/, bot.sendMessage(chatId, "\u0414\u0435\u0440\u0436\u0438 \u0441\u0441\u044B\u043B\u043A\u0443 \u043D\u0430 \u0441\u043E\u0437\u0434\u0430\u043D\u043D\u044B\u0439 \u0434\u043E\u043A\u0443\u043C\u0435\u043D\u0442 \u0438 \u043F\u0440\u043E\u0432\u0435\u0440\u044C \u043F\u0440\u0430\u0432\u0438\u043B\u044C\u043D\u043E\u0441\u0442\u044C - ".concat((_a = createdCashOut === null || createdCashOut === void 0 ? void 0 : createdCashOut.meta) === null || _a === void 0 ? void 0 : _a.uuidHref))];
-                                                                                            case 3:
-                                                                                                _b.sent();
-                                                                                                logger_1.default.info("".concat(username, " \u0441\u043E\u0437\u0434\u0430\u043B \u0440\u0430\u0441\u0445\u043E\u0434\u043D\u044B\u0439 \u043E\u0440\u0434\u0435\u0440: ").concat(ctx.data, " - ").concat(cashOut, " - ").concat(message.text, " - ").concat(context.data));
-                                                                                                bot.removeAllListeners();
-                                                                                                return [2 /*return*/];
-                                                                                        }
-                                                                                    });
-                                                                                }); });
-                                                                                return [2 /*return*/];
-                                                                        }
-                                                                    });
-                                                                }); });
-                                                                return [2 /*return*/];
-                                                        }
-                                                    });
-                                                }); });
-                                                _o.label = 12;
-                                            case 12:
-                                                if (!(ctx.data === 'fbsHf')) return [3 /*break*/, 16];
-                                                if (!(((_g = ctx.message) === null || _g === void 0 ? void 0 : _g.message_id) !== undefined)) return [3 /*break*/, 14];
-                                                return [4 /*yield*/, bot.deleteMessage(chatId, (_h = ctx.message) === null || _h === void 0 ? void 0 : _h.message_id)];
-                                            case 13:
-                                                _o.sent();
-                                                _o.label = 14;
-                                            case 14: return [4 /*yield*/, bot.sendMessage(chatId, 'Выбери статью расходов:', inlineService)];
-                                            case 15:
-                                                _o.sent();
-                                                bot.on('callback_query', function (context) { return __awaiter(void 0, void 0, void 0, function () {
-                                                    var _a, _b;
-                                                    return __generator(this, function (_c) {
-                                                        switch (_c.label) {
-                                                            case 0:
-                                                                if (!(((_a = context.message) === null || _a === void 0 ? void 0 : _a.message_id) !== undefined)) return [3 /*break*/, 2];
-                                                                return [4 /*yield*/, bot.deleteMessage(chatId, (_b = context.message) === null || _b === void 0 ? void 0 : _b.message_id)];
-                                                            case 1:
-                                                                _c.sent();
-                                                                _c.label = 2;
-                                                            case 2: return [4 /*yield*/, bot.sendMessage(chatId, 'Сколько потратили?')];
-                                                            case 3:
-                                                                _c.sent();
-                                                                bot.on('message', function (msg) { return __awaiter(void 0, void 0, void 0, function () {
-                                                                    var cashOut;
-                                                                    return __generator(this, function (_a) {
-                                                                        switch (_a.label) {
-                                                                            case 0:
-                                                                                cashOut = msg.text;
-                                                                                return [4 /*yield*/, bot.sendMessage(chatId, 'На что потратили?')];
-                                                                            case 1:
-                                                                                _a.sent();
-                                                                                bot.removeAllListeners();
-                                                                                bot.on('message', function (message) { return __awaiter(void 0, void 0, void 0, function () {
-                                                                                    var newCashOut, createdCashOut;
-                                                                                    var _a;
-                                                                                    return __generator(this, function (_b) {
-                                                                                        switch (_b.label) {
-                                                                                            case 0:
-                                                                                                newCashOut = (0, createCashout_1.createCashoutObject)({
-                                                                                                    username: username,
-                                                                                                    project: ctx.data,
-                                                                                                    sum: cashOut,
-                                                                                                    description: message.text,
-                                                                                                    expenseItem: context.data,
-                                                                                                });
-                                                                                                return [4 /*yield*/, bot.sendMessage(chatId, 'Принял! Создаю расходный ордер...')];
-                                                                                            case 1:
-                                                                                                _b.sent();
-                                                                                                return [4 /*yield*/, (0, cashoutController_1.createCashout)(newCashOut)];
-                                                                                            case 2:
-                                                                                                createdCashOut = _b.sent();
-                                                                                                return [4 /*yield*/, bot.sendMessage(chatId, "\u0414\u0435\u0440\u0436\u0438 \u0441\u0441\u044B\u043B\u043A\u0443 \u043D\u0430 \u0441\u043E\u0437\u0434\u0430\u043D\u043D\u044B\u0439 \u0434\u043E\u043A\u0443\u043C\u0435\u043D\u0442 \u0438 \u043F\u0440\u043E\u0432\u0435\u0440\u044C \u043F\u0440\u0430\u0432\u0438\u043B\u044C\u043D\u043E\u0441\u0442\u044C - ".concat((_a = createdCashOut === null || createdCashOut === void 0 ? void 0 : createdCashOut.meta) === null || _a === void 0 ? void 0 : _a.uuidHref))];
-                                                                                            case 3:
-                                                                                                _b.sent();
-                                                                                                logger_1.default.info("".concat(username, " \u0441\u043E\u0437\u0434\u0430\u043B \u0440\u0430\u0441\u0445\u043E\u0434\u043D\u044B\u0439 \u043E\u0440\u0434\u0435\u0440: ").concat(ctx.data, " - ").concat(cashOut, " - ").concat(message.text, " - ").concat(context.data));
-                                                                                                bot.removeAllListeners();
-                                                                                                return [2 /*return*/];
-                                                                                        }
-                                                                                    });
-                                                                                }); });
-                                                                                return [2 /*return*/];
-                                                                        }
-                                                                    });
-                                                                }); });
-                                                                return [2 /*return*/];
-                                                        }
-                                                    });
-                                                }); });
-                                                _o.label = 16;
-                                            case 16:
-                                                if (!(ctx.data === 'fbyTop')) return [3 /*break*/, 20];
-                                                if (!(((_j = ctx.message) === null || _j === void 0 ? void 0 : _j.message_id) !== undefined)) return [3 /*break*/, 18];
-                                                return [4 /*yield*/, bot.deleteMessage(chatId, (_k = ctx.message) === null || _k === void 0 ? void 0 : _k.message_id)];
-                                            case 17:
-                                                _o.sent();
-                                                _o.label = 18;
-                                            case 18: return [4 /*yield*/, bot.sendMessage(chatId, 'Выбери статью расходов:', inlineService)];
-                                            case 19:
-                                                _o.sent();
-                                                bot.on('callback_query', function (context) { return __awaiter(void 0, void 0, void 0, function () {
-                                                    var _a, _b;
-                                                    return __generator(this, function (_c) {
-                                                        switch (_c.label) {
-                                                            case 0:
-                                                                if (!(((_a = context.message) === null || _a === void 0 ? void 0 : _a.message_id) !== undefined)) return [3 /*break*/, 2];
-                                                                return [4 /*yield*/, bot.deleteMessage(chatId, (_b = context.message) === null || _b === void 0 ? void 0 : _b.message_id)];
-                                                            case 1:
-                                                                _c.sent();
-                                                                _c.label = 2;
-                                                            case 2: return [4 /*yield*/, bot.sendMessage(chatId, 'Сколько потратили?')];
-                                                            case 3:
-                                                                _c.sent();
-                                                                bot.on('message', function (msg) { return __awaiter(void 0, void 0, void 0, function () {
-                                                                    var cashOut;
-                                                                    return __generator(this, function (_a) {
-                                                                        switch (_a.label) {
-                                                                            case 0:
-                                                                                cashOut = msg.text;
-                                                                                return [4 /*yield*/, bot.sendMessage(chatId, 'На что потратили?')];
-                                                                            case 1:
-                                                                                _a.sent();
-                                                                                bot.removeAllListeners();
-                                                                                bot.on('message', function (message) { return __awaiter(void 0, void 0, void 0, function () {
-                                                                                    var newCashOut, createdCashOut;
-                                                                                    var _a;
-                                                                                    return __generator(this, function (_b) {
-                                                                                        switch (_b.label) {
-                                                                                            case 0:
-                                                                                                newCashOut = (0, createCashout_1.createCashoutObject)({
-                                                                                                    username: username,
-                                                                                                    project: ctx.data,
-                                                                                                    sum: cashOut,
-                                                                                                    description: message.text,
-                                                                                                    expenseItem: context.data,
-                                                                                                });
-                                                                                                return [4 /*yield*/, bot.sendMessage(chatId, 'Принял! Создаю расходный ордер...')];
-                                                                                            case 1:
-                                                                                                _b.sent();
-                                                                                                return [4 /*yield*/, (0, cashoutController_1.createCashout)(newCashOut)];
-                                                                                            case 2:
-                                                                                                createdCashOut = _b.sent();
-                                                                                                return [4 /*yield*/, bot.sendMessage(chatId, "\u0414\u0435\u0440\u0436\u0438 \u0441\u0441\u044B\u043B\u043A\u0443 \u043D\u0430 \u0441\u043E\u0437\u0434\u0430\u043D\u043D\u044B\u0439 \u0434\u043E\u043A\u0443\u043C\u0435\u043D\u0442 \u0438 \u043F\u0440\u043E\u0432\u0435\u0440\u044C \u043F\u0440\u0430\u0432\u0438\u043B\u044C\u043D\u043E\u0441\u0442\u044C - ".concat((_a = createdCashOut === null || createdCashOut === void 0 ? void 0 : createdCashOut.meta) === null || _a === void 0 ? void 0 : _a.uuidHref))];
-                                                                                            case 3:
-                                                                                                _b.sent();
-                                                                                                logger_1.default.info("".concat(username, " \u0441\u043E\u0437\u0434\u0430\u043B \u0440\u0430\u0441\u0445\u043E\u0434\u043D\u044B\u0439 \u043E\u0440\u0434\u0435\u0440: ").concat(ctx.data, " - ").concat(cashOut, " - ").concat(message.text, " - ").concat(context.data));
-                                                                                                bot.removeAllListeners();
-                                                                                                return [2 /*return*/];
-                                                                                        }
-                                                                                    });
-                                                                                }); });
-                                                                                return [2 /*return*/];
-                                                                        }
-                                                                    });
-                                                                }); });
-                                                                return [2 /*return*/];
-                                                        }
-                                                    });
-                                                }); });
-                                                _o.label = 20;
-                                            case 20:
-                                                if (!(ctx.data === 'fbsTop')) return [3 /*break*/, 24];
-                                                if (!(((_l = ctx.message) === null || _l === void 0 ? void 0 : _l.message_id) !== undefined)) return [3 /*break*/, 22];
-                                                return [4 /*yield*/, bot.deleteMessage(chatId, (_m = ctx.message) === null || _m === void 0 ? void 0 : _m.message_id)];
-                                            case 21:
-                                                _o.sent();
-                                                _o.label = 22;
-                                            case 22: return [4 /*yield*/, bot.sendMessage(chatId, 'Выбери статью расходов:', inlineService)];
-                                            case 23:
-                                                _o.sent();
-                                                bot.on('callback_query', function (context) { return __awaiter(void 0, void 0, void 0, function () {
-                                                    var _a, _b;
-                                                    return __generator(this, function (_c) {
-                                                        switch (_c.label) {
-                                                            case 0:
-                                                                if (!(((_a = context.message) === null || _a === void 0 ? void 0 : _a.message_id) !== undefined)) return [3 /*break*/, 2];
-                                                                return [4 /*yield*/, bot.deleteMessage(chatId, (_b = context.message) === null || _b === void 0 ? void 0 : _b.message_id)];
-                                                            case 1:
-                                                                _c.sent();
-                                                                _c.label = 2;
-                                                            case 2: return [4 /*yield*/, bot.sendMessage(chatId, 'Сколько потратили?')];
-                                                            case 3:
-                                                                _c.sent();
-                                                                bot.on('message', function (msg) { return __awaiter(void 0, void 0, void 0, function () {
-                                                                    var cashOut;
-                                                                    return __generator(this, function (_a) {
-                                                                        switch (_a.label) {
-                                                                            case 0:
-                                                                                cashOut = msg.text;
-                                                                                return [4 /*yield*/, bot.sendMessage(chatId, 'На что потратили?')];
-                                                                            case 1:
-                                                                                _a.sent();
-                                                                                bot.removeAllListeners();
-                                                                                bot.on('message', function (message) { return __awaiter(void 0, void 0, void 0, function () {
-                                                                                    var newCashOut, createdCashOut;
-                                                                                    var _a;
-                                                                                    return __generator(this, function (_b) {
-                                                                                        switch (_b.label) {
-                                                                                            case 0:
-                                                                                                newCashOut = (0, createCashout_1.createCashoutObject)({
-                                                                                                    username: username,
-                                                                                                    project: ctx.data,
-                                                                                                    sum: cashOut,
-                                                                                                    description: message.text,
-                                                                                                    expenseItem: context.data,
-                                                                                                });
-                                                                                                return [4 /*yield*/, bot.sendMessage(chatId, 'Принял! Создаю расходный ордер...')];
-                                                                                            case 1:
-                                                                                                _b.sent();
-                                                                                                return [4 /*yield*/, (0, cashoutController_1.createCashout)(newCashOut)];
-                                                                                            case 2:
-                                                                                                createdCashOut = _b.sent();
-                                                                                                return [4 /*yield*/, bot.sendMessage(chatId, "\u0414\u0435\u0440\u0436\u0438 \u0441\u0441\u044B\u043B\u043A\u0443 \u043D\u0430 \u0441\u043E\u0437\u0434\u0430\u043D\u043D\u044B\u0439 \u0434\u043E\u043A\u0443\u043C\u0435\u043D\u0442 \u0438 \u043F\u0440\u043E\u0432\u0435\u0440\u044C \u043F\u0440\u0430\u0432\u0438\u043B\u044C\u043D\u043E\u0441\u0442\u044C - ".concat((_a = createdCashOut === null || createdCashOut === void 0 ? void 0 : createdCashOut.meta) === null || _a === void 0 ? void 0 : _a.uuidHref))];
-                                                                                            case 3:
-                                                                                                _b.sent();
-                                                                                                logger_1.default.info("".concat(username, " \u0441\u043E\u0437\u0434\u0430\u043B \u0440\u0430\u0441\u0445\u043E\u0434\u043D\u044B\u0439 \u043E\u0440\u0434\u0435\u0440: ").concat(ctx.data, " - ").concat(cashOut, " - ").concat(message.text, " - ").concat(context.data));
-                                                                                                bot.removeAllListeners();
-                                                                                                return [2 /*return*/];
-                                                                                        }
-                                                                                    });
-                                                                                }); });
-                                                                                return [2 /*return*/];
-                                                                        }
-                                                                    });
-                                                                }); });
-                                                                return [2 /*return*/];
-                                                        }
-                                                    });
-                                                }); });
-                                                _o.label = 24;
-                                            case 24: return [3 /*break*/, 26];
-                                            case 25:
-                                                e_2 = _o.sent();
-                                                logger_1.default.error(e_2);
-                                                return [3 /*break*/, 26];
-                                            case 26: return [2 /*return*/];
-                                        }
-                                    });
-                                }); });
-                                return [3 /*break*/, 18];
-                            case 16:
-                                e_1 = _a.sent();
-                                logger_1.default.error(e_1);
-                                return [4 /*yield*/, bot.sendMessage(chatId, 'Произошла какая-то ошибка')];
-                            case 17: return [2 /*return*/, _a.sent()];
-                            case 18: return [2 /*return*/];
-                        }
-                    });
-                }); });
                 return [2 /*return*/];
         }
     });
-}); };
-void start();
+}); });
+bot.command('sync', function (ctx) { return __awaiter(void 0, void 0, void 0, function () {
+    var username, chatId, sendMessage;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                username = ctx.from.username;
+                chatId = ctx.chat.id;
+                if (!(0, check_user_1.checkUser)(username)) return [3 /*break*/, 5];
+                sendMessage = function (text) { return __awaiter(void 0, void 0, void 0, function () {
+                    return __generator(this, function (_a) {
+                        switch (_a.label) {
+                            case 0: return [4 /*yield*/, ctx.telegram.sendMessage(chatId, text)];
+                            case 1:
+                                _a.sent();
+                                return [2 /*return*/];
+                        }
+                    });
+                }); };
+                return [4 /*yield*/, ctx.reply('Начал обновление...')];
+            case 1:
+                _a.sent();
+                return [4 /*yield*/, (0, update_yandex_1.updateYandex)('Haifisch', sendMessage)];
+            case 2:
+                _a.sent();
+                return [4 /*yield*/, (0, update_yandex_1.updateYandex)('Top', sendMessage)];
+            case 3:
+                _a.sent();
+                return [4 /*yield*/, (0, update_ozon_1.updateOzon)('Ozon', sendMessage)];
+            case 4:
+                _a.sent();
+                return [3 /*break*/, 7];
+            case 5: return [4 /*yield*/, ctx.reply('Прости, но ты не можешь использовать меня')];
+            case 6: return [2 /*return*/, _a.sent()];
+            case 7: return [2 /*return*/];
+        }
+    });
+}); });
+bot.hears('Логи', function (ctx) { return __awaiter(void 0, void 0, void 0, function () {
+    var username, text;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                username = ctx.from.username;
+                text = ctx.message.text;
+                logger_1.default.info("\u0411\u043E\u0442 \u043F\u044B\u0442\u0430\u043B\u0441\u044F \u0437\u0430\u043F\u0443\u0441\u0442\u0438\u0442\u044C: ".concat(username, " \u0441 \u0442\u0435\u043A\u0441\u0442\u043E\u043C ").concat(text));
+                if (!(0, check_user_1.checkUser)(username)) return [3 /*break*/, 3];
+                return [4 /*yield*/, ctx.sendDocument('logs/all.log')];
+            case 1:
+                _a.sent();
+                return [4 /*yield*/, ctx.sendDocument('logs/error.log')];
+            case 2:
+                _a.sent();
+                return [3 /*break*/, 5];
+            case 3: return [4 /*yield*/, ctx.reply('Прости, но ты не можешь использовать меня')];
+            case 4: return [2 /*return*/, _a.sent()];
+            case 5: return [2 /*return*/];
+        }
+    });
+}); });
+bot.command('spend', function (ctx) { return __awaiter(void 0, void 0, void 0, function () {
+    var username, text;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                username = ctx.from.username;
+                text = ctx.message.text;
+                store.username = username !== null && username !== void 0 ? username : '';
+                logger_1.default.info("\u0411\u043E\u0442 \u043F\u044B\u0442\u0430\u043B\u0441\u044F \u0437\u0430\u043F\u0443\u0441\u0442\u0438\u0442\u044C: ".concat(username, " \u0441 \u0442\u0435\u043A\u0441\u0442\u043E\u043C ").concat(text));
+                if (!(0, check_user_1.checkUser)(username)) return [3 /*break*/, 2];
+                return [4 /*yield*/, ctx.reply('Выбери магазин:', __assign({}, telegraf_1.Markup.inlineKeyboard([
+                        [
+                            telegraf_1.Markup.button.callback('🚀 ФБУ ОЗОН', 'fbyOzon'),
+                            telegraf_1.Markup.button.callback('🚀 ФБС ОЗОН', 'fbsOzon'),
+                        ],
+                        [
+                            telegraf_1.Markup.button.callback('💻 ФБУ ХФ', 'fbyHf'),
+                            telegraf_1.Markup.button.callback('💻 ФБС ХФ', 'fbsHf'),
+                        ],
+                        [
+                            telegraf_1.Markup.button.callback('💄 ФБУ ТОР', 'fbyTop'),
+                            telegraf_1.Markup.button.callback('💄 ФБС ТОР', 'fbsTop'),
+                        ],
+                    ])))];
+            case 1: return [2 /*return*/, _a.sent()];
+            case 2: return [4 /*yield*/, ctx.reply('Прости, но ты не можешь использовать меня')];
+            case 3: return [2 /*return*/, _a.sent()];
+        }
+    });
+}); });
+bot.action(['fbyOzon', 'fbsOzon', 'fbyHf', 'fbsHf', 'fbyTop', 'fbsTop'], function (ctx) { return __awaiter(void 0, void 0, void 0, function () {
+    var username, chatId;
+    var _a, _b;
+    return __generator(this, function (_c) {
+        switch (_c.label) {
+            case 0:
+                username = (_a = ctx.from) === null || _a === void 0 ? void 0 : _a.username;
+                chatId = (_b = ctx.chat) === null || _b === void 0 ? void 0 : _b.id;
+                if (!(chatId !== undefined)) return [3 /*break*/, 5];
+                return [4 /*yield*/, ctx.deleteMessage()];
+            case 1:
+                _c.sent();
+                store.project = ctx.match.input;
+                if (!(0, check_user_1.checkUser)(username)) return [3 /*break*/, 3];
+                return [4 /*yield*/, ctx.reply('Выбери статью расходов:', __assign({}, telegraf_1.Markup.inlineKeyboard([
+                        [
+                            telegraf_1.Markup.button.callback('Перемещение', 'moving'),
+                            telegraf_1.Markup.button.callback('Налоги и сборы', 'taxes'),
+                        ],
+                        [
+                            telegraf_1.Markup.button.callback('Зарплата', 'salary'),
+                            telegraf_1.Markup.button.callback('Услуги', 'services'),
+                            telegraf_1.Markup.button.callback('Аренда', 'rent'),
+                        ],
+                        [
+                            telegraf_1.Markup.button.callback('Закупка товаров', 'purchase'),
+                            telegraf_1.Markup.button.callback('Маркетинг и реклама', 'entertainment'),
+                        ],
+                    ])))];
+            case 2: return [2 /*return*/, _c.sent()];
+            case 3: return [4 /*yield*/, ctx.reply('Прости, но ты не можешь использовать меня')];
+            case 4: return [2 /*return*/, _c.sent()];
+            case 5: return [2 /*return*/];
+        }
+    });
+}); });
+bot.action([
+    'moving',
+    'rent',
+    'salary',
+    'entertainment',
+    'services',
+    'purchase',
+    'taxes',
+], function (ctx) { return __awaiter(void 0, void 0, void 0, function () {
+    var username, chatId, cachOutQuestion;
+    var _a, _b;
+    return __generator(this, function (_c) {
+        switch (_c.label) {
+            case 0:
+                username = (_a = ctx.from) === null || _a === void 0 ? void 0 : _a.username;
+                chatId = (_b = ctx.chat) === null || _b === void 0 ? void 0 : _b.id;
+                if (!(chatId !== undefined)) return [3 /*break*/, 5];
+                return [4 /*yield*/, ctx.deleteMessage()];
+            case 1:
+                _c.sent();
+                store.expenseItem = ctx.match.input;
+                if (!(0, check_user_1.checkUser)(username)) return [3 /*break*/, 3];
+                return [4 /*yield*/, ctx.reply('Сколько потратили?', {
+                        reply_markup: {
+                            force_reply: true,
+                        },
+                    })];
+            case 2:
+                cachOutQuestion = _c.sent();
+                store.cashOutQuestionId = cachOutQuestion.message_id;
+                return [3 /*break*/, 5];
+            case 3: return [4 /*yield*/, ctx.reply('Прости, но ты не можешь использовать меня')];
+            case 4: return [2 /*return*/, _c.sent()];
+            case 5: return [2 /*return*/];
+        }
+    });
+}); });
+bot.on((0, filters_1.message)('text'), function (ctx) { return __awaiter(void 0, void 0, void 0, function () {
+    var username, whatBuyedQuestion, newCashOut, createdCashOut;
+    var _a, _b;
+    return __generator(this, function (_c) {
+        switch (_c.label) {
+            case 0:
+                username = (_a = ctx.from) === null || _a === void 0 ? void 0 : _a.username;
+                if (!(ctx.update.message.message_id === store.cashOutQuestionId + 1)) return [3 /*break*/, 4];
+                if (!(0, check_user_1.checkUser)(username)) return [3 /*break*/, 2];
+                return [4 /*yield*/, ctx.reply('На что потратили?', {
+                        reply_markup: {
+                            force_reply: true,
+                        },
+                    })];
+            case 1:
+                whatBuyedQuestion = _c.sent();
+                store.whatBuyedQuestion = whatBuyedQuestion.message_id;
+                store.sum = ctx.update.message.text;
+                return [3 /*break*/, 4];
+            case 2: return [4 /*yield*/, ctx.reply('Прости, но ты не можешь использовать меня')];
+            case 3: return [2 /*return*/, _c.sent()];
+            case 4:
+                if (!(ctx.update.message.message_id === store.whatBuyedQuestion + 1)) return [3 /*break*/, 9];
+                if (!(0, check_user_1.checkUser)(username)) return [3 /*break*/, 7];
+                newCashOut = (0, createCashout_1.createCashoutObject)({
+                    username: store.username,
+                    project: store.project,
+                    sum: store.sum,
+                    description: ctx.message.text,
+                    expenseItem: store.expenseItem,
+                });
+                return [4 /*yield*/, (0, cashoutController_1.createCashout)(newCashOut)];
+            case 5:
+                createdCashOut = _c.sent();
+                return [4 /*yield*/, ctx.reply("\u0414\u0435\u0440\u0436\u0438 \u0441\u0441\u044B\u043B\u043A\u0443 \u043D\u0430 \u0441\u043E\u0437\u0434\u0430\u043D\u043D\u044B\u0439 \u0434\u043E\u043A\u0443\u043C\u0435\u043D\u0442 \u0438 \u043F\u0440\u043E\u0432\u0435\u0440\u044C \u043F\u0440\u0430\u0432\u0438\u043B\u044C\u043D\u043E\u0441\u0442\u044C - ".concat((_b = createdCashOut === null || createdCashOut === void 0 ? void 0 : createdCashOut.meta) === null || _b === void 0 ? void 0 : _b.uuidHref))];
+            case 6:
+                _c.sent();
+                logger_1.default.info("".concat(store.username, " \u0441\u043E\u0437\u0434\u0430\u043B \u0440\u0430\u0441\u0445\u043E\u0434\u043D\u044B\u0439 \u043E\u0440\u0434\u0435\u0440: ").concat(store.project, " - ").concat(store.sum, " - ").concat(store.description, " - ").concat(store.expenseItem));
+                return [3 /*break*/, 9];
+            case 7: return [4 /*yield*/, ctx.reply('Прости, но ты не можешь использовать меня')];
+            case 8: return [2 /*return*/, _c.sent()];
+            case 9: return [2 /*return*/];
+        }
+    });
+}); });
+void bot.launch();

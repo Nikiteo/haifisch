@@ -1,488 +1,214 @@
-import TelegramApi from 'node-telegram-bot-api'
+import { Markup, Telegraf } from 'telegraf'
+import Logger from './lib/logger'
 import { updateOzon } from './controllers/update-ozon'
 import { updateYandex } from './controllers/update-yandex'
-import Logger from './lib/logger'
 import { checkUser } from './lib/check-user'
 import { createCashoutObject } from './utils/createCashout'
+import { message } from 'telegraf/filters'
 import { createCashout } from './services/moysklad/cashoutController'
 
-const token = process.env.BOT_TOKEN
-
-const bot = new TelegramApi(token ?? '', { polling: true })
-
-const inlineService = {
-	reply_markup: {
-		inline_keyboard: [
-			[
-				{
-					text: 'Перемещение',
-					callback_data: 'moving',
-				},
-				{
-					text: 'Аренда',
-					callback_data: 'rent',
-				},
-			],
-			[
-				{
-					text: 'Зарплата',
-					callback_data: 'salary',
-				},
-				{
-					text: 'Маркетинг и реклама',
-					callback_data: 'entertainment',
-				},
-			],
-			[
-				{
-					text: 'Услуги',
-					callback_data: 'services',
-				},
-				{
-					text: 'Закупка товаров',
-					callback_data: 'purchase',
-				},
-			],
-			[
-				{
-					text: 'Налоги и сборы',
-					callback_data: 'taxes',
-				},
-			],
-		],
-		resize_keyboard: true,
-		one_time_keyboard: true,
-	},
+const store = {
+	username: '',
+	project: '',
+	sum: '',
+	description: '',
+	expenseItem: '',
+	cashOutQuestionId: 0,
+	whatBuyedQuestion: 0,
 }
 
-const start = async (): Promise<void> => {
-	Logger.info('Bot started!')
+const bot = new Telegraf(process.env.BOT_TOKEN ?? '', {
+	handlerTimeout: Infinity,
+})
 
-	await bot.setMyCommands([
-		{ command: '/sync', description: 'Синхронизировать' },
-		{ command: '/spend', description: 'Записать трату' },
-	])
+void bot.telegram.setMyCommands([
+	{ command: '/sync', description: 'Синхронизировать' },
+	{ command: '/spend', description: 'Записать трату' },
+])
 
-	bot.on('message', async msg => {
-		const text = msg.text
-		const chatId = msg.chat.id
-		const username = msg.chat.username
+Logger.info('Bot started!')
 
+console.log(store)
+
+bot.start(async ctx => {
+	const username = ctx.from.username
+	const text = ctx.message.text
+	Logger.info(`Бот пытался запустить: ${username} с текстом ${text}`)
+	await ctx.reply('Добро пожаловать в телеграм бот Haifisch')
+})
+
+bot.command('sync', async ctx => {
+	const username = ctx.from.username
+	const chatId = ctx.chat.id
+	if (checkUser(username)) {
 		const sendMessage = async (text: string): Promise<void> => {
-			await bot.sendMessage(chatId, text)
+			await ctx.telegram.sendMessage(chatId, text)
 		}
+		await ctx.reply('Начал обновление...')
+		await updateYandex('Haifisch', sendMessage)
+		await updateYandex('Top', sendMessage)
+		await updateOzon('Ozon', sendMessage)
+	} else {
+		return await ctx.reply('Прости, но ты не можешь использовать меня')
+	}
+})
 
-		try {
-			if (text === '/start') {
-				Logger.info(
-					`Бот пытался запустить: ${msg.chat.username} с текстом ${msg.text}`
-				)
+bot.hears('Логи', async ctx => {
+	const username = ctx.from.username
+	const text = ctx.message.text
 
-				return await bot.sendMessage(
-					chatId,
-					'Добро пожаловать в телеграм бот Haifisch'
-				)
-			}
-			if (text === '/sync') {
-				Logger.info(
-					`Бот пытался запустить: ${msg.chat.username} с текстом ${msg.text}`
-				)
+	Logger.info(`Бот пытался запустить: ${username} с текстом ${text}`)
 
-				if (checkUser(username)) {
-					await bot.sendMessage(chatId, 'Начал обновление...')
+	if (checkUser(username)) {
+		await ctx.sendDocument('logs/all.log')
+		await ctx.sendDocument('logs/error.log')
+	} else {
+		return await ctx.reply('Прости, но ты не можешь использовать меня')
+	}
+})
 
-					await updateYandex('Haifisch', sendMessage)
-					await updateYandex('Top', sendMessage)
-					await updateOzon('Ozon', sendMessage)
-				} else {
-					return await bot.sendMessage(
-						chatId,
-						'Прости, но ты не можешь использовать меня'
-					)
-				}
-			}
-			if (text === 'Пришли мне логи' && checkUser(username)) {
-				Logger.info(
-					`Бот пытался запустить: ${msg.chat.username} с текстом ${msg.text}`
-				)
+bot.command('spend', async ctx => {
+	const username = ctx.from.username
+	const text = ctx.message.text
 
-				await bot.sendDocument(chatId, 'logs/all.log')
-				await bot.sendDocument(chatId, 'logs/error.log')
-			}
-			if (text === '/spend' && checkUser(username)) {
-				Logger.info(
-					`Бот пытался запустить: ${msg.chat.username} с текстом ${msg.text}`
-				)
+	store.username = username ?? ''
 
-				await bot.sendMessage(chatId, 'Выбери магазин:', {
-					reply_markup: {
-						inline_keyboard: [
-							[
-								{
-									text: '🚀 ФБУ ОЗОН',
-									callback_data: 'fbyOzon',
-								},
-								{
-									text: '🚀 ФБС ОЗОН',
-									callback_data: 'fbsOzon',
-								},
-							],
-							[
-								{ text: '💻 ФБУ ХФ', callback_data: 'fbyHf' },
-								{ text: '💻 ФБС ХФ', callback_data: 'fbsHf' },
-							],
-							[
-								{ text: '💄 ФБУ ТОР', callback_data: 'fbyTop' },
-								{ text: '💄 ФБС ТОР', callback_data: 'fbsTop' },
-							],
+	Logger.info(`Бот пытался запустить: ${username} с текстом ${text}`)
+
+	if (checkUser(username)) {
+		return await ctx.reply('Выбери магазин:', {
+			...Markup.inlineKeyboard([
+				[
+					Markup.button.callback('🚀 ФБУ ОЗОН', 'fbyOzon'),
+					Markup.button.callback('🚀 ФБС ОЗОН', 'fbsOzon'),
+				],
+				[
+					Markup.button.callback('💻 ФБУ ХФ', 'fbyHf'),
+					Markup.button.callback('💻 ФБС ХФ', 'fbsHf'),
+				],
+				[
+					Markup.button.callback('💄 ФБУ ТОР', 'fbyTop'),
+					Markup.button.callback('💄 ФБС ТОР', 'fbsTop'),
+				],
+			]),
+		})
+	} else {
+		return await ctx.reply('Прости, но ты не можешь использовать меня')
+	}
+})
+
+bot.action(
+	['fbyOzon', 'fbsOzon', 'fbyHf', 'fbsHf', 'fbyTop', 'fbsTop'],
+	async ctx => {
+		const username = ctx.from?.username
+		const chatId = ctx.chat?.id
+		if (chatId !== undefined) {
+			await ctx.deleteMessage()
+
+			store.project = ctx.match.input
+
+			if (checkUser(username)) {
+				return await ctx.reply('Выбери статью расходов:', {
+					...Markup.inlineKeyboard([
+						[
+							Markup.button.callback('Перемещение', 'moving'),
+							Markup.button.callback('Налоги и сборы', 'taxes'),
 						],
-						resize_keyboard: true,
-						one_time_keyboard: true,
+						[
+							Markup.button.callback('Зарплата', 'salary'),
+							Markup.button.callback('Услуги', 'services'),
+							Markup.button.callback('Аренда', 'rent'),
+						],
+						[
+							Markup.button.callback(
+								'Закупка товаров',
+								'purchase'
+							),
+							Markup.button.callback(
+								'Маркетинг и реклама',
+								'entertainment'
+							),
+						],
+					]),
+				})
+			} else {
+				return await ctx.reply(
+					'Прости, но ты не можешь использовать меня'
+				)
+			}
+		}
+	}
+)
+
+bot.action(
+	[
+		'moving',
+		'rent',
+		'salary',
+		'entertainment',
+		'services',
+		'purchase',
+		'taxes',
+	],
+	async ctx => {
+		const username = ctx.from?.username
+		const chatId = ctx.chat?.id
+		if (chatId !== undefined) {
+			await ctx.deleteMessage()
+			store.expenseItem = ctx.match.input
+			if (checkUser(username)) {
+				const cachOutQuestion = await ctx.reply('Сколько потратили?', {
+					reply_markup: {
+						force_reply: true,
 					},
 				})
+				store.cashOutQuestionId = cachOutQuestion.message_id
+			} else {
+				return await ctx.reply(
+					'Прости, но ты не можешь использовать меня'
+				)
 			}
-			bot.on('callback_query', async ctx => {
-				try {
-					if (ctx.data === 'fbyOzon') {
-						if (ctx.message?.message_id !== undefined) {
-							await bot.deleteMessage(
-								chatId,
-								ctx.message?.message_id
-							)
-						}
-						await bot.sendMessage(
-							chatId,
-							'Выбери статью расходов:',
-							inlineService
-						)
-
-						bot.on('callback_query', async context => {
-							if (context.message?.message_id !== undefined) {
-								await bot.deleteMessage(
-									chatId,
-									context.message?.message_id
-								)
-							}
-
-							await bot.sendMessage(chatId, 'Сколько потратили?')
-							bot.on('message', async msg => {
-								const cashOut = msg.text
-								await bot.sendMessage(
-									chatId,
-									'На что потратили?'
-								)
-								bot.removeAllListeners()
-								bot.on('message', async message => {
-									const newCashOut = createCashoutObject({
-										username,
-										project: ctx.data,
-										sum: cashOut,
-										description: message.text,
-										expenseItem: context.data,
-									})
-									await bot.sendMessage(
-										chatId,
-										'Принял! Создаю расходный ордер...'
-									)
-									const createdCashOut = await createCashout(
-										newCashOut
-									)
-									await bot.sendMessage(
-										chatId,
-										`Держи ссылку на созданный документ и проверь правильность - ${createdCashOut?.meta?.uuidHref}`
-									)
-									Logger.info(
-										`${username} создал расходный ордер: ${ctx.data} - ${cashOut} - ${message.text} - ${context.data}`
-									)
-								})
-							})
-						})
-					}
-
-					if (ctx.data === 'fbsOzon') {
-						if (ctx.message?.message_id !== undefined) {
-							await bot.deleteMessage(
-								chatId,
-								ctx.message?.message_id
-							)
-						}
-						await bot.sendMessage(
-							chatId,
-							'Выбери статью расходов:',
-							inlineService
-						)
-
-						bot.on('callback_query', async context => {
-							if (context.message?.message_id !== undefined) {
-								await bot.deleteMessage(
-									chatId,
-									context.message?.message_id
-								)
-							}
-
-							await bot.sendMessage(chatId, 'Сколько потратили?')
-							bot.on('message', async msg => {
-								const cashOut = msg.text
-								await bot.sendMessage(
-									chatId,
-									'На что потратили?'
-								)
-								bot.removeAllListeners()
-								bot.on('message', async message => {
-									const newCashOut = createCashoutObject({
-										username,
-										project: ctx.data,
-										sum: cashOut,
-										description: message.text,
-										expenseItem: context.data,
-									})
-									await bot.sendMessage(
-										chatId,
-										'Принял! Создаю расходный ордер...'
-									)
-									const createdCashOut = await createCashout(
-										newCashOut
-									)
-									await bot.sendMessage(
-										chatId,
-										`Держи ссылку на созданный документ и проверь правильность - ${createdCashOut?.meta?.uuidHref}`
-									)
-									Logger.info(
-										`${username} создал расходный ордер: ${ctx.data} - ${cashOut} - ${message.text} - ${context.data}`
-									)
-								})
-							})
-						})
-					}
-
-					if (ctx.data === 'fbyHf') {
-						if (ctx.message?.message_id !== undefined) {
-							await bot.deleteMessage(
-								chatId,
-								ctx.message?.message_id
-							)
-						}
-						await bot.sendMessage(
-							chatId,
-							'Выбери статью расходов:',
-							inlineService
-						)
-
-						bot.on('callback_query', async context => {
-							if (context.message?.message_id !== undefined) {
-								await bot.deleteMessage(
-									chatId,
-									context.message?.message_id
-								)
-							}
-							await bot.sendMessage(chatId, 'Сколько потратили?')
-							bot.on('message', async msg => {
-								const cashOut = msg.text
-								await bot.sendMessage(
-									chatId,
-									'На что потратили?'
-								)
-								bot.removeAllListeners()
-								bot.on('message', async message => {
-									const newCashOut = createCashoutObject({
-										username,
-										project: ctx.data,
-										sum: cashOut,
-										description: message.text,
-										expenseItem: context.data,
-									})
-									await bot.sendMessage(
-										chatId,
-										'Принял! Создаю расходный ордер...'
-									)
-									const createdCashOut = await createCashout(
-										newCashOut
-									)
-									await bot.sendMessage(
-										chatId,
-										`Держи ссылку на созданный документ и проверь правильность - ${createdCashOut?.meta?.uuidHref}`
-									)
-									Logger.info(
-										`${username} создал расходный ордер: ${ctx.data} - ${cashOut} - ${message.text} - ${context.data}`
-									)
-								})
-							})
-						})
-					}
-
-					if (ctx.data === 'fbsHf') {
-						if (ctx.message?.message_id !== undefined) {
-							await bot.deleteMessage(
-								chatId,
-								ctx.message?.message_id
-							)
-						}
-						await bot.sendMessage(
-							chatId,
-							'Выбери статью расходов:',
-							inlineService
-						)
-
-						bot.on('callback_query', async context => {
-							if (context.message?.message_id !== undefined) {
-								await bot.deleteMessage(
-									chatId,
-									context.message?.message_id
-								)
-							}
-							await bot.sendMessage(chatId, 'Сколько потратили?')
-							bot.on('message', async msg => {
-								const cashOut = msg.text
-								await bot.sendMessage(
-									chatId,
-									'На что потратили?'
-								)
-								bot.removeAllListeners()
-								bot.on('message', async message => {
-									const newCashOut = createCashoutObject({
-										username,
-										project: ctx.data,
-										sum: cashOut,
-										description: message.text,
-										expenseItem: context.data,
-									})
-									await bot.sendMessage(
-										chatId,
-										'Принял! Создаю расходный ордер...'
-									)
-									const createdCashOut = await createCashout(
-										newCashOut
-									)
-									await bot.sendMessage(
-										chatId,
-										`Держи ссылку на созданный документ и проверь правильность - ${createdCashOut?.meta?.uuidHref}`
-									)
-									Logger.info(
-										`${username} создал расходный ордер: ${ctx.data} - ${cashOut} - ${message.text} - ${context.data}`
-									)
-								})
-							})
-						})
-					}
-
-					if (ctx.data === 'fbyTop') {
-						if (ctx.message?.message_id !== undefined) {
-							await bot.deleteMessage(
-								chatId,
-								ctx.message?.message_id
-							)
-						}
-						await bot.sendMessage(
-							chatId,
-							'Выбери статью расходов:',
-							inlineService
-						)
-
-						bot.on('callback_query', async context => {
-							if (context.message?.message_id !== undefined) {
-								await bot.deleteMessage(
-									chatId,
-									context.message?.message_id
-								)
-							}
-							await bot.sendMessage(chatId, 'Сколько потратили?')
-							bot.on('message', async msg => {
-								const cashOut = msg.text
-								await bot.sendMessage(
-									chatId,
-									'На что потратили?'
-								)
-								bot.removeAllListeners()
-								bot.on('message', async message => {
-									const newCashOut = createCashoutObject({
-										username,
-										project: ctx.data,
-										sum: cashOut,
-										description: message.text,
-										expenseItem: context.data,
-									})
-									await bot.sendMessage(
-										chatId,
-										'Принял! Создаю расходный ордер...'
-									)
-									const createdCashOut = await createCashout(
-										newCashOut
-									)
-									await bot.sendMessage(
-										chatId,
-										`Держи ссылку на созданный документ и проверь правильность - ${createdCashOut?.meta?.uuidHref}`
-									)
-									Logger.info(
-										`${username} создал расходный ордер: ${ctx.data} - ${cashOut} - ${message.text} - ${context.data}`
-									)
-								})
-							})
-						})
-					}
-
-					if (ctx.data === 'fbsTop') {
-						if (ctx.message?.message_id !== undefined) {
-							await bot.deleteMessage(
-								chatId,
-								ctx.message?.message_id
-							)
-						}
-						await bot.sendMessage(
-							chatId,
-							'Выбери статью расходов:',
-							inlineService
-						)
-
-						bot.on('callback_query', async context => {
-							if (context.message?.message_id !== undefined) {
-								await bot.deleteMessage(
-									chatId,
-									context.message?.message_id
-								)
-							}
-							await bot.sendMessage(chatId, 'Сколько потратили?')
-							bot.on('message', async msg => {
-								const cashOut = msg.text
-								await bot.sendMessage(
-									chatId,
-									'На что потратили?'
-								)
-								bot.removeAllListeners()
-								bot.on('message', async message => {
-									const newCashOut = createCashoutObject({
-										username,
-										project: ctx.data,
-										sum: cashOut,
-										description: message.text,
-										expenseItem: context.data,
-									})
-									await bot.sendMessage(
-										chatId,
-										'Принял! Создаю расходный ордер...'
-									)
-									const createdCashOut = await createCashout(
-										newCashOut
-									)
-									await bot.sendMessage(
-										chatId,
-										`Держи ссылку на созданный документ и проверь правильность - ${createdCashOut?.meta?.uuidHref}`
-									)
-									Logger.info(
-										`${username} создал расходный ордер: ${ctx.data} - ${cashOut} - ${message.text} - ${context.data}`
-									)
-								})
-							})
-						})
-					}
-				} catch (e) {
-					Logger.error(e)
-				}
-			})
-		} catch (e) {
-			Logger.error(e)
-			return await bot.sendMessage(chatId, 'Произошла какая-то ошибка')
 		}
-	})
-}
+	}
+)
 
-void start()
+bot.on(message('text'), async ctx => {
+	const username = ctx.from?.username
+
+	if (ctx.update.message.message_id === store.cashOutQuestionId + 1) {
+		if (checkUser(username)) {
+			const whatBuyedQuestion = await ctx.reply('На что потратили?', {
+				reply_markup: {
+					force_reply: true,
+				},
+			})
+			store.whatBuyedQuestion = whatBuyedQuestion.message_id
+			store.sum = ctx.update.message.text
+		} else {
+			return await ctx.reply('Прости, но ты не можешь использовать меня')
+		}
+	}
+
+	if (ctx.update.message.message_id === store.whatBuyedQuestion + 1) {
+		if (checkUser(username)) {
+			const newCashOut = createCashoutObject({
+				username: store.username,
+				project: store.project,
+				sum: store.sum,
+				description: ctx.message.text,
+				expenseItem: store.expenseItem,
+			})
+			const createdCashOut = await createCashout(newCashOut)
+			await ctx.reply(
+				`Держи ссылку на созданный документ и проверь правильность - ${createdCashOut?.meta?.uuidHref}`
+			)
+			Logger.info(
+				`${store.username} создал расходный ордер: ${store.project} - ${store.sum} - ${ctx.message.text} - ${store.expenseItem}`
+			)
+		} else {
+			return await ctx.reply('Прости, но ты не можешь использовать меня')
+		}
+	}
+})
+
+void bot.launch()
