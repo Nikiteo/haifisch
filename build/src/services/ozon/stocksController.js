@@ -1,4 +1,15 @@
 "use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -35,52 +46,53 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var logger_1 = __importDefault(require("./lib/logger"));
-var spendCommand_1 = require("./lib/spendCommand");
-var bot_1 = require("./bot");
-var articlesAction_1 = require("./lib/articlesAction");
-var onText_1 = require("./lib/onText");
-var afterArticlesAction_1 = require("./lib/afterArticlesAction");
-var syncCommand_1 = require("./lib/syncCommand");
-var stocksCommand_1 = require("./lib/stocksCommand");
-var store = {
-    username: '',
-    project: '',
-    sum: '',
-    description: '',
-    expenseItem: '',
-    cashOutQuestionId: 0,
-    whatBuyedQuestion: 0,
-};
-void bot_1.bot.telegram.setMyCommands([
-    { command: '/sync', description: 'Синхронизировать' },
-    { command: '/spend', description: 'Записать трату' },
-    { command: '/stocks', description: 'Проверить остатки' },
-]);
-logger_1.default.info('Bot started!');
-bot_1.bot.start(function (ctx) { return __awaiter(void 0, void 0, void 0, function () {
-    var username, text;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
+exports.getOzonStocks = void 0;
+var axios_1 = __importDefault(require("axios"));
+var service_1 = require("./service");
+var logger_1 = __importDefault(require("../../lib/logger"));
+var getOzonStocks = function (_a) { return __awaiter(void 0, void 0, void 0, function () {
+    var response, error_1, err;
+    var props = __rest(_a, []);
+    return __generator(this, function (_b) {
+        switch (_b.label) {
             case 0:
-                username = ctx.from.username;
-                text = ctx.message.text;
-                logger_1.default.info("\u0411\u043E\u0442 \u043F\u044B\u0442\u0430\u043B\u0441\u044F \u0437\u0430\u043F\u0443\u0441\u0442\u0438\u0442\u044C: ".concat(username, " \u0441 \u0442\u0435\u043A\u0441\u0442\u043E\u043C ").concat(text));
-                return [4 /*yield*/, ctx.reply('Добро пожаловать в телеграм бот Haifisch')];
+                _b.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, service_1.apiService.post('v2/analytics/stock_on_warehouses', __assign({}, props))];
             case 1:
-                _a.sent();
-                return [2 /*return*/];
+                response = _b.sent();
+                return [2 /*return*/, response.data];
+            case 2:
+                error_1 = _b.sent();
+                err = error_1;
+                if (axios_1.default.isAxiosError(err)) {
+                    if ((err === null || err === void 0 ? void 0 : err.response) == null || err.code === null) {
+                        logger_1.default.error('No response');
+                    }
+                    else {
+                        logger_1.default.error(err.response.data);
+                    }
+                }
+                else {
+                    logger_1.default.error('different error than axios');
+                }
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
         }
     });
-}); });
-(0, syncCommand_1.syncCommand)();
-(0, spendCommand_1.spendCommand)(store);
-(0, stocksCommand_1.stocksCommand)();
-(0, articlesAction_1.articlesAction)(store);
-(0, afterArticlesAction_1.afterArticlesAction)(store);
-(0, onText_1.onText)(store);
-void bot_1.bot.launch();
+}); };
+exports.getOzonStocks = getOzonStocks;

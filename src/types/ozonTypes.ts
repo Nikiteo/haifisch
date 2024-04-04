@@ -606,3 +606,27 @@ export interface Filter {
 	product_id?: string[]
 	visibility: string
 }
+
+export interface GetStocks {
+	limit: number
+	offset: number
+	warehouse_type: string
+}
+
+export interface StocksOnWarehouses {
+	result: Rows
+}
+
+export interface Rows {
+	rows: Row[]
+}
+
+export interface Row {
+	free_to_sell_amount: number
+	item_code: string
+	item_name: string
+	promised_amount: number
+	reserved_amount: number
+	sku: number
+	warehouse_name: string
+}

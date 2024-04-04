@@ -35,52 +35,29 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-var logger_1 = __importDefault(require("./lib/logger"));
-var spendCommand_1 = require("./lib/spendCommand");
-var bot_1 = require("./bot");
-var articlesAction_1 = require("./lib/articlesAction");
-var onText_1 = require("./lib/onText");
-var afterArticlesAction_1 = require("./lib/afterArticlesAction");
-var syncCommand_1 = require("./lib/syncCommand");
-var stocksCommand_1 = require("./lib/stocksCommand");
-var store = {
-    username: '',
-    project: '',
-    sum: '',
-    description: '',
-    expenseItem: '',
-    cashOutQuestionId: 0,
-    whatBuyedQuestion: 0,
+exports.stocksCommand = void 0;
+var check_user_1 = require("./check-user");
+var bot_1 = require("../bot");
+var ozon_stocks_1 = require("../controllers/ozon-stocks");
+var stocksCommand = function () {
+    bot_1.bot.command('stocks', function (ctx) { return __awaiter(void 0, void 0, void 0, function () {
+        var username, chatId;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    username = ctx.from.username;
+                    chatId = ctx.chat.id;
+                    if (!(0, check_user_1.checkUser)(username)) return [3 /*break*/, 2];
+                    return [4 /*yield*/, (0, ozon_stocks_1.ozonStocks)()];
+                case 1:
+                    _a.sent();
+                    return [3 /*break*/, 4];
+                case 2: return [4 /*yield*/, ctx.reply('Прости, но ты не можешь использовать меня')];
+                case 3: return [2 /*return*/, _a.sent()];
+                case 4: return [2 /*return*/];
+            }
+        });
+    }); });
 };
-void bot_1.bot.telegram.setMyCommands([
-    { command: '/sync', description: 'Синхронизировать' },
-    { command: '/spend', description: 'Записать трату' },
-    { command: '/stocks', description: 'Проверить остатки' },
-]);
-logger_1.default.info('Bot started!');
-bot_1.bot.start(function (ctx) { return __awaiter(void 0, void 0, void 0, function () {
-    var username, text;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                username = ctx.from.username;
-                text = ctx.message.text;
-                logger_1.default.info("\u0411\u043E\u0442 \u043F\u044B\u0442\u0430\u043B\u0441\u044F \u0437\u0430\u043F\u0443\u0441\u0442\u0438\u0442\u044C: ".concat(username, " \u0441 \u0442\u0435\u043A\u0441\u0442\u043E\u043C ").concat(text));
-                return [4 /*yield*/, ctx.reply('Добро пожаловать в телеграм бот Haifisch')];
-            case 1:
-                _a.sent();
-                return [2 /*return*/];
-        }
-    });
-}); });
-(0, syncCommand_1.syncCommand)();
-(0, spendCommand_1.spendCommand)(store);
-(0, stocksCommand_1.stocksCommand)();
-(0, articlesAction_1.articlesAction)(store);
-(0, afterArticlesAction_1.afterArticlesAction)(store);
-(0, onText_1.onText)(store);
-void bot_1.bot.launch();
+exports.stocksCommand = stocksCommand;

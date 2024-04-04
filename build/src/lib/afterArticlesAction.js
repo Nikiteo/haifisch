@@ -39,48 +39,53 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var logger_1 = __importDefault(require("./lib/logger"));
-var spendCommand_1 = require("./lib/spendCommand");
-var bot_1 = require("./bot");
-var articlesAction_1 = require("./lib/articlesAction");
-var onText_1 = require("./lib/onText");
-var afterArticlesAction_1 = require("./lib/afterArticlesAction");
-var syncCommand_1 = require("./lib/syncCommand");
-var stocksCommand_1 = require("./lib/stocksCommand");
-var store = {
-    username: '',
-    project: '',
-    sum: '',
-    description: '',
-    expenseItem: '',
-    cashOutQuestionId: 0,
-    whatBuyedQuestion: 0,
+exports.afterArticlesAction = void 0;
+var logger_1 = __importDefault(require("./logger"));
+var bot_1 = require("../bot");
+var check_user_1 = require("./check-user");
+var afterArticlesAction = function (store) {
+    bot_1.bot.action([
+        'moving',
+        'rent',
+        'salary',
+        'entertainment',
+        'services',
+        'purchase',
+        'taxes',
+    ], function (ctx) { return __awaiter(void 0, void 0, void 0, function () {
+        var username, chatId, cachOutQuestion, err_1;
+        var _a, _b;
+        return __generator(this, function (_c) {
+            switch (_c.label) {
+                case 0:
+                    _c.trys.push([0, 6, , 7]);
+                    username = (_a = ctx.from) === null || _a === void 0 ? void 0 : _a.username;
+                    chatId = (_b = ctx.chat) === null || _b === void 0 ? void 0 : _b.id;
+                    if (!(chatId !== undefined)) return [3 /*break*/, 5];
+                    return [4 /*yield*/, ctx.deleteMessage()];
+                case 1:
+                    _c.sent();
+                    store.expenseItem = ctx.match.input;
+                    if (!(0, check_user_1.checkUser)(username)) return [3 /*break*/, 3];
+                    return [4 /*yield*/, ctx.reply('Сколько потратили?', {
+                            reply_markup: {
+                                force_reply: true,
+                            },
+                        })];
+                case 2:
+                    cachOutQuestion = _c.sent();
+                    store.cashOutQuestionId = cachOutQuestion.message_id;
+                    return [3 /*break*/, 5];
+                case 3: return [4 /*yield*/, ctx.reply('Прости, но ты не можешь использовать меня')];
+                case 4: return [2 /*return*/, _c.sent()];
+                case 5: return [3 /*break*/, 7];
+                case 6:
+                    err_1 = _c.sent();
+                    logger_1.default.error(err_1);
+                    return [3 /*break*/, 7];
+                case 7: return [2 /*return*/];
+            }
+        });
+    }); });
 };
-void bot_1.bot.telegram.setMyCommands([
-    { command: '/sync', description: 'Синхронизировать' },
-    { command: '/spend', description: 'Записать трату' },
-    { command: '/stocks', description: 'Проверить остатки' },
-]);
-logger_1.default.info('Bot started!');
-bot_1.bot.start(function (ctx) { return __awaiter(void 0, void 0, void 0, function () {
-    var username, text;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                username = ctx.from.username;
-                text = ctx.message.text;
-                logger_1.default.info("\u0411\u043E\u0442 \u043F\u044B\u0442\u0430\u043B\u0441\u044F \u0437\u0430\u043F\u0443\u0441\u0442\u0438\u0442\u044C: ".concat(username, " \u0441 \u0442\u0435\u043A\u0441\u0442\u043E\u043C ").concat(text));
-                return [4 /*yield*/, ctx.reply('Добро пожаловать в телеграм бот Haifisch')];
-            case 1:
-                _a.sent();
-                return [2 /*return*/];
-        }
-    });
-}); });
-(0, syncCommand_1.syncCommand)();
-(0, spendCommand_1.spendCommand)(store);
-(0, stocksCommand_1.stocksCommand)();
-(0, articlesAction_1.articlesAction)(store);
-(0, afterArticlesAction_1.afterArticlesAction)(store);
-(0, onText_1.onText)(store);
-void bot_1.bot.launch();
+exports.afterArticlesAction = afterArticlesAction;
