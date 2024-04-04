@@ -16,7 +16,7 @@ export const getSalesReturn = async (dates: {
 			offset: number
 		): Promise<SalesReturn[]> => {
 			const response = await apiService.get<ResponseMS<SalesReturn>>(
-				`entity/salesreturn?offset=${offset}?filter=moment>${dates.dateFrom};moment<${dates.dateTo}`
+				`entity/salesreturn?offset=${offset}&filter=moment>${dates.dateFrom};moment<${dates.dateTo}`
 			)
 
 			const salesreturns = response.data.rows

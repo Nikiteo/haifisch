@@ -43,7 +43,7 @@ exports.createPaymentin = exports.getPaymentin = void 0;
 var axios_1 = __importDefault(require("axios"));
 var service_1 = require("./service");
 var logger_1 = __importDefault(require("../../lib/logger"));
-var getPaymentin = function () { return __awaiter(void 0, void 0, void 0, function () {
+var getPaymentin = function (dates) { return __awaiter(void 0, void 0, void 0, function () {
     var getPaymentin_1, error_1, err;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -53,7 +53,7 @@ var getPaymentin = function () { return __awaiter(void 0, void 0, void 0, functi
                     var response, paymentins, _a, _b;
                     return __generator(this, function (_c) {
                         switch (_c.label) {
-                            case 0: return [4 /*yield*/, service_1.apiService.get("entity/paymentin?offset=".concat(offset))];
+                            case 0: return [4 /*yield*/, service_1.apiService.get("entity/paymentin?offset=".concat(offset, ";filter=moment>").concat(dates.dateFrom, ";moment<").concat(dates.dateTo))];
                             case 1:
                                 response = _c.sent();
                                 paymentins = response.data.rows;

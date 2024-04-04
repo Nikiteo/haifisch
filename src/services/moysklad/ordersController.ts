@@ -17,7 +17,7 @@ export const getCustomerOrders = async (dates: {
 			offset: number
 		): Promise<CustomerOrder[]> => {
 			const response = await apiService.get<ResponseMS<CustomerOrder>>(
-				`entity/customerorder?offset=${offset}?filter=moment>${dates.dateFrom};moment<${dates.dateTo}`
+				`entity/customerorder?offset=${offset}&filter=moment>${dates.dateFrom};moment<${dates.dateTo}`
 			)
 
 			const orders = response.data.rows

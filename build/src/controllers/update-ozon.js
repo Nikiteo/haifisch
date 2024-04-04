@@ -80,12 +80,28 @@ var prepareSalesreturn_1 = require("../utils/yandex/prepareSalesreturn");
 var utc_1 = __importDefault(require("dayjs/plugin/utc"));
 dayjs_1.default.extend(utc_1.default);
 var updateOzon = function (store, sendMessage) { return __awaiter(void 0, void 0, void 0, function () {
-    var filter, ordersProps, products, customerOrders, fboOrders, fbsOrders, fboReturns_1, fbsReturns_1, articlesFromMS, prices, fboAfterReturns_1, fbsAfterReturns_1, filteredFboOrders, filteredFbsOrders, preparedCustomerOrders_1, createdCustomerOrders, demands, ordersForDemands, preparedDemands, newDemands, paymentins, preparedPaymentins, salesReturn, preparedSalesReturn, uniqReturns, newSalesReturns, paymentouts, preparedPaymentouts, err_1;
+    var dates, filter, ordersProps, products, customerOrders, fboOrders, fbsOrders, fboReturns_1, fbsReturns_1, articlesFromMS, prices, fboAfterReturns_1, fbsAfterReturns_1, filteredFboOrders, filteredFbsOrders, preparedCustomerOrders_1, createdCustomerOrders, demands, ordersForDemands, preparedDemands, newDemands, paymentins, preparedPaymentins, salesReturn, preparedSalesReturn, uniqReturns, newSalesReturns, paymentouts, preparedPaymentouts, err_1;
     var _a, _b;
     return __generator(this, function (_c) {
         switch (_c.label) {
             case 0:
                 _c.trys.push([0, 19, , 20]);
+                dates = {
+                    dateFrom: (0, dayjs_1.default)()
+                        .set('hour', 0)
+                        .set('minute', 0)
+                        .set('second', 0)
+                        .set('milliseconds', 0)
+                        .subtract(4, 'month')
+                        .format('YYYY-MM-DD'),
+                    dateTo: (0, dayjs_1.default)()
+                        .set('hour', 0)
+                        .set('minute', 0)
+                        .set('second', 0)
+                        .set('milliseconds', 0)
+                        .add(1, 'month')
+                        .format('YYYY-MM-DD'),
+                };
                 filter = {
                     since: (0, dayjs_1.default)()
                         .set('hour', 0)
@@ -118,7 +134,7 @@ var updateOzon = function (store, sendMessage) { return __awaiter(void 0, void 0
             case 1:
                 products = _c.sent();
                 logger_1.default.info("[".concat(store, "]: \u041F\u043E\u043B\u0443\u0447\u0435\u043D\u044B \u0434\u0430\u043D\u043D\u044B\u0435 \u043F\u043E \u043F\u0440\u043E\u0434\u0443\u043A\u0442\u0430\u043C \u0438\u0437 \u041C\u0421..."));
-                return [4 /*yield*/, (0, ordersController_1.getCustomerOrders)()];
+                return [4 /*yield*/, (0, ordersController_1.getCustomerOrders)(dates)];
             case 2:
                 customerOrders = _c.sent();
                 logger_1.default.info("[".concat(store, "]: \u041F\u043E\u043B\u0443\u0447\u0435\u043D\u044B \u0434\u0430\u043D\u043D\u044B\u0435 \u043F\u043E \u0437\u0430\u043A\u0430\u0437\u0430\u043C \u0438\u0437 \u041C\u0421..."));
@@ -184,7 +200,7 @@ var updateOzon = function (store, sendMessage) { return __awaiter(void 0, void 0
                 return [4 /*yield*/, (0, ordersController_1.createCustomerOrder)(preparedCustomerOrders_1)];
             case 8:
                 createdCustomerOrders = _c.sent();
-                return [4 /*yield*/, (0, demandController_1.getDemands)()];
+                return [4 /*yield*/, (0, demandController_1.getDemands)(dates)];
             case 9:
                 demands = _c.sent();
                 logger_1.default.info("[".concat(store, "]: \u041F\u043E\u043B\u0443\u0447\u0430\u044E \u0434\u043E\u043A\u0443\u043C\u0435\u043D\u0442\u044B \u043E\u0442\u0433\u0440\u0443\u0437\u043E\u043A..."));
@@ -201,7 +217,7 @@ var updateOzon = function (store, sendMessage) { return __awaiter(void 0, void 0
             case 10:
                 newDemands = _c.sent();
                 logger_1.default.info("[".concat(store, "]: \u0421\u043E\u0437\u0434\u0430\u044E \u0434\u043E\u043A\u0443\u043C\u0435\u043D\u0442\u044B \u043E\u0442\u0433\u0440\u0443\u0437\u043E\u043A..."));
-                return [4 /*yield*/, (0, paymentinController_1.getPaymentin)()];
+                return [4 /*yield*/, (0, paymentinController_1.getPaymentin)(dates)];
             case 11:
                 paymentins = _c.sent();
                 logger_1.default.info("[".concat(store, "]: \u041F\u043E\u043B\u0443\u0447\u0430\u044E \u0434\u043E\u043A\u0443\u043C\u0435\u043D\u0442\u044B \u0432\u0445\u043E\u0434\u044F\u0449\u0438\u0445 \u043F\u043B\u0430\u0442\u0435\u0436\u0435\u0439..."));
@@ -212,7 +228,7 @@ var updateOzon = function (store, sendMessage) { return __awaiter(void 0, void 0
             case 12:
                 _c.sent();
                 logger_1.default.info("[".concat(store, "]: \u0421\u043E\u0437\u0434\u0430\u044E \u0434\u043E\u043A\u0443\u043C\u0435\u043D\u0442\u044B \u0432\u0445\u043E\u0434\u044F\u0449\u0438\u0445 \u043F\u043B\u0430\u0442\u0435\u0436\u0435\u0439..."));
-                return [4 /*yield*/, (0, salesreturnController_1.getSalesReturn)()];
+                return [4 /*yield*/, (0, salesreturnController_1.getSalesReturn)(dates)];
             case 13:
                 salesReturn = _c.sent();
                 logger_1.default.info("[".concat(store, "]: \u041F\u043E\u043B\u0443\u0447\u0430\u044E \u0434\u043E\u043A\u0443\u043C\u0435\u043D\u0442\u044B \u0432\u043E\u0437\u0432\u0440\u0430\u0442\u043E\u0432..."));
@@ -233,7 +249,7 @@ var updateOzon = function (store, sendMessage) { return __awaiter(void 0, void 0
             case 14:
                 newSalesReturns = _c.sent();
                 logger_1.default.info("[".concat(store, "]: \u0421\u043E\u0437\u0434\u0430\u044E \u0434\u043E\u043A\u0443\u043C\u0435\u043D\u0442\u044B \u0432\u043E\u0437\u0432\u0440\u0430\u0442\u043E\u0432..."));
-                return [4 /*yield*/, (0, paymentoutController_1.getPaymentout)()];
+                return [4 /*yield*/, (0, paymentoutController_1.getPaymentout)(dates)];
             case 15:
                 paymentouts = _c.sent();
                 logger_1.default.info("[".concat(store, "]: \u041F\u043E\u043B\u0443\u0447\u0430\u044E \u0434\u043E\u043A\u0443\u043C\u0435\u043D\u0442\u044B \u0438\u0441\u0445\u043E\u0434\u044F\u0449\u0438\u0445 \u043F\u043B\u0430\u0442\u0435\u0436\u0435\u0439..."));

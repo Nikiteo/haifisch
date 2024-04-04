@@ -38,7 +38,6 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.syncCommand = void 0;
 var bot_1 = require("../bot");
-var update_ozon_1 = require("../controllers/update-ozon");
 var update_yandex_1 = require("../controllers/update-yandex");
 var check_user_1 = require("./check-user");
 var syncCommand = function () {
@@ -49,7 +48,7 @@ var syncCommand = function () {
                 case 0:
                     username = ctx.from.username;
                     chatId = ctx.chat.id;
-                    if (!(0, check_user_1.checkUser)(username)) return [3 /*break*/, 5];
+                    if (!(0, check_user_1.checkUser)(username)) return [3 /*break*/, 3];
                     sendMessage = function (text) { return __awaiter(void 0, void 0, void 0, function () {
                         return __generator(this, function (_a) {
                             switch (_a.label) {
@@ -63,19 +62,16 @@ var syncCommand = function () {
                     return [4 /*yield*/, ctx.reply('Начал обновление...')];
                 case 1:
                     _a.sent();
-                    return [4 /*yield*/, (0, update_yandex_1.updateYandex)('Haifisch', sendMessage)];
+                    return [4 /*yield*/, (0, update_yandex_1.updateYandex)('Haifisch', sendMessage)
+                        //await updateYandex('Top', sendMessage)
+                        //await updateOzon('Ozon', sendMessage)
+                    ];
                 case 2:
                     _a.sent();
-                    return [4 /*yield*/, (0, update_yandex_1.updateYandex)('Top', sendMessage)];
-                case 3:
-                    _a.sent();
-                    return [4 /*yield*/, (0, update_ozon_1.updateOzon)('Ozon', sendMessage)];
-                case 4:
-                    _a.sent();
-                    return [3 /*break*/, 7];
-                case 5: return [4 /*yield*/, ctx.reply('Прости, но ты не можешь использовать меня')];
-                case 6: return [2 /*return*/, _a.sent()];
-                case 7: return [2 /*return*/];
+                    return [3 /*break*/, 5];
+                case 3: return [4 /*yield*/, ctx.reply('Прости, но ты не можешь использовать меня')];
+                case 4: return [2 /*return*/, _a.sent()];
+                case 5: return [2 /*return*/];
             }
         });
     }); });

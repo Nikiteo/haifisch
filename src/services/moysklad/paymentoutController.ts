@@ -14,7 +14,7 @@ export const getPaymentout = async (dates: {
 	try {
 		const getPaymentout = async (offset: number): Promise<Paymentout[]> => {
 			const response = await apiService.get<ResponseMS<Paymentout>>(
-				`entity/paymentout?offset=${offset}?filter=moment>${dates.dateFrom};moment<${dates.dateTo}`
+				`entity/paymentout?offset=${offset}&filter=moment>${dates.dateFrom};moment<${dates.dateTo}`
 			)
 
 			const paymentouts = response.data.rows
