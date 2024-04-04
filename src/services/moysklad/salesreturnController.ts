@@ -7,13 +7,16 @@ import {
 import { apiService } from './service'
 import Logger from '../../lib/logger'
 
-export const getSalesReturn = async (): Promise<SalesReturn[] | undefined> => {
+export const getSalesReturn = async (dates: {
+	dateFrom: string
+	dateTo: string
+}): Promise<SalesReturn[] | undefined> => {
 	try {
 		const getSalereturn = async (
 			offset: number
 		): Promise<SalesReturn[]> => {
 			const response = await apiService.get<ResponseMS<SalesReturn>>(
-				`entity/salesreturn?offset=${offset}`
+				`entity/salesreturn?offset=${offset}?filter=moment>${dates.dateFrom};moment<${dates.dateTo}`
 			)
 
 			const salesreturns = response.data.rows

@@ -49,6 +49,23 @@ export const updateOzon = async (
 	sendMessage: (text: string) => Promise<void>
 ): Promise<void> => {
 	try {
+		const dates = {
+			dateFrom: dayjs()
+				.set('hour', 0)
+				.set('minute', 0)
+				.set('second', 0)
+				.set('milliseconds', 0)
+				.subtract(4, 'month')
+				.format('YYYY-MM-DD'),
+			dateTo: dayjs()
+				.set('hour', 0)
+				.set('minute', 0)
+				.set('second', 0)
+				.set('milliseconds', 0)
+				.add(1, 'month')
+				.format('YYYY-MM-DD'),
+		}
+
 		const filter = {
 			since: dayjs()
 				.set('hour', 0)
@@ -82,7 +99,7 @@ export const updateOzon = async (
 
 		Logger.info(`[${store}]: Получены данные по продуктам из МС...`)
 
-		const customerOrders = await getCustomerOrders()
+		const customerOrders = await getCustomerOrders(dates)
 
 		Logger.info(`[${store}]: Получены данные по заказам из МС...`)
 
@@ -174,7 +191,7 @@ export const updateOzon = async (
 			preparedCustomerOrders
 		)
 
-		const demands = await getDemands()
+		const demands = await getDemands(dates)
 
 		Logger.info(`[${store}]: Получаю документы отгрузок...`)
 
@@ -203,7 +220,7 @@ export const updateOzon = async (
 
 		Logger.info(`[${store}]: Создаю документы отгрузок...`)
 
-		const paymentins = await getPaymentin()
+		const paymentins = await getPaymentin(dates)
 
 		Logger.info(`[${store}]: Получаю документы входящих платежей...`)
 
@@ -221,7 +238,7 @@ export const updateOzon = async (
 
 		Logger.info(`[${store}]: Создаю документы входящих платежей...`)
 
-		const salesReturn = await getSalesReturn()
+		const salesReturn = await getSalesReturn(dates)
 
 		Logger.info(`[${store}]: Получаю документы возвратов...`)
 
@@ -253,7 +270,7 @@ export const updateOzon = async (
 
 		Logger.info(`[${store}]: Создаю документы возвратов...`)
 
-		const paymentouts = await getPaymentout()
+		const paymentouts = await getPaymentout(dates)
 
 		Logger.info(`[${store}]: Получаю документы исходящих платежей...`)
 

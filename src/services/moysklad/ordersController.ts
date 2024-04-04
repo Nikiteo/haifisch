@@ -8,15 +8,16 @@ import {
 } from '../../types/msTypes'
 import Logger from '../../lib/logger'
 
-export const getCustomerOrders = async (): Promise<
-	CustomerOrder[] | undefined
-> => {
+export const getCustomerOrders = async (dates: {
+	dateFrom: string
+	dateTo: string
+}): Promise<CustomerOrder[] | undefined> => {
 	try {
 		const getCustomerOrder = async (
 			offset: number
 		): Promise<CustomerOrder[]> => {
 			const response = await apiService.get<ResponseMS<CustomerOrder>>(
-				`entity/customerorder?offset=${offset}`
+				`entity/customerorder?offset=${offset}?filter=moment>${dates.dateFrom};moment<${dates.dateTo}`
 			)
 
 			const orders = response.data.rows

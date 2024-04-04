@@ -7,11 +7,14 @@ import {
 import { apiService } from './service'
 import Logger from '../../lib/logger'
 
-export const getPaymentout = async (): Promise<Paymentout[] | undefined> => {
+export const getPaymentout = async (dates: {
+	dateFrom: string
+	dateTo: string
+}): Promise<Paymentout[] | undefined> => {
 	try {
 		const getPaymentout = async (offset: number): Promise<Paymentout[]> => {
 			const response = await apiService.get<ResponseMS<Paymentout>>(
-				`entity/paymentout?offset=${offset}`
+				`entity/paymentout?offset=${offset}?filter=moment>${dates.dateFrom};moment<${dates.dateTo}`
 			)
 
 			const paymentouts = response.data.rows
