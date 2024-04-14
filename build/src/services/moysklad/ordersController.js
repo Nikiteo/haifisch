@@ -53,9 +53,7 @@ var getCustomerOrders = function (dates) { return __awaiter(void 0, void 0, void
                     var response, orders, _a, _b;
                     return __generator(this, function (_c) {
                         switch (_c.label) {
-                            case 0:
-                                console.log("entity/customerorder?offset=".concat(offset, ";filter=moment>").concat(dates.dateFrom, ";moment<").concat(dates.dateTo));
-                                return [4 /*yield*/, service_1.apiService.get("entity/customerorder?offset=".concat(offset, ";filter=moment>").concat(dates.dateFrom, ";moment<").concat(dates.dateTo))];
+                            case 0: return [4 /*yield*/, service_1.apiService.get("entity/customerorder?offset=".concat(offset, "&filter=moment>").concat(dates.dateFrom, ";moment<").concat(dates.dateTo))];
                             case 1:
                                 response = _c.sent();
                                 orders = response.data.rows;

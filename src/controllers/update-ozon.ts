@@ -72,7 +72,7 @@ export const updateOzon = async (
 				.set('minute', 0)
 				.set('second', 0)
 				.set('milliseconds', 0)
-				.subtract(4, 'month')
+				.subtract(2, 'month')
 				.toISOString(),
 			to: dayjs()
 				.set('hour', 23)

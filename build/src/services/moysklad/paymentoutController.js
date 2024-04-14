@@ -53,7 +53,7 @@ var getPaymentout = function (dates) { return __awaiter(void 0, void 0, void 0, 
                     var response, paymentouts, _a, _b;
                     return __generator(this, function (_c) {
                         switch (_c.label) {
-                            case 0: return [4 /*yield*/, service_1.apiService.get("entity/paymentout?offset=".concat(offset, ";filter=moment>").concat(dates.dateFrom, ";moment<").concat(dates.dateTo))];
+                            case 0: return [4 /*yield*/, service_1.apiService.get("entity/paymentout?offset=".concat(offset, "&filter=moment>").concat(dates.dateFrom, ";moment<").concat(dates.dateTo))];
                             case 1:
                                 response = _c.sent();
                                 paymentouts = response.data.rows;

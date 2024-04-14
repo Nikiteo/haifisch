@@ -53,7 +53,7 @@ var getSalesReturn = function (dates) { return __awaiter(void 0, void 0, void 0,
                     var response, salesreturns, _a, _b;
                     return __generator(this, function (_c) {
                         switch (_c.label) {
-                            case 0: return [4 /*yield*/, service_1.apiService.get("entity/salesreturn?offset=".concat(offset, ";filter=moment>").concat(dates.dateFrom, ";moment<").concat(dates.dateTo))];
+                            case 0: return [4 /*yield*/, service_1.apiService.get("entity/salesreturn?offset=".concat(offset, "&filter=moment>").concat(dates.dateFrom, ";moment<").concat(dates.dateTo))];
                             case 1:
                                 response = _c.sent();
                                 salesreturns = response.data.rows;
