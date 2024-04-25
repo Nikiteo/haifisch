@@ -89,7 +89,7 @@ var getSalesReturn = function (dates) { return __awaiter(void 0, void 0, void 0,
 }); };
 exports.getSalesReturn = getSalesReturn;
 var createSalesReturn = function (salesReturns) { return __awaiter(void 0, void 0, void 0, function () {
-    var response, error_2, err, errorsFiltered_1, errors;
+    var response, error_2, err, errorsFiltered_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -107,11 +107,7 @@ var createSalesReturn = function (salesReturns) { return __awaiter(void 0, void 
                     }
                     else {
                         errorsFiltered_1 = err.response.data.filter(function (item) { return item.errors; });
-                        errors = err.response.data.filter(function (item) {
-                            return errorsFiltered_1.some(function (errItem) { return item.name === errItem.name; });
-                        });
                         logger_1.default.error("\u0412 \u0437\u0430\u043F\u0440\u043E\u0441\u0435 ".concat(err.response.config.url, " \u043D\u0430\u0439\u0434\u0435\u043D\u043E \u043E\u0448\u0438\u0431\u043E\u043A: ").concat(errorsFiltered_1.length));
-                        logger_1.default.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043D\u0430\u0439\u0434\u0435\u043D\u0430 \u0432 \u0437\u0430\u043A\u0430\u0437\u0430\u0445 \u0441 \u043D\u043E\u043C\u0435\u0440\u0430\u043C\u0438 - ".concat(errors.map(function (err) { return err.name; })));
                         return [2 /*return*/, err.response.data.filter(function (item) {
                                 return errorsFiltered_1.some(function (errItem) { return item.name !== errItem.name; });
                             })];
