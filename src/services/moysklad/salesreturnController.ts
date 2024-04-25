@@ -63,14 +63,16 @@ export const createSalesReturn = async (
 				const errorsFiltered = err.response.data.filter(
 					(item: any) => item.errors
 				)
-				Logger.error(
-					`В запросе ${err.response.config.url} найдено ошибок: ${errorsFiltered.length}`
-				)
-				return err.response.data.filter((item: any) =>
-					errorsFiltered.some(
-						(errItem: any) => item.name !== errItem.name
+				if (errorsFiltered.length > 0) {
+					Logger.error(
+						`В запросе ${err.response.config.url} найдено ошибок: ${errorsFiltered.length}`
 					)
-				)
+					return err.response.data.filter((item: any) =>
+						errorsFiltered.some(
+							(errItem: any) => item.name !== errItem.name
+						)
+					)
+				}
 			}
 		} else {
 			Logger.error('different error than axios')
