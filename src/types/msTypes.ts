@@ -196,14 +196,15 @@ export interface Store {
 
 export interface ShipmentAddressFull {
 	postalCode?: string
-	country: {
+	country?: {
 		meta: Meta
 	}
 	region?: string
-	city: string
+	city?: string
 	street?: string
 	apartment?: string
 	house?: string
+	addInfo?: string
 }
 
 export interface Project {

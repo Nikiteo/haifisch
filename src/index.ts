@@ -20,7 +20,7 @@ const store = {
 void bot.telegram.setMyCommands([
 	{ command: '/sync', description: 'Синхронизировать' },
 	{ command: '/spend', description: 'Записать трату' },
-	{ command: '/stocks', description: 'Проверить остатки' },
+	// { command: '/stocks', description: 'Проверить остатки' },
 ])
 
 Logger.info('Bot started!')

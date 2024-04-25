@@ -255,6 +255,18 @@ export const sourceStore = {
 	},
 }
 
+export const sberStore = {
+	meta: {
+		href: 'https://api.moysklad.ru/api/remap/1.2/entity/store/bdbba638-d153-11ee-0a80-156c00051ec2',
+		metadataHref:
+			'https://api.moysklad.ru/api/remap/1.2/entity/store/metadata',
+		type: 'store',
+		mediaType: 'application/json',
+		uuidHref:
+			'https://online.moysklad.ru/app/#warehouse/edit?id=bdbba638-d153-11ee-0a80-156c00051ec2',
+	},
+}
+
 export const fbsHfRefund = {
 	meta: {
 		href: 'https://api.moysklad.ru/api/remap/1.2/entity/store/12a929db-980c-11ee-0a80-04d80038a3a3',
@@ -531,6 +543,18 @@ export const salesChannels = {
 	},
 }
 
+export const sberSalesChannel = {
+	meta: {
+		href: 'https://api.moysklad.ru/api/remap/1.2/entity/saleschannel/c86fa6c4-d153-11ee-0a80-06b8000577b2',
+		metadataHref:
+			'https://api.moysklad.ru/api/remap/1.2/entity/saleschannel/metadata',
+		type: 'saleschannel',
+		mediaType: 'application/json',
+		uuidHref:
+			'https://online.moysklad.ru/app/#saleschannel/edit?id=c86fa6c4-d153-11ee-0a80-06b8000577b2',
+	},
+}
+
 export const agent = {
 	meta: {
 		href: 'https://api.moysklad.ru/api/remap/1.2/entity/counterparty/2d059b74-92a6-11ee-0a80-145a0044e87e',
@@ -552,6 +576,18 @@ export const ozonAgent = {
 		mediaType: 'application/json',
 		uuidHref:
 			'https://online.moysklad.ru/app/#company/edit?id=50f00f03-9830-11ee-0a80-11fb0042a37d',
+	},
+}
+
+export const sberAgent = {
+	meta: {
+		href: 'https://api.moysklad.ru/api/remap/1.2/entity/counterparty/5b13b2d1-d154-11ee-0a80-02ac0005189e',
+		metadataHref:
+			'https://api.moysklad.ru/api/remap/1.2/entity/counterparty/metadata',
+		type: 'counterparty',
+		mediaType: 'application/json',
+		uuidHref:
+			'https://online.moysklad.ru/app/#company/edit?id=5b13b2d1-d154-11ee-0a80-02ac0005189e',
 	},
 }
 
@@ -624,6 +660,18 @@ export const fbyHfProject = {
 		mediaType: 'application/json',
 		uuidHref:
 			'https://online.moysklad.ru/app/#project/edit?id=e76ac9c9-f558-11ed-0a80-0267001dbec5',
+	},
+}
+
+export const sberProject = {
+	meta: {
+		href: 'https://api.moysklad.ru/api/remap/1.2/entity/project/d0c21ffb-d153-11ee-0a80-156c0005272d',
+		metadataHref:
+			'https://api.moysklad.ru/api/remap/1.2/entity/project/metadata',
+		type: 'project',
+		mediaType: 'application/json',
+		uuidHref:
+			'https://online.moysklad.ru/app/#project/edit?id=d0c21ffb-d153-11ee-0a80-156c0005272d',
 	},
 }
 

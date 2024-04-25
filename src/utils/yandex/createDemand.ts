@@ -1,5 +1,6 @@
-import { consignee, ozonAgent, carrier } from '../../database'
+import { consignee, ozonAgent, carrier, sberAgent } from '../../database'
 import {
+	type Meta,
 	type Attribute,
 	type CustomerOrder,
 	type Demand,
@@ -50,6 +51,21 @@ export const createOverhadSum = (
 	return parseFloat((sumOfComissions * 100).toFixed(2))
 }
 
+const createCarrier = (
+	place?: string
+): {
+	meta: Meta
+} => {
+	switch (place) {
+		case 'OZON':
+			return ozonAgent
+		case 'SBER':
+			return sberAgent
+		default:
+			return carrier
+	}
+}
+
 export const createDemand = (order: CustomerOrder, place?: string): Demand => {
 	const {
 		meta,
@@ -89,7 +105,7 @@ export const createDemand = (order: CustomerOrder, place?: string): Demand => {
 			distribution: 'price',
 		},
 		consignee,
-		carrier: place === 'OZON' ? ozonAgent : carrier,
+		carrier: createCarrier(place),
 		moment: order.deliveryPlannedMoment,
 	}
 }

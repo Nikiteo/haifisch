@@ -35,41 +35,41 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createDemand = exports.getDemands = void 0;
+exports.getSberOrders = exports.getSberShipments = void 0;
 var axios_1 = __importDefault(require("axios"));
 var service_1 = require("./service");
 var logger_1 = __importDefault(require("../../lib/logger"));
-var getDemands = function (dates) { return __awaiter(void 0, void 0, void 0, function () {
-    var getDemand_1, error_1, err;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
+var getSberShipments = function (_a) { return __awaiter(void 0, void 0, void 0, function () {
+    var data, response, error_1, err;
+    var props = __rest(_a, []);
+    return __generator(this, function (_b) {
+        switch (_b.label) {
             case 0:
-                _a.trys.push([0, 2, , 3]);
-                getDemand_1 = function (offset) { return __awaiter(void 0, void 0, void 0, function () {
-                    var response, demands, _a, _b;
-                    return __generator(this, function (_c) {
-                        switch (_c.label) {
-                            case 0: return [4 /*yield*/, service_1.apiService.get("entity/demand?offset=".concat(offset, "&filter=moment>").concat(dates.dateFrom, ";moment<").concat(dates.dateTo))];
-                            case 1:
-                                response = _c.sent();
-                                demands = response.data.rows;
-                                if (!(response.data.meta.size >
-                                    response.data.meta.limit + response.data.meta.offset)) return [3 /*break*/, 3];
-                                _b = (_a = demands).concat;
-                                return [4 /*yield*/, getDemand_1(1000)];
-                            case 2: return [2 /*return*/, _b.apply(_a, [_c.sent()])];
-                            case 3: return [2 /*return*/, demands];
-                        }
-                    });
-                }); };
-                return [4 /*yield*/, getDemand_1(0)];
-            case 1: return [2 /*return*/, _a.sent()];
+                data = JSON.stringify(props);
+                _b.label = 1;
+            case 1:
+                _b.trys.push([1, 3, , 4]);
+                return [4 /*yield*/, service_1.apiService.get('search', { data: data })];
             case 2:
-                error_1 = _a.sent();
+                response = _b.sent();
+                return [2 /*return*/, response.data.data.shipments];
+            case 3:
+                error_1 = _b.sent();
                 err = error_1;
                 if (axios_1.default.isAxiosError(err)) {
                     if ((err === null || err === void 0 ? void 0 : err.response) == null || err.code === null) {
@@ -82,47 +82,43 @@ var getDemands = function (dates) { return __awaiter(void 0, void 0, void 0, fun
                 else {
                     logger_1.default.error('different error than axios');
                 }
-                return [3 /*break*/, 3];
-            case 3: return [2 /*return*/];
+                return [3 /*break*/, 4];
+            case 4: return [2 /*return*/];
         }
     });
 }); };
-exports.getDemands = getDemands;
-var createDemand = function (demands) { return __awaiter(void 0, void 0, void 0, function () {
-    var response, error_2, err, errorsFiltered_1, errors;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
+exports.getSberShipments = getSberShipments;
+var getSberOrders = function (_a) { return __awaiter(void 0, void 0, void 0, function () {
+    var data, response, error_2, err;
+    var props = __rest(_a, []);
+    return __generator(this, function (_b) {
+        switch (_b.label) {
             case 0:
-                _a.trys.push([0, 2, , 3]);
-                return [4 /*yield*/, service_1.apiService.post('entity/demand', demands)];
+                data = JSON.stringify(props);
+                _b.label = 1;
             case 1:
-                response = _a.sent();
-                return [2 /*return*/, response.data];
+                _b.trys.push([1, 3, , 4]);
+                return [4 /*yield*/, service_1.apiService.get('get', { data: data })];
             case 2:
-                error_2 = _a.sent();
+                response = _b.sent();
+                return [2 /*return*/, response.data.data.shipments];
+            case 3:
+                error_2 = _b.sent();
                 err = error_2;
                 if (axios_1.default.isAxiosError(err)) {
                     if ((err === null || err === void 0 ? void 0 : err.response) == null || err.code === null) {
                         logger_1.default.error('No response');
                     }
                     else {
-                        errorsFiltered_1 = err.response.data.filter(function (item) { return item.errors; });
-                        errors = err.response.data.filter(function (item) {
-                            return errorsFiltered_1.some(function (errItem) { return item.name === errItem.name; });
-                        });
-                        logger_1.default.error("\u0412 \u0437\u0430\u043F\u0440\u043E\u0441\u0435 ".concat(err.response.config.url, " \u043D\u0430\u0439\u0434\u0435\u043D\u043E \u043E\u0448\u0438\u0431\u043E\u043A: ").concat(errorsFiltered_1.length));
-                        logger_1.default.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043D\u0430\u0439\u0434\u0435\u043D\u0430 \u0432 \u0437\u0430\u043A\u0430\u0437\u0430\u0445 \u0441 \u043D\u043E\u043C\u0435\u0440\u0430\u043C\u0438 - ".concat(errors.map(function (err) { return err.name; })));
-                        return [2 /*return*/, err.response.data.filter(function (item) {
-                                return errorsFiltered_1.some(function (errItem) { return item.name !== errItem.name; });
-                            })];
+                        logger_1.default.error(err.response.data);
                     }
                 }
                 else {
                     logger_1.default.error('different error than axios');
                 }
-                return [3 /*break*/, 3];
-            case 3: return [2 /*return*/];
+                return [3 /*break*/, 4];
+            case 4: return [2 /*return*/];
         }
     });
 }); };
-exports.createDemand = createDemand;
+exports.getSberOrders = getSberOrders;

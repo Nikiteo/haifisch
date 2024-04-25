@@ -54,10 +54,10 @@ var createCustomerOrderFbo = function (order, boughtProducts, prices) {
         group: database_1.group,
         name: order.posting_number,
         moment: (0, dayjs_1.default)(order.created_at)
-            .subtract(3, 'hour')
+            // .subtract(3, 'hour')
             .format('YYYY-MM-DD HH:mm:ss.SSS'),
         deliveryPlannedMoment: (0, dayjs_1.default)(order.created_at)
-            .subtract(3, 'hour')
+            // .subtract(3, 'hour')
             .add(1, 'day')
             .format('YYYY-MM-DD HH:mm:ss.SSS'),
         applicable: true,

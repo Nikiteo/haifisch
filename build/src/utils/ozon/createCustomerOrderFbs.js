@@ -58,7 +58,7 @@ var createCustomerOrderFbs = function (order, boughtProducts, prices) {
         group: database_1.group,
         name: order.posting_number,
         moment: (0, dayjs_1.default)(order.in_process_at)
-            .subtract(3, 'hour')
+            // .subtract(3, 'hour')
             .format('YYYY-MM-DD HH:mm:ss.SSS'),
         applicable: true,
         rate: {
@@ -118,8 +118,8 @@ var createCustomerOrderFbs = function (order, boughtProducts, prices) {
         vatIncluded: true,
         vatSum: 0.0,
         deliveryPlannedMoment: (0, dayjs_1.default)(order.shipment_date)
-            .subtract(3, 'hour')
-            .add(10, 'hour')
+            // .subtract(3, 'hour')
+            // .add(10, 'hour')
             .format('YYYY-MM-DD HH:mm:ss.SSS'),
         shipmentAddressFull: {
             country: database_1.country,

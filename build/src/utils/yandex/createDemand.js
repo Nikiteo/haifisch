@@ -48,6 +48,16 @@ var createOverhadSum = function (attributes, place) {
     return parseFloat((sumOfComissions * 100).toFixed(2));
 };
 exports.createOverhadSum = createOverhadSum;
+var createCarrier = function (place) {
+    switch (place) {
+        case 'OZON':
+            return database_1.ozonAgent;
+        case 'SBER':
+            return database_1.sberAgent;
+        default:
+            return database_1.carrier;
+    }
+};
 var createDemand = function (order, place) {
     var meta = order.meta, id = order.id, accountId = order.accountId, applicable = order.applicable, attributes = order.attributes, owner = order.owner, organizationAccount = order.organizationAccount, deliveryPlannedMoment = order.deliveryPlannedMoment, externalCode = order.externalCode, syncId = order.syncId, updated = order.updated, state = order.state, sum = order.sum, agentAccount = order.agentAccount, created = order.created, printed = order.printed, published = order.published, reservedSum = order.reservedSum, payedSum = order.payedSum, shippedSum = order.shippedSum, invoicedSum = order.invoicedSum, rest = __rest(order, ["meta", "id", "accountId", "applicable", "attributes", "owner", "organizationAccount", "deliveryPlannedMoment", "externalCode", "syncId", "updated", "state", "sum", "agentAccount", "created", "printed", "published", "reservedSum", "payedSum", "shippedSum", "invoicedSum"]);
     return __assign(__assign({}, rest), { customerOrder: {
@@ -57,6 +67,6 @@ var createDemand = function (order, place) {
                 ? (0, exports.createOverhadSum)(order.attributes, place)
                 : 0,
             distribution: 'price',
-        }, consignee: database_1.consignee, carrier: place === 'OZON' ? database_1.ozonAgent : database_1.carrier, moment: order.deliveryPlannedMoment });
+        }, consignee: database_1.consignee, carrier: createCarrier(place), moment: order.deliveryPlannedMoment });
 };
 exports.createDemand = createDemand;
