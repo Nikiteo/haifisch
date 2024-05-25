@@ -83,4 +83,6 @@ bot_1.bot.start(function (ctx) { return __awaiter(void 0, void 0, void 0, functi
 (0, articlesAction_1.articlesAction)(store);
 (0, afterArticlesAction_1.afterArticlesAction)(store);
 (0, onText_1.onText)(store);
-void bot_1.bot.launch();
+void bot_1.bot.launch({
+    dropPendingUpdates: true
+});

@@ -39,4 +39,6 @@ articlesAction(store)
 afterArticlesAction(store)
 onText(store)
 
-void bot.launch()
+void bot.launch({
+	dropPendingUpdates: true
+})
