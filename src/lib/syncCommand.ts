@@ -17,10 +17,10 @@ export const syncCommand = (): void => {
 				await ctx.telegram.sendMessage(chatId, text)
 			}
 			await ctx.reply('Начал обновление...')
-			await updateYandex('Haifisch', sendMessage)
-			await updateYandex('Top', sendMessage)
 			await updateOzon('Ozon', sendMessage)
 			await updateSber('Sber', sendMessage)
+			await updateYandex('Haifisch', sendMessage)
+			await updateYandex('Top', sendMessage)
 		} else {
 			return await ctx.reply('Прости, но ты не можешь использовать меня')
 		}
