@@ -56,7 +56,7 @@ var getNewOrders = function (store, id) { return __awaiter(void 0, void 0, void 
                     var response, orders, _a, _b;
                     return __generator(this, function (_c) {
                         switch (_c.label) {
-                            case 0: return [4 /*yield*/, service.get("campaigns/".concat(id, "/orders?").concat(page))];
+                            case 0: return [4 /*yield*/, service.get("campaigns/".concat(id, "/orders?page=").concat(page))];
                             case 1:
                                 response = _c.sent();
                                 orders = response.data;

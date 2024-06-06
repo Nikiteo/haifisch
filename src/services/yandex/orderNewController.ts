@@ -16,7 +16,7 @@ export const getNewOrders = async (
 	try {
 		const getNewOrder = async (page: number): Promise<NewOrder[]> => {
 			const response = await service.get<NewOrderResponse>(
-				`campaigns/${id}/orders?${page}`
+				`campaigns/${id}/orders?page=${page}`
 			)
 			const orders = response.data
 
