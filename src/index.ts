@@ -6,6 +6,7 @@ import { onText } from './lib/onText'
 import { afterArticlesAction } from './lib/afterArticlesAction'
 import { syncCommand } from './lib/syncCommand'
 import { stocksCommand } from './lib/stocksCommand'
+import { remainingCommand } from './controllers/remainingCommand'
 
 const store = {
 	username: '',
@@ -20,6 +21,7 @@ const store = {
 void bot.telegram.setMyCommands([
 	{ command: '/sync', description: 'Синхронизировать' },
 	{ command: '/spend', description: 'Записать трату' },
+	{ command: '/remainings', description: 'Покажи остатки' },
 	// { command: '/stocks', description: 'Проверить остатки' },
 ])
 
@@ -34,11 +36,12 @@ bot.start(async ctx => {
 
 syncCommand()
 spendCommand(store)
+remainingCommand()
 stocksCommand()
 articlesAction(store)
 afterArticlesAction(store)
 onText(store)
 
 void bot.launch({
-	dropPendingUpdates: true
+	dropPendingUpdates: true,
 })

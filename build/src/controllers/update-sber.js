@@ -76,7 +76,7 @@ var updateSber = function (store, sendMessage) { return __awaiter(void 0, void 0
                         .set('minute', 0)
                         .set('second', 0)
                         .set('milliseconds', 0)
-                        .subtract(1, 'month')
+                        .subtract(2, 'month')
                         .format('YYYY-MM-DD'),
                     dateTo: (0, dayjs_1.default)()
                         .set('hour', 23)

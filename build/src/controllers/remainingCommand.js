@@ -39,54 +39,47 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.syncCommand = void 0;
+exports.remainingCommand = void 0;
 var bot_1 = require("../bot");
-var update_ozon_1 = require("../controllers/update-ozon");
-var update_sber_1 = require("../controllers/update-sber");
-var update_yandex_1 = require("../controllers/update-yandex");
-var check_user_1 = require("./check-user");
-var logger_1 = __importDefault(require("./logger"));
-var syncCommand = function () {
-    bot_1.bot.command('sync', function (ctx) { return __awaiter(void 0, void 0, void 0, function () {
-        var username, chatId, sendMessage;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
+var check_user_1 = require("../lib/check-user");
+var logger_1 = __importDefault(require("../lib/logger"));
+var remainingController_1 = require("../services/moysklad/remainingController");
+var remainingCommand = function () {
+    bot_1.bot.command('remainings', function (ctx) { return __awaiter(void 0, void 0, void 0, function () {
+        var username, remainings, response, err_1;
+        var _a;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
                 case 0:
                     username = ctx.from.username;
-                    chatId = ctx.chat.id;
                     logger_1.default.info("\u0411\u043E\u0442 \u043F\u044B\u0442\u0430\u043B\u0441\u044F \u0437\u0430\u043F\u0443\u0441\u0442\u0438\u0442\u044C: ".concat(username, " \u0441 \u0442\u0435\u043A\u0441\u0442\u043E\u043C ").concat(ctx.message.text));
                     if (!(0, check_user_1.checkUser)(username)) return [3 /*break*/, 6];
-                    sendMessage = function (text) { return __awaiter(void 0, void 0, void 0, function () {
-                        return __generator(this, function (_a) {
-                            switch (_a.label) {
-                                case 0: return [4 /*yield*/, ctx.telegram.sendMessage(chatId, text)];
-                                case 1:
-                                    _a.sent();
-                                    return [2 /*return*/];
-                            }
-                        });
-                    }); };
-                    return [4 /*yield*/, ctx.reply('Начал обновление...')];
+                    _b.label = 1;
                 case 1:
-                    _a.sent();
-                    return [4 /*yield*/, (0, update_ozon_1.updateOzon)('Ozon', sendMessage)];
+                    _b.trys.push([1, 4, , 5]);
+                    return [4 /*yield*/, (0, remainingController_1.getRemainingGoods)()];
                 case 2:
-                    _a.sent();
-                    return [4 /*yield*/, (0, update_sber_1.updateSber)('Sber', sendMessage)];
-                case 3:
-                    _a.sent();
-                    return [4 /*yield*/, (0, update_yandex_1.updateYandex)('Haifisch', sendMessage)];
+                    remainings = _b.sent();
+                    response = (_a = remainings === null || remainings === void 0 ? void 0 : remainings.rows) === null || _a === void 0 ? void 0 : _a.map(function (row) {
+                        if (row.quantity.toString().includes('-')) {
+                            return "[".concat(row.name, ": ").concat(row.quantity, " ").concat(row.uom.name, "](").concat(row.meta.uuidHref, ")\n");
+                        }
+                        return "".concat(row.name, ": ").concat(row.quantity, " ").concat(row.uom.name, "\n");
+                    });
+                    return [4 /*yield*/, ctx.reply("".concat(response === null || response === void 0 ? void 0 : response.join('\n')), {
+                            parse_mode: 'Markdown',
+                        })];
+                case 3: return [2 /*return*/, _b.sent()];
                 case 4:
-                    _a.sent();
-                    return [4 /*yield*/, (0, update_yandex_1.updateYandex)('Top', sendMessage)];
-                case 5:
-                    _a.sent();
-                    return [3 /*break*/, 8];
+                    err_1 = _b.sent();
+                    logger_1.default.error("[\u041E\u0448\u0438\u0431\u043A\u0430]: ".concat(err_1));
+                    return [3 /*break*/, 5];
+                case 5: return [3 /*break*/, 8];
                 case 6: return [4 /*yield*/, ctx.reply('Прости, но ты не можешь использовать меня')];
-                case 7: return [2 /*return*/, _a.sent()];
+                case 7: return [2 /*return*/, _b.sent()];
                 case 8: return [2 /*return*/];
             }
         });
     }); });
 };
-exports.syncCommand = syncCommand;
+exports.remainingCommand = remainingCommand;

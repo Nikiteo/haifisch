@@ -39,53 +39,37 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var logger_1 = __importDefault(require("./lib/logger"));
-var spendCommand_1 = require("./lib/spendCommand");
-var bot_1 = require("./bot");
-var articlesAction_1 = require("./lib/articlesAction");
-var onText_1 = require("./lib/onText");
-var afterArticlesAction_1 = require("./lib/afterArticlesAction");
-var syncCommand_1 = require("./lib/syncCommand");
-var stocksCommand_1 = require("./lib/stocksCommand");
-var remainingCommand_1 = require("./controllers/remainingCommand");
-var store = {
-    username: '',
-    project: '',
-    sum: '',
-    description: '',
-    expenseItem: '',
-    cashOutQuestionId: 0,
-    whatBuyedQuestion: 0,
-};
-void bot_1.bot.telegram.setMyCommands([
-    { command: '/sync', description: 'Синхронизировать' },
-    { command: '/spend', description: 'Записать трату' },
-    { command: '/remainings', description: 'Покажи остатки' },
-    // { command: '/stocks', description: 'Проверить остатки' },
-]);
-logger_1.default.info('Bot started!');
-bot_1.bot.start(function (ctx) { return __awaiter(void 0, void 0, void 0, function () {
-    var username, text;
+exports.getRemainingGoods = void 0;
+var axios_1 = __importDefault(require("axios"));
+var logger_1 = __importDefault(require("../../lib/logger"));
+var service_1 = require("./service");
+var getRemainingGoods = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var response, error_1, err;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                username = ctx.from.username;
-                text = ctx.message.text;
-                logger_1.default.info("\u0411\u043E\u0442 \u043F\u044B\u0442\u0430\u043B\u0441\u044F \u0437\u0430\u043F\u0443\u0441\u0442\u0438\u0442\u044C: ".concat(username, " \u0441 \u0442\u0435\u043A\u0441\u0442\u043E\u043C ").concat(text));
-                return [4 /*yield*/, ctx.reply('Добро пожаловать в телеграм бот Haifisch')];
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, service_1.apiService.get('report/stock/all?filter=productFolder=https://api.moysklad.ru/api/remap/1.2/entity/productfolder/00002a80-94c3-11ee-0a80-0b9c001d1240')];
             case 1:
-                _a.sent();
-                return [2 /*return*/];
+                response = _a.sent();
+                return [2 /*return*/, response.data];
+            case 2:
+                error_1 = _a.sent();
+                err = error_1;
+                if (axios_1.default.isAxiosError(err)) {
+                    if ((err === null || err === void 0 ? void 0 : err.response) == null || err.code === null) {
+                        logger_1.default.error('No response');
+                    }
+                    else {
+                        logger_1.default.error(err.response.data);
+                    }
+                }
+                else {
+                    logger_1.default.error('different error than axios');
+                }
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
         }
     });
-}); });
-(0, syncCommand_1.syncCommand)();
-(0, spendCommand_1.spendCommand)(store);
-(0, remainingCommand_1.remainingCommand)();
-(0, stocksCommand_1.stocksCommand)();
-(0, articlesAction_1.articlesAction)(store);
-(0, afterArticlesAction_1.afterArticlesAction)(store);
-(0, onText_1.onText)(store);
-void bot_1.bot.launch({
-    dropPendingUpdates: true,
-});
+}); };
+exports.getRemainingGoods = getRemainingGoods;

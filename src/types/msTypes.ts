@@ -93,6 +93,7 @@ export interface Group {
 
 export interface Uom {
 	meta: Meta
+	name?: string
 }
 
 export interface Images {
@@ -520,4 +521,48 @@ export interface Cashout {
 	paymentPurpose?: string
 	vatSum?: number
 	expenseItem?: ExpenseItem
+}
+
+export interface Remainings {
+	meta: Meta
+	stock: number
+	inTransit: number
+	reserve: number
+	quantity: number
+	name: string
+	code: string
+	price: number
+	salePrice: number
+	uom: Uom
+	folder: Folder
+	externalCode: string
+	stockDays: number
+	article?: string
+	image?: Image
+}
+
+export interface Folder {
+	meta: Meta
+	name: string
+}
+
+export interface Image {
+	meta: Meta
+	title: string
+	filename: string
+	size: number
+	updated: string
+	miniature: Miniature
+	tiny: Tiny
+}
+
+export interface Miniature {
+	href: string
+	mediaType: string
+	downloadHref: string
+}
+
+export interface Tiny {
+	href: string
+	mediaType: string
 }
