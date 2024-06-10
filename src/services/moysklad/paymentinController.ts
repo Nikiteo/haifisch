@@ -59,14 +59,14 @@ export const createPaymentin = async (
 				Logger.error('No response')
 			} else {
 				if (err.response.data.length > 0) {
-					const errorsFiltered = err.response.data.filter(
+					const errorsFiltered = err.response.data?.filter(
 						(item: any) => item.errors
 					)
 					if (errorsFiltered.length > 0) {
 						Logger.error(
 							`В запросе ${err.response.config.url} найдено ошибок: ${errorsFiltered.length}`
 						)
-						return err.response.data.filter((item: any) =>
+						return err.response.data?.filter((item: any) =>
 							errorsFiltered.some(
 								(errItem: any) => item.name !== errItem.name
 							)

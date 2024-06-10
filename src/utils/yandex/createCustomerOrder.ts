@@ -22,20 +22,9 @@ dayjs.extend(customParseFormat)
 const createMoment = (delivery: Delivery): string => {
 	return dayjs(
 		dayjs(dayjs(delivery.shipments[0].shipmentDate, 'DD-MM-YYYY'))
-			.set(
-				'hour',
-				delivery.shipments[0]?.shipmentTime !== undefined &&
-					delivery.shipments[0]?.shipmentTime.length > 0
-					? Number(delivery.shipments[0]?.shipmentTime.split(':')[0])
-					: 0
-			)
-			.set(
-				'minute',
-				delivery.shipments[0]?.shipmentTime !== undefined &&
-					delivery.shipments[0]?.shipmentTime.length > 0
-					? Number(delivery.shipments[0]?.shipmentTime.split(':')[1])
-					: 0
-			)
+			.set('hour', 17)
+			.set('minute', 0)
+			.set('second', 0)
 	).format('YYYY-MM-DD HH:mm:ss.SSS')
 }
 
