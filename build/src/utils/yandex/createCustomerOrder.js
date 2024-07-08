@@ -14,16 +14,10 @@ var preparePositions_1 = require("./preparePositions");
 var prepareStatusesForCustomerOrders_1 = require("./prepareStatusesForCustomerOrders");
 dayjs_1.default.extend(customParseFormat_1.default);
 var createMoment = function (delivery) {
-    var _a, _b, _c, _d, _e, _f;
     return (0, dayjs_1.default)((0, dayjs_1.default)((0, dayjs_1.default)(delivery.shipments[0].shipmentDate, 'DD-MM-YYYY'))
-        .set('hour', ((_a = delivery.shipments[0]) === null || _a === void 0 ? void 0 : _a.shipmentTime) !== undefined &&
-        ((_b = delivery.shipments[0]) === null || _b === void 0 ? void 0 : _b.shipmentTime.length) > 0
-        ? Number((_c = delivery.shipments[0]) === null || _c === void 0 ? void 0 : _c.shipmentTime.split(':')[0])
-        : 0)
-        .set('minute', ((_d = delivery.shipments[0]) === null || _d === void 0 ? void 0 : _d.shipmentTime) !== undefined &&
-        ((_e = delivery.shipments[0]) === null || _e === void 0 ? void 0 : _e.shipmentTime.length) > 0
-        ? Number((_f = delivery.shipments[0]) === null || _f === void 0 ? void 0 : _f.shipmentTime.split(':')[1])
-        : 0)).format('YYYY-MM-DD HH:mm:ss.SSS');
+        .set('hour', 17)
+        .set('minute', 0)
+        .set('second', 0)).format('YYYY-MM-DD HH:mm:ss.SSS');
 };
 var createCustomerOrder = function (domain, order, boughtProducts, type) {
     var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l;

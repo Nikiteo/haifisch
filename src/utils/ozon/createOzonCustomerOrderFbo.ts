@@ -41,7 +41,8 @@ const prepareComissions = (
 				prices.forEach(price => {
 					if (price.offer_id === cur.offer_id) {
 						acc.push(
-							price.commissions.fbo_direct_flow_trans_max_amount
+							price.commissions.fbo_direct_flow_trans_max_amount *
+								cur.quantity
 						)
 					}
 				})
