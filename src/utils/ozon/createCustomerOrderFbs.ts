@@ -6,12 +6,12 @@ import {
 	states,
 	group,
 	currency,
-	fbsOzonStore,
 	fbosOzonProject,
 	ozonAgent,
 	organization,
 	country,
 	ozonSalesChannel,
+	fbsStore,
 } from '../../database'
 import {
 	type Product,
@@ -119,7 +119,7 @@ export const createCustomerOrderFbs = (
 		rate: {
 			currency,
 		},
-		store: fbsOzonStore,
+		store: fbsStore,
 		project: fbosOzonProject,
 		agent: ozonAgent,
 		attributes: [

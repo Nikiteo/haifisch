@@ -1,9 +1,4 @@
-import {
-	fbsHfStore,
-	fbsTopStore,
-	fbyHfStore,
-	fbyTopStore,
-} from '../../database'
+import { fbsStore, fbyHfStore, fbyTopStore } from '../../database'
 import { type Store } from '../../types/msTypes'
 
 export const getStore = (domain: string, type: string): Store => {
@@ -11,11 +6,11 @@ export const getStore = (domain: string, type: string): Store => {
 		if (type === 'FBY') {
 			return fbyHfStore
 		}
-		return fbsHfStore
+		return fbsStore
 	} else {
 		if (type === 'FBY') {
 			return fbyTopStore
 		}
-		return fbsTopStore
+		return fbsStore
 	}
 }

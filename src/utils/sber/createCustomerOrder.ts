@@ -7,8 +7,8 @@ import {
 	sberAgent,
 	organization,
 	sberProject,
-	sberStore,
 	sberSalesChannel,
+	fbsStore,
 } from '../../database'
 import { type Shipment } from '../../types/sberTypes'
 import { type Product, type CustomerOrder } from '../../types/msTypes'
@@ -31,7 +31,7 @@ export const createCustomerOrder = (
 		rate: {
 			currency,
 		},
-		store: sberStore,
+		store: fbsStore,
 		project: sberProject,
 		agent: sberAgent,
 		attributes: prepareCustomerOrdersAttributes(boughtProducts, order),

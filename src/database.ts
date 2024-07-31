@@ -183,6 +183,18 @@ export const fboOzonStore = {
 	},
 }
 
+export const fbsStore = {
+	meta: {
+		href: 'https://api.moysklad.ru/api/remap/1.2/entity/store/2078b4fa-4f42-11ef-0a80-0f9f0016aea6',
+		metadataHref:
+			'https://api.moysklad.ru/api/remap/1.2/entity/store/metadata',
+		type: 'store',
+		mediaType: 'application/json',
+		uuidHref:
+			'https://online.moysklad.ru/app/#warehouse/edit?id=2078b4fa-4f42-11ef-0a80-0f9f0016aea6',
+	},
+}
+
 export const fbsOzonStore = {
 	meta: {
 		href: 'https://api.moysklad.ru/api/remap/1.2/entity/store/73134230-9037-11ee-0a80-156300126436',
