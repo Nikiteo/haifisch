@@ -3,6 +3,7 @@ export const checkUser = (username?: string): boolean => {
 		case 'Nikiteo':
 		case 'puleekdun':
 		case 'Mi4ku':
+		case 'tatitoto_tt':
 			return true
 		default:
 			return false
