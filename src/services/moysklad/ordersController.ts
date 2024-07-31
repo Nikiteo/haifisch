@@ -62,7 +62,7 @@ export const createCustomerOrder = async (
 				Logger.error('No response')
 			} else {
 				if (err.response.data.length > 0) {
-					Logger.error(JSON.stringify(err))
+					Logger.error(JSON.stringify(err.response))
 					const errorsFiltered = err.response.data?.filter(
 						(item: any) => item.errors
 					)
