@@ -98,6 +98,7 @@ var createCustomerOrder = function (orders) { return __awaiter(void 0, void 0, v
                 return [4 /*yield*/, service_1.apiService.post('entity/customerorder', orders)];
             case 1:
                 response = _c.sent();
+                logger_1.default.error(JSON.stringify(response));
                 return [2 /*return*/, response.data];
             case 2:
                 error_2 = _c.sent();
@@ -107,7 +108,6 @@ var createCustomerOrder = function (orders) { return __awaiter(void 0, void 0, v
                         logger_1.default.error('No response');
                     }
                     else {
-                        logger_1.default.warn(err.response.data);
                         if (err.response.data.length > 0) {
                             errorsFiltered_1 = (_a = err.response.data) === null || _a === void 0 ? void 0 : _a.filter(function (item) { return item.errors; });
                             if (errorsFiltered_1.length > 0) {

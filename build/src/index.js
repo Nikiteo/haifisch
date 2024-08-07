@@ -59,7 +59,7 @@ var store = {
 };
 void bot_1.bot.telegram.setMyCommands([
     { command: '/sync', description: 'Синхронизировать' },
-    { command: '/spend', description: 'Записать трату' },
+    // { command: '/spend', description: 'Записать трату' },
     { command: '/remainings', description: 'Покажи остатки' },
     // { command: '/stocks', description: 'Проверить остатки' },
 ]);

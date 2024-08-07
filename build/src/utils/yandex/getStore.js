@@ -7,13 +7,13 @@ var getStore = function (domain, type) {
         if (type === 'FBY') {
             return database_1.fbyHfStore;
         }
-        return database_1.fbsHfStore;
+        return database_1.fbsStore;
     }
     else {
         if (type === 'FBY') {
             return database_1.fbyTopStore;
         }
-        return database_1.fbsTopStore;
+        return database_1.fbsStore;
     }
 };
 exports.getStore = getStore;

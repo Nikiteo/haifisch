@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.moving = exports.taxes = exports.purchase = exports.paymentinState = exports.paymentoutState = exports.carrier = exports.consignee = exports.sberProject = exports.fbyHfProject = exports.fbsHfProject = exports.fbyTopProject = exports.fbosOzonProject = exports.fboOzonProject = exports.fbsTopProject = exports.sberAgent = exports.ozonAgent = exports.agent = exports.sberSalesChannel = exports.salesChannels = exports.states = exports.productFolder = exports.fbsOzonRefund = exports.fboOzonRefund = exports.fbyTopRefund = exports.fbsTopRefund = exports.fbyHfRefund = exports.fbsHfRefund = exports.sberStore = exports.sourceStore = exports.fbyTopStore = exports.fbyHfStore = exports.fbsTopStore = exports.fbsHfStore = exports.fbsOzonStore = exports.fboOzonStore = exports.anyaOwner = exports.mishaOwner = exports.owner = exports.group = exports.uom = exports.priceTypeOzon = exports.priceTypeTop = exports.priceTypeHF = exports.currency = exports.country = exports.organization = exports.ozonSupplier = exports.ozonSalesChannel = exports.topSupplier = exports.hfSupplier = void 0;
-exports.refund = exports.services = exports.entertainment = exports.salary = exports.rent = void 0;
+exports.taxes = exports.purchase = exports.paymentinState = exports.paymentoutState = exports.carrier = exports.consignee = exports.sberProject = exports.fbyHfProject = exports.fbsHfProject = exports.fbyTopProject = exports.fbosOzonProject = exports.fboOzonProject = exports.fbsTopProject = exports.sberAgent = exports.ozonAgent = exports.agent = exports.sberSalesChannel = exports.salesChannels = exports.states = exports.productFolder = exports.fbsOzonRefund = exports.fboOzonRefund = exports.fbyTopRefund = exports.fbsTopRefund = exports.fbyHfRefund = exports.fbsHfRefund = exports.sberStore = exports.sourceStore = exports.fbyTopStore = exports.fbyHfStore = exports.fbsTopStore = exports.fbsHfStore = exports.fbsOzonStore = exports.fbsStore = exports.fboOzonStore = exports.anyaOwner = exports.mishaOwner = exports.owner = exports.group = exports.uom = exports.priceTypeOzon = exports.priceTypeTop = exports.priceTypeHF = exports.currency = exports.country = exports.organization = exports.ozonSupplier = exports.ozonSalesChannel = exports.topSupplier = exports.hfSupplier = void 0;
+exports.refund = exports.services = exports.entertainment = exports.salary = exports.rent = exports.moving = void 0;
 exports.hfSupplier = {
     meta: {
         href: 'https://api.moysklad.ru/api/remap/1.2/entity/organization/4f9c637b-f557-11ed-0a80-11cd001da709',
@@ -145,6 +145,15 @@ exports.fboOzonStore = {
         type: 'store',
         mediaType: 'application/json',
         uuidHref: 'https://online.moysklad.ru/app/#warehouse/edit?id=702fc37a-9037-11ee-0a80-0d6b00124713',
+    },
+};
+exports.fbsStore = {
+    meta: {
+        href: 'https://api.moysklad.ru/api/remap/1.2/entity/store/2078b4fa-4f42-11ef-0a80-0f9f0016aea6',
+        metadataHref: 'https://api.moysklad.ru/api/remap/1.2/entity/store/metadata',
+        type: 'store',
+        mediaType: 'application/json',
+        uuidHref: 'https://online.moysklad.ru/app/#warehouse/edit?id=2078b4fa-4f42-11ef-0a80-0f9f0016aea6',
     },
 };
 exports.fbsOzonStore = {

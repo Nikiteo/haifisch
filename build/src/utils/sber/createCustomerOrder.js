@@ -22,7 +22,7 @@ var createCustomerOrder = function (order, boughtProducts) {
         rate: {
             currency: database_1.currency,
         },
-        store: database_1.sberStore,
+        store: database_1.fbsStore,
         project: database_1.sberProject,
         agent: database_1.sberAgent,
         attributes: (0, prepareCustomerOrdersAttibutes_1.prepareCustomerOrdersAttributes)(boughtProducts, order),

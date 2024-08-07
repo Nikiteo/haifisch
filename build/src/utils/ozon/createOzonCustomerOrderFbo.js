@@ -16,7 +16,8 @@ var prepareComissions = function (products, prices, status, prodsInOrder) {
         .reduce(function (acc, cur) {
         prices.forEach(function (price) {
             if (price.offer_id === cur.offer_id) {
-                acc.push(price.commissions.fbo_direct_flow_trans_max_amount);
+                acc.push(price.commissions.fbo_direct_flow_trans_max_amount *
+                    cur.quantity);
             }
         });
         return acc;
