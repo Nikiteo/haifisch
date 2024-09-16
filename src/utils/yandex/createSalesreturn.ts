@@ -1,32 +1,36 @@
 import {
-	fbyTopStore,
 	fbyTopRefund,
-	fbyHfStore,
 	fbyHfRefund,
-	fbsTopStore,
 	fbsTopRefund,
-	fbsHfStore,
 	fbsHfRefund,
-	fboOzonStore,
 	fboOzonRefund,
-	fbsOzonStore,
 	fbsOzonRefund,
+	fboOzonProject,
+	fbsHfProject,
+	fbsTopProject,
+	fbyHfProject,
+	fbyTopProject,
+	fbosOzonProject,
 } from '../../database'
-import { type Store, type Demand, type SalesReturn } from '../../types/msTypes'
+import {
+	type Demand,
+	type SalesReturn,
+	type Project,
+} from '../../types/msTypes'
 
-const prepareStore = (store?: Store): Store | undefined => {
-	switch (store?.meta.href) {
-		case fbyTopStore.meta.href:
+const prepareStore = (project?: Project): Project | undefined => {
+	switch (project?.meta.href) {
+		case fbyTopProject.meta.href:
 			return fbyTopRefund
-		case fbyHfStore.meta.href:
+		case fbyHfProject.meta.href:
 			return fbyHfRefund
-		case fbsTopStore.meta.href:
+		case fbsTopProject.meta.href:
 			return fbsTopRefund
-		case fbsHfStore.meta.href:
+		case fbsHfProject.meta.href:
 			return fbsHfRefund
-		case fboOzonStore.meta.href:
+		case fboOzonProject.meta.href:
 			return fboOzonRefund
-		case fbsOzonStore.meta.href:
+		case fbosOzonProject.meta.href:
 			return fbsOzonRefund
 	}
 }
@@ -61,6 +65,6 @@ export const createSalesReturn = (demand: Demand): SalesReturn => {
 		demand: {
 			meta: demand.meta,
 		},
-		store: prepareStore(demand.store),
+		store: prepareStore(demand.project),
 	}
 }
