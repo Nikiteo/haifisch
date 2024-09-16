@@ -62,7 +62,7 @@ export const updateOzon = async (
 				.set('minute', 0)
 				.set('second', 0)
 				.set('milliseconds', 0)
-				.add(1, 'month')
+				.add(-1, 'month')
 				.format('YYYY-MM-DD'),
 		}
 
