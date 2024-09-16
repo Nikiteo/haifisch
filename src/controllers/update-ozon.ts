@@ -55,7 +55,7 @@ export const updateOzon = async (
 				.set('minute', 0)
 				.set('second', 0)
 				.set('milliseconds', 0)
-				.subtract(1, 'month')
+				.subtract(2, 'month')
 				.format('YYYY-MM-DD'),
 			dateTo: dayjs()
 				.set('hour', 0)
