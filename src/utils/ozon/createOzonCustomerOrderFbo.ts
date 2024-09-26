@@ -1,7 +1,6 @@
 import dayjs from 'dayjs'
 
 import {
-	states,
 	group,
 	currency,
 	fboOzonStore,
@@ -11,94 +10,55 @@ import {
 	country,
 	ozonSalesChannel,
 } from '../../database'
-import {
-	type Product,
-	type CustomerOrder,
-	type State,
-} from '../../types/msTypes'
-import {
-	type Product2,
-	type ItemPrice,
-	type FboOrder,
-	type Product as OzonProduct,
-} from '../../types/ozonTypes'
+import { type Product, type CustomerOrder } from '../../types/msTypes'
+import { type FboOrder, type Operation } from '../../types/ozonTypes'
 import { prepareOzonPositions } from './prepareOzonPositions'
 import { prepareOzonStatuses } from './prepareOzonStatuses'
 
 const prepareComissions = (
-	products: Product2[],
-	prices: ItemPrice[],
-	status: State,
-	prodsInOrder: OzonProduct[]
+	orderNumber: FboOrder['order_number'],
+	transactions: Operation[]
 ): number => {
-	if (products.length === 0) {
+	if (transactions.length === 0) {
 		return 0
 	}
 
-	const sumOfLogistics = parseFloat(
-		prodsInOrder
-			.reduce<number[]>((acc, cur) => {
-				prices.forEach(price => {
-					if (price.offer_id === cur.offer_id) {
-						acc.push(
-							price.commissions.fbo_direct_flow_trans_max_amount *
-								cur.quantity
-						)
-					}
-				})
-				return acc
-			}, [])
-			.reduce((a, b) => a + +b, 0)
-			.toFixed(2)
-	)
+	const regex = new RegExp(`${orderNumber}.*$`)
 
-	const sumOfReturnLogistic = parseFloat(
-		prodsInOrder
-			.reduce<number[]>((acc, cur) => {
-				prices.forEach(price => {
-					if (price.offer_id === cur.offer_id) {
+	return Math.abs(
+		parseFloat(
+			transactions
+				.reduce<number[]>((acc, cur) => {
+					if (regex.test(cur.posting.posting_number)) {
 						acc.push(
-							price.commissions.fbo_return_flow_trans_max_amount
-						)
-					}
-				})
-				return acc
-			}, [])
-			.reduce((a, b) => a + +b, 0)
-			.toFixed(2)
-	)
-
-	const comissions = parseFloat(
-		Math.abs(
-			products.reduce(
-				(a, b) =>
-					a +
-					b.commission_amount +
-					(b?.item_services !== undefined
-						? Object.values(b.item_services).reduce(
-								(c, d) => c + d,
+							cur.services.reduce(
+								(sum, service) => sum + Number(service.price),
 								0
-								// eslint-disable-next-line no-mixed-spaces-and-tabs
-						  )
-						: 0),
-				0
-			)
-		).toFixed(2)
-	)
+							)
+						)
 
-	if (status.meta.href === states.RETURNED.meta.href) {
-		return parseFloat(
-			(comissions + sumOfLogistics + sumOfReturnLogistic).toFixed(2)
+						if (cur.type === 'orders') {
+							acc.push(cur.sale_commission)
+						}
+						if (
+							cur.type === 'returns' &&
+							cur.services.length === 0
+						) {
+							acc.push(cur.sale_commission)
+						}
+					}
+					return acc
+				}, [])
+				.reduce((a, b) => a + +b, 0)
+				.toFixed(0)
 		)
-	}
-
-	return parseFloat((comissions + sumOfLogistics).toFixed(2))
+	)
 }
 
 export const createCustomerOrderFbo = (
 	order: FboOrder,
 	boughtProducts: Product[],
-	prices: ItemPrice[]
+	transactions: Operation[]
 ): CustomerOrder => {
 	return {
 		shared: true,
@@ -128,12 +88,7 @@ export const createCustomerOrderFbo = (
 				id: '279ba9fa-9d67-11ee-0a80-09f500178da3',
 				name: 'Комиссии Ozon',
 				type: 'double',
-				value: prepareComissions(
-					order.financial_data.products,
-					prices,
-					prepareOzonStatuses(order.status),
-					order.products
-				),
+				value: prepareComissions(order.posting_number, transactions),
 			},
 		],
 		organization: ozonSupplier,

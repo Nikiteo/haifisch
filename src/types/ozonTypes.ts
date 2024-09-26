@@ -601,6 +601,24 @@ export interface ProductPricesRequest {
 	limit: number
 }
 
+export interface TransactionsRequest {
+	filter: TransactionsFilter
+	page?: number
+	page_size: number
+}
+
+export interface TransactionsFilter {
+	date: Date
+	operation_type?: any[]
+	posting_number?: string
+	transaction_type: string
+}
+
+export interface Date {
+	from: string
+	to: string
+}
+
 export interface Filter {
 	offer_id: string[]
 	product_id?: string[]
@@ -629,4 +647,40 @@ export interface Row {
 	reserved_amount: number
 	sku: number
 	warehouse_name: string
+}
+
+export interface TransactionsResponse {
+	result: TransactionsResult
+}
+
+export interface TransactionsResult {
+	operations: Operation[]
+	page_count: number
+	row_count: number
+}
+
+export interface Operation {
+	operation_id: number
+	operation_type: string
+	operation_date: string
+	operation_type_name: string
+	delivery_charge: number
+	return_delivery_charge: number
+	accruals_for_sale: number
+	sale_commission: number
+	amount: number
+	type: string
+	posting: TransactionsPosting
+	items: any[]
+	services: Array<{
+		name: string
+		price: number
+	}>
+}
+
+export interface TransactionsPosting {
+	delivery_schema: string
+	order_date: string
+	posting_number: string
+	warehouse_id: number
 }

@@ -8,48 +8,29 @@ var dayjs_1 = __importDefault(require("dayjs"));
 var database_1 = require("../../database");
 var prepareOzonPositions_1 = require("./prepareOzonPositions");
 var prepareOzonStatuses_1 = require("./prepareOzonStatuses");
-var prepareComissions = function (products, prices, status, prodsInOrder) {
-    if (products.length === 0) {
+var prepareComissions = function (orderNumber, transactions) {
+    if (transactions.length === 0) {
         return 0;
     }
-    var sumOfLogistics = parseFloat(prodsInOrder
+    var regex = new RegExp("".concat(orderNumber, ".*$"));
+    return Math.abs(parseFloat(transactions
         .reduce(function (acc, cur) {
-        prices.forEach(function (price) {
-            if (price.offer_id === cur.offer_id) {
-                acc.push(price.commissions.fbo_direct_flow_trans_max_amount *
-                    cur.quantity);
+        if (regex.test(cur.posting.posting_number)) {
+            acc.push(cur.services.reduce(function (sum, service) { return sum + Number(service.price); }, 0));
+            if (cur.type === 'orders') {
+                acc.push(cur.sale_commission);
             }
-        });
+            if (cur.type === 'returns' &&
+                cur.services.length === 0) {
+                acc.push(cur.sale_commission);
+            }
+        }
         return acc;
     }, [])
         .reduce(function (a, b) { return a + +b; }, 0)
-        .toFixed(2));
-    var sumOfReturnLogistic = parseFloat(prodsInOrder
-        .reduce(function (acc, cur) {
-        prices.forEach(function (price) {
-            if (price.offer_id === cur.offer_id) {
-                acc.push(price.commissions.fbo_return_flow_trans_max_amount);
-            }
-        });
-        return acc;
-    }, [])
-        .reduce(function (a, b) { return a + +b; }, 0)
-        .toFixed(2));
-    var comissions = parseFloat(Math.abs(products.reduce(function (a, b) {
-        return a +
-            b.commission_amount +
-            ((b === null || b === void 0 ? void 0 : b.item_services) !== undefined
-                ? Object.values(b.item_services).reduce(function (c, d) { return c + d; }, 0
-                // eslint-disable-next-line no-mixed-spaces-and-tabs
-                )
-                : 0);
-    }, 0)).toFixed(2));
-    if (status.meta.href === database_1.states.RETURNED.meta.href) {
-        return parseFloat((comissions + sumOfLogistics + sumOfReturnLogistic).toFixed(2));
-    }
-    return parseFloat((comissions + sumOfLogistics).toFixed(2));
+        .toFixed(0)));
 };
-var createCustomerOrderFbo = function (order, boughtProducts, prices) {
+var createCustomerOrderFbo = function (order, boughtProducts, transactions) {
     return {
         shared: true,
         group: database_1.group,
@@ -78,7 +59,7 @@ var createCustomerOrderFbo = function (order, boughtProducts, prices) {
                 id: '279ba9fa-9d67-11ee-0a80-09f500178da3',
                 name: 'Комиссии Ozon',
                 type: 'double',
-                value: prepareComissions(order.financial_data.products, prices, (0, prepareOzonStatuses_1.prepareOzonStatuses)(order.status), order.products),
+                value: prepareComissions(order.posting_number, transactions),
             },
         ],
         organization: database_1.ozonSupplier,

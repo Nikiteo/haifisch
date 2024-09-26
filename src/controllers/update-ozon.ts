@@ -22,7 +22,6 @@ import {
 	getOzonFboOrders,
 	getOzonFbsOrders,
 } from '../services/ozon/orderController'
-import { getProductPrices } from '../services/ozon/productController'
 import {
 	getOzonFboReturns,
 	getOzonFbsReturns,
@@ -41,6 +40,7 @@ import { prepareOzonPaymentout } from '../utils/ozon/prepareOzonPaymentout'
 import { prepareDemands } from '../utils/yandex/prepareDemands'
 import { prepareSalesReturn } from '../utils/yandex/prepareSalesreturn'
 import utc from 'dayjs/plugin/utc'
+import { getTransactions } from '../services/ozon/transactionsController'
 
 dayjs.extend(utc)
 
@@ -95,6 +95,29 @@ export const updateOzon = async (
 			offset: 0,
 		}
 
+		const transactionsProps = {
+			filter: {
+				date: {
+					from: dayjs()
+						.set('hour', 0)
+						.set('minute', 0)
+						.set('second', 0)
+						.set('milliseconds', 0)
+						.subtract(1, 'month')
+						.add(1, 'day')
+						.toISOString(),
+					to: dayjs()
+						.set('hour', 23)
+						.set('minute', 59)
+						.set('second', 59)
+						.set('milliseconds', 59)
+						.toISOString(),
+				},
+				transaction_type: 'all',
+			},
+			page_size: 1000,
+		}
+
 		const products = await getProducts()
 
 		Logger.info(`[${store}]: Получены данные по продуктам из МС...`)
@@ -120,17 +143,6 @@ export const updateOzon = async (
 		})
 
 		Logger.info(`[${store}]: Получены данные по возвратам магазина...`)
-
-		const articlesFromMS = products?.rows.map(row => row.article)
-
-		const prices = await getProductPrices({
-			filter: {
-				offer_id: articlesFromMS ?? [],
-				visibility: 'ALL',
-			},
-			last_id: '',
-			limit: 1000,
-		})
 
 		const fboAfterReturns = fboOrders?.result.reduce<FboOrder[]>(
 			(acc, cur) => {
@@ -174,6 +186,8 @@ export const updateOzon = async (
 			)
 		)
 
+		const transactions = await getTransactions(transactionsProps)
+
 		const preparedCustomerOrders = prepareOzonCustomerOrders(
 			products?.rows ?? [],
 			[...(filteredFboOrders ?? []), ...(fboAfterReturns ?? [])],
@@ -182,7 +196,7 @@ export const updateOzon = async (
 				.filter(item => item.posting_number !== '28059370-0058-6')
 				.filter(item => item.posting_number !== '0122683245-0020-1'),
 			customerOrders ?? [],
-			prices?.result.items ?? []
+			transactions ?? []
 		)
 
 		Logger.info(`[${store}]: Создаю заказы покупателей...`)

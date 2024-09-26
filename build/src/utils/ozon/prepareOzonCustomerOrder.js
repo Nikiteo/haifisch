@@ -28,7 +28,7 @@ var dayjs_1 = __importDefault(require("dayjs"));
 var logger_1 = __importDefault(require("../../lib/logger"));
 var createCustomerOrderFbs_1 = require("./createCustomerOrderFbs");
 var createOzonCustomerOrderFbo_1 = require("./createOzonCustomerOrderFbo");
-var prepareOzonCustomerOrders = function (products, fboOrders, fbsOrders, orders, prices) {
+var prepareOzonCustomerOrders = function (products, fboOrders, fbsOrders, orders, transactions) {
     try {
         if (fboOrders.length === 0 && fbsOrders.length === 0) {
             return [];
@@ -45,7 +45,7 @@ var prepareOzonCustomerOrders = function (products, fboOrders, fbsOrders, orders
                         return boughtProducts.some(function (item) { return item.offer_id === product.article; });
                     });
                     if (boughtItems.length > 0) {
-                        acc.push((0, createOzonCustomerOrderFbo_1.createCustomerOrderFbo)(cur, boughtItems, prices));
+                        acc.push((0, createOzonCustomerOrderFbo_1.createCustomerOrderFbo)(cur, boughtItems, transactions));
                     }
                     return acc;
                 }, []);
@@ -58,7 +58,7 @@ var prepareOzonCustomerOrders = function (products, fboOrders, fbsOrders, orders
                         return boughtProducts.some(function (item) { return item.offer_id === product.article; });
                     });
                     if (boughtItems.length > 0) {
-                        acc.push((0, createCustomerOrderFbs_1.createCustomerOrderFbs)(cur, boughtItems, prices));
+                        acc.push((0, createCustomerOrderFbs_1.createCustomerOrderFbs)(cur, boughtItems, transactions));
                     }
                     return acc;
                 }, []);
@@ -82,7 +82,7 @@ var prepareOzonCustomerOrders = function (products, fboOrders, fbsOrders, orders
                                 });
                             });
                             if (boughtItems.length > 0) {
-                                var updatedOrders = (0, createOzonCustomerOrderFbo_1.createCustomerOrderFbo)(cur, boughtItems, prices);
+                                var updatedOrders = (0, createOzonCustomerOrderFbo_1.createCustomerOrderFbo)(cur, boughtItems, transactions);
                                 acc.push(__assign(__assign({}, order), updatedOrders));
                             }
                         }
@@ -98,7 +98,7 @@ var prepareOzonCustomerOrders = function (products, fboOrders, fbsOrders, orders
                         return boughtProducts.some(function (item) { return item.offer_id === product.article; });
                     });
                     if (boughtItems.length > 0) {
-                        acc.push((0, createOzonCustomerOrderFbo_1.createCustomerOrderFbo)(cur, boughtItems, prices));
+                        acc.push((0, createOzonCustomerOrderFbo_1.createCustomerOrderFbo)(cur, boughtItems, transactions));
                     }
                     return acc;
                 }, []);
@@ -118,7 +118,7 @@ var prepareOzonCustomerOrders = function (products, fboOrders, fbsOrders, orders
                                 });
                             });
                             if (boughtItems.length > 0) {
-                                var updatedOrders = (0, createCustomerOrderFbs_1.createCustomerOrderFbs)(cur, boughtItems, prices);
+                                var updatedOrders = (0, createCustomerOrderFbs_1.createCustomerOrderFbs)(cur, boughtItems, transactions);
                                 acc.push(__assign(__assign({}, order), updatedOrders));
                             }
                         }
@@ -134,7 +134,7 @@ var prepareOzonCustomerOrders = function (products, fboOrders, fbsOrders, orders
                         return boughtProducts.some(function (item) { return item.offer_id === product.article; });
                     });
                     if (boughtItems.length > 0) {
-                        acc.push((0, createCustomerOrderFbs_1.createCustomerOrderFbs)(cur, boughtItems, prices));
+                        acc.push((0, createCustomerOrderFbs_1.createCustomerOrderFbs)(cur, boughtItems, transactions));
                     }
                     return acc;
                 }, []);

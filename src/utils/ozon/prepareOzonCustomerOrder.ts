@@ -4,7 +4,7 @@ import { type Product, type CustomerOrder } from '../../types/msTypes'
 import {
 	type FboOrder,
 	type Posting,
-	type ItemPrice,
+	type Operation,
 } from '../../types/ozonTypes'
 import { createCustomerOrderFbs } from './createCustomerOrderFbs'
 import { createCustomerOrderFbo } from './createOzonCustomerOrderFbo'
@@ -14,7 +14,7 @@ export const prepareOzonCustomerOrders = (
 	fboOrders: FboOrder[],
 	fbsOrders: Posting[],
 	orders: CustomerOrder[],
-	prices: ItemPrice[]
+	transactions: Operation[]
 ): CustomerOrder[] => {
 	try {
 		if (fboOrders.length === 0 && fbsOrders.length === 0) {
@@ -39,7 +39,11 @@ export const prepareOzonCustomerOrders = (
 						)
 						if (boughtItems.length > 0) {
 							acc.push(
-								createCustomerOrderFbo(cur, boughtItems, prices)
+								createCustomerOrderFbo(
+									cur,
+									boughtItems,
+									transactions
+								)
 							)
 						}
 						return acc
@@ -60,7 +64,11 @@ export const prepareOzonCustomerOrders = (
 						)
 						if (boughtItems.length > 0) {
 							acc.push(
-								createCustomerOrderFbs(cur, boughtItems, prices)
+								createCustomerOrderFbs(
+									cur,
+									boughtItems,
+									transactions
+								)
 							)
 						}
 						return acc
@@ -101,7 +109,7 @@ export const prepareOzonCustomerOrders = (
 										createCustomerOrderFbo(
 											cur,
 											boughtItems,
-											prices
+											transactions
 										)
 									acc.push({
 										...order,
@@ -129,7 +137,11 @@ export const prepareOzonCustomerOrders = (
 						)
 						if (boughtItems.length > 0) {
 							acc.push(
-								createCustomerOrderFbo(cur, boughtItems, prices)
+								createCustomerOrderFbo(
+									cur,
+									boughtItems,
+									transactions
+								)
 							)
 						}
 						return acc
@@ -164,7 +176,7 @@ export const prepareOzonCustomerOrders = (
 										createCustomerOrderFbs(
 											cur,
 											boughtItems,
-											prices
+											transactions
 										)
 									acc.push({
 										...order,
@@ -192,7 +204,11 @@ export const prepareOzonCustomerOrders = (
 						)
 						if (boughtItems.length > 0) {
 							acc.push(
-								createCustomerOrderFbs(cur, boughtItems, prices)
+								createCustomerOrderFbs(
+									cur,
+									boughtItems,
+									transactions
+								)
 							)
 						}
 						return acc

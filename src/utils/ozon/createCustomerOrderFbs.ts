@@ -3,7 +3,6 @@ import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 
 import {
-	states,
 	group,
 	currency,
 	fbosOzonProject,
@@ -13,100 +12,57 @@ import {
 	ozonSalesChannel,
 	fbsStore,
 } from '../../database'
-import {
-	type Product,
-	type CustomerOrder,
-	type State,
-} from '../../types/msTypes'
-import {
-	type FinancialDataFbs,
-	type ItemPrice,
-	type Posting,
-	type Product as OzonProduct,
-} from '../../types/ozonTypes'
+import { type Product, type CustomerOrder } from '../../types/msTypes'
+import { type Posting, type Operation } from '../../types/ozonTypes'
 import { prepareOzonFbsStatuses } from './prepareOzonFbsStatuses'
 import { prepareOzonPositions } from './prepareOzonPositions'
 
 dayjs.extend(utc)
 
 const prepareComissions = (
-	data: FinancialDataFbs,
-	prices: ItemPrice[],
-	prodsInOrder: OzonProduct[],
-	status: State
+	orderNumber: Posting['order_number'],
+	transactions: Operation[]
 ): number => {
-	if (data.products.length === 0) {
+	if (transactions.length === 0) {
 		return 0
 	}
 
-	const sumOfLogistics = parseFloat(
-		prodsInOrder
-			.reduce<number[]>((acc, cur) => {
-				prices.forEach(price => {
-					if (price.offer_id === cur.offer_id) {
+	const regex = new RegExp(`${orderNumber}.*$`)
+
+	return Math.abs(
+		parseFloat(
+			transactions
+				.reduce<number[]>((acc, cur) => {
+					if (regex.test(cur.posting.posting_number)) {
 						acc.push(
-							price.commissions.fbs_direct_flow_trans_max_amount *
-								cur.quantity
+							cur.services.reduce(
+								(sum, service) => sum + Number(service.price),
+								0
+							)
 						)
+
+						if (cur.type === 'orders') {
+							acc.push(cur.sale_commission)
+						}
+						if (
+							cur.type === 'returns' &&
+							cur.services.length === 0
+						) {
+							acc.push(cur.sale_commission)
+						}
 					}
-				})
-				return acc
-			}, [])
-			.reduce((a, b) => a + +b, 0)
-			.toFixed(2)
-	)
-
-	const sumOfReturnLogistic = parseFloat(
-		prodsInOrder
-			.reduce<number[]>((acc, cur) => {
-				prices.forEach(price => {
-					if (price.offer_id === cur.offer_id) {
-						acc.push(
-							price.commissions.fbs_return_flow_trans_max_amount
-						)
-					}
-				})
-				return acc
-			}, [])
-			.reduce((a, b) => a + +b, 0)
-			.toFixed(2)
-	)
-
-	const productsComission = data.products.reduce(
-		(a, b) =>
-			a +
-			b.commission_amount +
-			(b?.item_services !== undefined
-				? Object.values(b.item_services).reduce((c, d) => c + d, 0)
-				: 0),
-		0
-	)
-
-	const postingComissions = Object.values(data.posting_services).reduce(
-		(a, b) => a + b,
-		0
-	) as number
-
-	if (status.meta.href === states.RETURNED.meta.href) {
-		return parseFloat(
-			(
-				Math.abs(productsComission + postingComissions) +
-				sumOfLogistics +
-				sumOfReturnLogistic
-			).toFixed(2)
+					return acc
+				}, [])
+				.reduce((a, b) => a + +b, 0)
+				.toFixed(0)
 		)
-	}
-	return parseFloat(
-		(
-			Math.abs(productsComission + postingComissions) + sumOfLogistics
-		).toFixed(2)
 	)
 }
 
 export const createCustomerOrderFbs = (
 	order: Posting,
 	boughtProducts: Product[],
-	prices: ItemPrice[]
+	transactions: Operation[]
 ): CustomerOrder => {
 	return {
 		shared: true,
@@ -132,15 +88,7 @@ export const createCustomerOrderFbs = (
 				id: '279ba9fa-9d67-11ee-0a80-09f500178da3',
 				name: 'Комиссии Ozon',
 				type: 'double',
-				value: prepareComissions(
-					order.financial_data,
-					prices,
-					order.products,
-					prepareOzonFbsStatuses(
-						order.status,
-						order.cancellation.cancelled_after_ship
-					)
-				),
+				value: prepareComissions(order.order_number, transactions),
 			},
 			{
 				meta: {

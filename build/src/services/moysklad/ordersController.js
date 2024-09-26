@@ -98,7 +98,6 @@ var createCustomerOrder = function (orders) { return __awaiter(void 0, void 0, v
                 return [4 /*yield*/, service_1.apiService.post('entity/customerorder', orders)];
             case 1:
                 response = _c.sent();
-                logger_1.default.error(JSON.stringify(response));
                 return [2 /*return*/, response.data];
             case 2:
                 error_2 = _c.sent();

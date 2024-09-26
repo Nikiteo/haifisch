@@ -24,19 +24,19 @@ var __rest = (this && this.__rest) || function (s, e) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createSalesReturn = void 0;
 var database_1 = require("../../database");
-var prepareStore = function (store) {
-    switch (store === null || store === void 0 ? void 0 : store.meta.href) {
-        case database_1.fbyTopStore.meta.href:
+var prepareStore = function (project) {
+    switch (project === null || project === void 0 ? void 0 : project.meta.href) {
+        case database_1.fbyTopProject.meta.href:
             return database_1.fbyTopRefund;
-        case database_1.fbyHfStore.meta.href:
+        case database_1.fbyHfProject.meta.href:
             return database_1.fbyHfRefund;
-        case database_1.fbsTopStore.meta.href:
+        case database_1.fbsTopProject.meta.href:
             return database_1.fbsTopRefund;
-        case database_1.fbsHfStore.meta.href:
+        case database_1.fbsHfProject.meta.href:
             return database_1.fbsHfRefund;
-        case database_1.fboOzonStore.meta.href:
+        case database_1.fboOzonProject.meta.href:
             return database_1.fboOzonRefund;
-        case database_1.fbsOzonStore.meta.href:
+        case database_1.fbosOzonProject.meta.href:
             return database_1.fbsOzonRefund;
     }
 };
@@ -49,6 +49,6 @@ var createSalesReturn = function (demand) {
     // @ts-expect-error
     return __assign(__assign({}, rest), { demand: {
             meta: demand.meta,
-        }, store: prepareStore(demand.store) });
+        }, store: prepareStore(demand.project) });
 };
 exports.createSalesReturn = createSalesReturn;
