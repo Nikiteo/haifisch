@@ -45,7 +45,7 @@ export const updateYandex = async (
 				.set('minute', 0)
 				.set('second', 0)
 				.set('milliseconds', 0)
-				.subtract(2, 'month')
+				.subtract(1, 'month')
 				.format('YYYY-MM-DD'),
 			dateTo: dayjs()
 				.set('hour', 23)
@@ -55,6 +55,8 @@ export const updateYandex = async (
 				.add(1, 'month')
 				.format('YYYY-MM-DD'),
 		}
+
+		Logger.info(`[${store}]: ${dates.dateFrom} - ${dates.dateTo}`)
 
 		const products = await getProducts()
 

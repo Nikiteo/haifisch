@@ -41,7 +41,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.syncCommand = void 0;
 var bot_1 = require("../bot");
-var update_ozon_1 = require("../controllers/update-ozon");
+var update_yandex_1 = require("../controllers/update-yandex");
 var check_user_1 = require("./check-user");
 var logger_1 = __importDefault(require("./logger"));
 var syncCommand = function () {
@@ -64,15 +64,20 @@ var syncCommand = function () {
                             }
                         });
                     }); };
-                    return [4 /*yield*/, ctx.reply('Начал обновление...')];
+                    return [4 /*yield*/, ctx.reply('Начал обновление...')
+                        // await updateOzon('Ozon', sendMessage)
+                        // await updateSber('Sber', sendMessage)
+                    ];
                 case 1:
                     _a.sent();
-                    return [4 /*yield*/, (0, update_ozon_1.updateOzon)('Ozon', sendMessage)
-                        // await updateSber('Sber', sendMessage)
-                        // await updateYandex('Haifisch', sendMessage)
+                    // await updateOzon('Ozon', sendMessage)
+                    // await updateSber('Sber', sendMessage)
+                    return [4 /*yield*/, (0, update_yandex_1.updateYandex)('Haifisch', sendMessage)
                         // await updateYandex('Top', sendMessage)
                     ];
                 case 2:
+                    // await updateOzon('Ozon', sendMessage)
+                    // await updateSber('Sber', sendMessage)
                     _a.sent();
                     return [3 /*break*/, 5];
                 case 3: return [4 /*yield*/, ctx.reply('Прости, но ты не можешь использовать меня')];

@@ -448,3 +448,63 @@ export interface Box {
 	id: number
 	fulfilmentId: string
 }
+
+export interface ReturnsResult {
+	status: string
+	result: {
+		paging: Paging
+		returns: Return[]
+	}
+}
+
+export interface Return {
+	id: number
+	orderId: number
+	creationDate: string
+	updateDate: string
+	refundStatus: string
+	logisticPickupPoint: LogisticPickupPoint
+	shipmentRecipientType: string
+	shipmentStatus: string
+	refundAmount: number
+	items: ReturnItem[]
+	returnType: string
+	fastReturn: boolean
+}
+
+export interface LogisticPickupPoint {
+	id: number
+	name: string
+	address: Address
+	instruction: string
+	type: string
+	logisticPartnerId: number
+}
+
+export interface ReturnItem {
+	marketSku: number
+	shopSku: string
+	count: number
+	decisions: Decision[]
+	instances: Instance[]
+	tracks: Track[]
+}
+
+export interface Decision {
+	returnItemId: number
+	count: number
+	comment: string
+	reasonType: string
+	subreasonType: string
+	decisionType: string
+	refundAmount: number
+	partnerCompensation: number
+	images: string[]
+}
+
+export interface Instance {
+	stockType: string
+	status: string
+	cis: string
+	imei: string
+}

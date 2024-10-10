@@ -13,7 +13,7 @@ exports.apiServiceTop = axios_1.default.create({
     headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + TOP_TOKEN,
+        'Api-Key': TOP_TOKEN,
     },
 });
 exports.apiServiceHf = axios_1.default.create({
@@ -21,6 +21,6 @@ exports.apiServiceHf = axios_1.default.create({
     headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + HF_TOKEN,
+        'Api-Key': HF_TOKEN,
     },
 });

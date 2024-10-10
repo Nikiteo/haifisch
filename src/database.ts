@@ -916,3 +916,19 @@ export const refund = {
 		mediaType: 'application/json',
 	},
 }
+
+export const returnPicked = {
+	meta: {
+		href: 'https://api.moysklad.ru/api/remap/1.2/entity/move/metadata/states/539a9278-a582-11ee-0a80-0b8100123600',
+		metadataHref:
+			'https://api.moysklad.ru/api/remap/1.2/entity/move/metadata',
+		type: 'state',
+		mediaType: 'application/json',
+	},
+	id: '539a9278-a582-11ee-0a80-0b8100123600',
+	accountId: '4f45c052-f557-11ed-0a80-0cd400013e78',
+	name: 'Возврат ФБС (получен)',
+	color: 8825440,
+	stateType: 'Regular',
+	entityType: 'move',
+}

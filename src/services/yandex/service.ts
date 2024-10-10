@@ -9,7 +9,7 @@ export const apiServiceTop = axios.create({
 	headers: {
 		Accept: 'application/json',
 		'Content-Type': 'application/json',
-		Authorization: 'Bearer ' + TOP_TOKEN,
+		'Api-Key': TOP_TOKEN,
 	},
 })
 export const apiServiceHf = axios.create({
@@ -17,6 +17,6 @@ export const apiServiceHf = axios.create({
 	headers: {
 		Accept: 'application/json',
 		'Content-Type': 'application/json',
-		Authorization: 'Bearer ' + HF_TOKEN,
+		'Api-Key': HF_TOKEN,
 	},
 })
