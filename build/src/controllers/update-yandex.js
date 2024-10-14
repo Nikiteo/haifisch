@@ -57,7 +57,7 @@ var updateYandex = function (store, sendMessage) { return __awaiter(void 0, void
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
-                _b.trys.push([0, 7, , 8]);
+                _b.trys.push([0, 8, , 9]);
                 dates = {
                     dateFrom: (0, dayjs_1.default)()
                         .set('hour', 0)
@@ -88,7 +88,7 @@ var updateYandex = function (store, sendMessage) { return __awaiter(void 0, void
                 campaigns = _b.sent();
                 campaignIds = (0, getCampaignIds_1.getCampaignIds)(campaigns === null || campaigns === void 0 ? void 0 : campaigns.campaigns);
                 logger_1.default.info("[".concat(store, "]: \u041F\u043E\u043B\u0443\u0447\u0435\u043D\u044B \u0434\u0430\u043D\u043D\u044B\u0435 \u043F\u043E \u043A\u0430\u043C\u043F\u0430\u043D\u0438\u044F\u043C \u043C\u0430\u0433\u0430\u0437\u0438\u043D\u0430..."));
-                if (!(campaignIds !== undefined && campaigns !== undefined)) return [3 /*break*/, 6];
+                if (!(campaignIds !== undefined && campaigns !== undefined)) return [3 /*break*/, 7];
                 domain = campaigns.campaigns[0].domain;
                 return [4 /*yield*/, (0, moveController_1.getMoves)()];
             case 4:
@@ -102,15 +102,23 @@ var updateYandex = function (store, sendMessage) { return __awaiter(void 0, void
                 filteredReturns = pickedReturns === null || pickedReturns === void 0 ? void 0 : pickedReturns.filter(function (ret) {
                     return moves_1 === null || moves_1 === void 0 ? void 0 : moves_1.every(function (move) { return move.name !== ret.orderId.toString(); });
                 });
+                logger_1.default.warn(domain);
                 preparedMoves = (0, prepareMoves_1.prepareMoves)(domain, filteredReturns !== null && filteredReturns !== void 0 ? filteredReturns : [], (_a = products === null || products === void 0 ? void 0 : products.rows) !== null && _a !== void 0 ? _a : []);
-                logger_1.default.warn(JSON.stringify(preparedMoves));
-                _b.label = 6;
-            case 6: return [3 /*break*/, 8];
-            case 7:
+                // if (preparedMoves.length > 0) {
+                // 	await createMove(preparedMoves)
+                // }
+                logger_1.default.info("[".concat(store, "]: \u0421\u043E\u0437\u0434\u0430\u044E \u0434\u043E\u043A\u0443\u043C\u0435\u043D\u0442\u044B \u043F\u0435\u0440\u0435\u043C\u0435\u0449\u0435\u043D\u0438\u0439..."));
+                return [4 /*yield*/, sendMessage("[".concat(store, "]: \u041C\u0430\u0433\u0430\u0437\u0438\u043D \u0441\u0438\u043D\u0445\u0440\u043E\u043D\u0438\u0437\u0438\u0440\u043E\u0432\u0430\u043D"))];
+            case 6:
+                _b.sent();
+                logger_1.default.info("[".concat(store, "]: \u041C\u0430\u0433\u0430\u0437\u0438\u043D \u0441\u0438\u043D\u0445\u0440\u043E\u043D\u0438\u0437\u0438\u0440\u043E\u0432\u0430\u043D"));
+                _b.label = 7;
+            case 7: return [3 /*break*/, 9];
+            case 8:
                 err_1 = _b.sent();
                 logger_1.default.error("[".concat(store, "]: ").concat(err_1));
-                return [3 /*break*/, 8];
-            case 8: return [2 /*return*/];
+                return [3 /*break*/, 9];
+            case 9: return [2 /*return*/];
         }
     });
 }); };

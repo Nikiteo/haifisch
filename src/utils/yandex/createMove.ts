@@ -20,7 +20,6 @@ import customParseFormat from 'dayjs/plugin/customParseFormat'
 dayjs.extend(customParseFormat)
 
 export const preparePositions = (
-	refundAmount: number,
 	products: Product[],
 	items?: ReturnItem[]
 ): CreatePosition[] => {
@@ -29,7 +28,6 @@ export const preparePositions = (
 			if (item.shopSku === cur.article) {
 				acc.push({
 					quantity: item.count,
-					price: refundAmount,
 					discount: 0,
 					vat: 0,
 					assortment: {
@@ -72,12 +70,8 @@ export const createMove = (
 					'https://online.moysklad.ru/app/#warehouse/edit?id=a8306907-9450-11ee-0a80-109f00177296',
 			},
 		},
-		sourceStore: domain === 'Haifish' ? fbsHfRefund : fbsTopRefund,
-		positions: preparePositions(
-			ret.refundAmount,
-			boughtProducts,
-			ret.items
-		),
+		sourceStore: domain === 'Haifisch' ? fbsHfRefund : fbsTopRefund,
+		positions: preparePositions(boughtProducts, ret.items),
 		project: domain === 'Haifisch' ? fbsHfProject : fbsTopProject,
 		description: `${
 			ret.returnType === 'UNREDEEMED' ? 'Невыкуп\n' : 'Возврат\n'
