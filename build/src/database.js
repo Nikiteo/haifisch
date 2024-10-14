@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.taxes = exports.purchase = exports.paymentinState = exports.paymentoutState = exports.carrier = exports.consignee = exports.sberProject = exports.fbyHfProject = exports.fbsHfProject = exports.fbyTopProject = exports.fbosOzonProject = exports.fboOzonProject = exports.fbsTopProject = exports.sberAgent = exports.ozonAgent = exports.agent = exports.sberSalesChannel = exports.salesChannels = exports.states = exports.productFolder = exports.fbsOzonRefund = exports.fboOzonRefund = exports.fbyTopRefund = exports.fbsTopRefund = exports.fbyHfRefund = exports.fbsHfRefund = exports.sberStore = exports.sourceStore = exports.fbyTopStore = exports.fbyHfStore = exports.fbsTopStore = exports.fbsHfStore = exports.fbsOzonStore = exports.fbsStore = exports.fboOzonStore = exports.anyaOwner = exports.mishaOwner = exports.owner = exports.group = exports.uom = exports.priceTypeOzon = exports.priceTypeTop = exports.priceTypeHF = exports.currency = exports.country = exports.organization = exports.ozonSupplier = exports.ozonSalesChannel = exports.topSupplier = exports.hfSupplier = void 0;
-exports.refund = exports.services = exports.entertainment = exports.salary = exports.rent = exports.moving = void 0;
+exports.returnPicked = exports.refund = exports.services = exports.entertainment = exports.salary = exports.rent = exports.moving = void 0;
 exports.hfSupplier = {
     meta: {
         href: 'https://api.moysklad.ru/api/remap/1.2/entity/organization/4f9c637b-f557-11ed-0a80-11cd001da709',
@@ -757,4 +757,18 @@ exports.refund = {
         type: 'expenseitem',
         mediaType: 'application/json',
     },
+};
+exports.returnPicked = {
+    meta: {
+        href: 'https://api.moysklad.ru/api/remap/1.2/entity/move/metadata/states/539a9278-a582-11ee-0a80-0b8100123600',
+        metadataHref: 'https://api.moysklad.ru/api/remap/1.2/entity/move/metadata',
+        type: 'state',
+        mediaType: 'application/json',
+    },
+    id: '539a9278-a582-11ee-0a80-0b8100123600',
+    accountId: '4f45c052-f557-11ed-0a80-0cd400013e78',
+    name: 'Возврат ФБС (получен)',
+    color: 8825440,
+    stateType: 'Regular',
+    entityType: 'move',
 };

@@ -31,6 +31,9 @@ import { preparePaymentin } from '../utils/yandex/preparePaymentin'
 import { preparePaymentout } from '../utils/yandex/preparePaymentout'
 import { prepareSalesReturn } from '../utils/yandex/prepareSalesreturn'
 import utc from 'dayjs/plugin/utc'
+import { createMove, getMoves } from '../services/moysklad/moveController'
+import { getReturns } from '../services/yandex/returnsController'
+import { prepareMoves } from '../utils/yandex/prepareMoves'
 
 dayjs.extend(utc)
 
@@ -183,6 +186,34 @@ export const updateYandex = async (
 			}
 
 			Logger.info(`[${store}]: Создаю документы исходящих платежей...`)
+
+			const moves = await getMoves()
+
+			Logger.info(`[${store}]: Получаю перемещения из МС...`)
+
+			const returns = await getReturns(store, campaignIds.FBS)
+
+			Logger.info(`[${store}]: Получаю возвраты из МС...`)
+
+			const pickedReturns = returns?.filter(
+				r => r.shipmentStatus === 'PICKED'
+			)
+
+			const filteredReturns = pickedReturns?.filter(ret =>
+				moves?.every(move => move.name !== ret.orderId.toString())
+			)
+
+			const preparedMoves = prepareMoves(
+				domain,
+				filteredReturns ?? [],
+				products?.rows ?? []
+			)
+
+			if (preparedMoves.length > 0) {
+				await createMove(preparedMoves)
+			}
+
+			Logger.info(`[${store}]: Создаю документы перемещений...`)
 			await sendMessage(`[${store}]: Магазин синхронизирован`)
 			Logger.info(`[${store}]: Магазин синхронизирован`)
 		}

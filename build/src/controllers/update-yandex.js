@@ -48,20 +48,23 @@ var campaignController_1 = require("../services/yandex/campaignController");
 var getCampaignIds_1 = require("../utils/yandex/getCampaignIds");
 var utc_1 = __importDefault(require("dayjs/plugin/utc"));
 var moveController_1 = require("../services/moysklad/moveController");
+var returnsController_1 = require("../services/yandex/returnsController");
+var prepareMoves_1 = require("../utils/yandex/prepareMoves");
 dayjs_1.default.extend(utc_1.default);
 var updateYandex = function (store, sendMessage) { return __awaiter(void 0, void 0, void 0, function () {
-    var dates, products, customerOrders, campaigns, campaignIds, moves, err_1;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
+    var dates, products, customerOrders, campaigns, campaignIds, domain, moves_1, returns, pickedReturns, filteredReturns, preparedMoves, err_1;
+    var _a;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
             case 0:
-                _a.trys.push([0, 7, , 8]);
+                _b.trys.push([0, 7, , 8]);
                 dates = {
                     dateFrom: (0, dayjs_1.default)()
                         .set('hour', 0)
                         .set('minute', 0)
                         .set('second', 0)
                         .set('milliseconds', 0)
-                        .subtract(2, 'month')
+                        .subtract(1, 'month')
                         .format('YYYY-MM-DD'),
                     dateTo: (0, dayjs_1.default)()
                         .set('hour', 23)
@@ -71,43 +74,40 @@ var updateYandex = function (store, sendMessage) { return __awaiter(void 0, void
                         .add(1, 'month')
                         .format('YYYY-MM-DD'),
                 };
+                logger_1.default.info("[".concat(store, "]: ").concat(dates.dateFrom, " - ").concat(dates.dateTo));
                 return [4 /*yield*/, (0, productController_1.getProducts)()];
             case 1:
-                products = _a.sent();
+                products = _b.sent();
                 logger_1.default.info("[".concat(store, "]: \u041F\u043E\u043B\u0443\u0447\u0435\u043D\u044B \u0434\u0430\u043D\u043D\u044B\u0435 \u043F\u043E \u043F\u0440\u043E\u0434\u0443\u043A\u0442\u0430\u043C \u0438\u0437 \u041C\u0421..."));
                 return [4 /*yield*/, (0, ordersController_1.getCustomerOrders)(dates)];
             case 2:
-                customerOrders = _a.sent();
+                customerOrders = _b.sent();
                 logger_1.default.info("[".concat(store, "]: \u041F\u043E\u043B\u0443\u0447\u0435\u043D\u044B \u0434\u0430\u043D\u043D\u044B\u0435 \u043F\u043E \u0437\u0430\u043A\u0430\u0437\u0430\u043C \u0438\u0437 \u041C\u0421..."));
                 return [4 /*yield*/, (0, campaignController_1.getCampaigns)(store)];
             case 3:
-                campaigns = _a.sent();
+                campaigns = _b.sent();
                 campaignIds = (0, getCampaignIds_1.getCampaignIds)(campaigns === null || campaigns === void 0 ? void 0 : campaigns.campaigns);
                 logger_1.default.info("[".concat(store, "]: \u041F\u043E\u043B\u0443\u0447\u0435\u043D\u044B \u0434\u0430\u043D\u043D\u044B\u0435 \u043F\u043E \u043A\u0430\u043C\u043F\u0430\u043D\u0438\u044F\u043C \u043C\u0430\u0433\u0430\u0437\u0438\u043D\u0430..."));
                 if (!(campaignIds !== undefined && campaigns !== undefined)) return [3 /*break*/, 6];
+                domain = campaigns.campaigns[0].domain;
                 return [4 /*yield*/, (0, moveController_1.getMoves)()];
             case 4:
-                moves = _a.sent();
-                logger_1.default.warn(JSON.stringify(moves));
-                // const paymentouts = await getPaymentout(dates)
-                // Logger.info(`[${store}]: Получаю документы исходящих платежей...`)
-                // const preparedPaymentouts = preparePaymentout(
-                // 	newSalesReturns ?? [],
-                // 	[...(fbyOrders ?? []), ...(fbsOrders ?? [])],
-                // 	paymentouts ?? []
-                // )
-                // if (preparedPaymentouts.length > 0) {
-                // 	await createPaymentout(preparedPaymentouts)
-                // }
-                logger_1.default.info("[".concat(store, "]: \u0421\u043E\u0437\u0434\u0430\u044E \u0434\u043E\u043A\u0443\u043C\u0435\u043D\u0442\u044B \u0438\u0441\u0445\u043E\u0434\u044F\u0449\u0438\u0445 \u043F\u043B\u0430\u0442\u0435\u0436\u0435\u0439..."));
-                return [4 /*yield*/, sendMessage("[".concat(store, "]: \u041C\u0430\u0433\u0430\u0437\u0438\u043D \u0441\u0438\u043D\u0445\u0440\u043E\u043D\u0438\u0437\u0438\u0440\u043E\u0432\u0430\u043D"))];
+                moves_1 = _b.sent();
+                logger_1.default.info("[".concat(store, "]: \u041F\u043E\u043B\u0443\u0447\u0430\u044E \u043F\u0435\u0440\u0435\u043C\u0435\u0449\u0435\u043D\u0438\u044F \u0438\u0437 \u041C\u0421..."));
+                return [4 /*yield*/, (0, returnsController_1.getReturns)(store, campaignIds.FBS)];
             case 5:
-                _a.sent();
-                logger_1.default.info("[".concat(store, "]: \u041C\u0430\u0433\u0430\u0437\u0438\u043D \u0441\u0438\u043D\u0445\u0440\u043E\u043D\u0438\u0437\u0438\u0440\u043E\u0432\u0430\u043D"));
-                _a.label = 6;
+                returns = _b.sent();
+                logger_1.default.info("[".concat(store, "]: \u041F\u043E\u043B\u0443\u0447\u0430\u044E \u0432\u043E\u0437\u0432\u0440\u0430\u0442\u044B \u0438\u0437 \u041C\u0421..."));
+                pickedReturns = returns === null || returns === void 0 ? void 0 : returns.filter(function (r) { return r.shipmentStatus === 'PICKED'; });
+                filteredReturns = pickedReturns === null || pickedReturns === void 0 ? void 0 : pickedReturns.filter(function (ret) {
+                    return moves_1 === null || moves_1 === void 0 ? void 0 : moves_1.every(function (move) { return move.name !== ret.orderId.toString(); });
+                });
+                preparedMoves = (0, prepareMoves_1.prepareMoves)(domain, filteredReturns !== null && filteredReturns !== void 0 ? filteredReturns : [], (_a = products === null || products === void 0 ? void 0 : products.rows) !== null && _a !== void 0 ? _a : []);
+                logger_1.default.warn(JSON.stringify(preparedMoves));
+                _b.label = 6;
             case 6: return [3 /*break*/, 8];
             case 7:
-                err_1 = _a.sent();
+                err_1 = _b.sent();
                 logger_1.default.error("[".concat(store, "]: ").concat(err_1));
                 return [3 /*break*/, 8];
             case 8: return [2 /*return*/];

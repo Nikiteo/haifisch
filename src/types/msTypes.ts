@@ -462,29 +462,31 @@ export interface ExpenseItem {
 }
 
 export interface Move {
-	meta: Meta
-	id: string
-	accountId: string
-	owner: Owner
-	shared: boolean
-	group: Group
-	updated: string
-	name: string
-	externalCode: string
-	moment: string
-	applicable: boolean
-	rate: Rate
-	sum: number
-	project: Project
-	organization: Organization
-	state: State
-	created: string
-	printed: boolean
-	published: boolean
-	files: Files
-	positions: Positions
-	sourceStore: SourceStore
-	targetStore: TargetStore
+	meta?: Meta
+	agent?: Agent
+	id?: string
+	accountId?: string
+	owner?: Owner
+	shared?: boolean
+	group?: Group
+	updated?: string
+	name?: string
+	externalCode?: string
+	moment?: string
+	applicable?: boolean
+	rate?: Rate
+	sum?: number
+	project?: Project
+	organization?: Organization
+	state?: State
+	created?: string
+	printed?: boolean
+	published?: boolean
+	files?: Files
+	positions?: CreatePosition[]
+	sourceStore?: SourceStore
+	targetStore?: TargetStore
+	description?: string
 }
 
 export interface SourceStore {
