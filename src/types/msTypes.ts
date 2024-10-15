@@ -27,9 +27,9 @@ export interface Employee {
 }
 
 export interface Meta {
-	href: string
-	type: string
-	mediaType: string
+	href?: string
+	type?: string
+	mediaType?: string
 	metadataHref?: string
 	uuidHref?: string
 }
@@ -58,7 +58,7 @@ export interface Product {
 	archived: boolean
 	pathName: string
 	useParentVat: boolean
-	productFolder?: Meta
+	productFolder?: ProductFolder
 	uom: Uom
 	images?: Images
 	minPrice: MinPrice
@@ -81,6 +81,10 @@ export interface Product {
 	effectiveVatEnabled: boolean
 	vat: number
 	vatEnabled: boolean
+}
+
+export interface ProductFolder {
+	meta: Meta
 }
 
 export interface Owner {

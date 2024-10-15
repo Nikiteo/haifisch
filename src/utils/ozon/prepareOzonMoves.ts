@@ -15,10 +15,10 @@ export const prepareOzonMoves = (
 		const boughtProducts = products.filter(product =>
 			items?.some(
 				item =>
-					item.name ===
+					item.sku?.toString() ===
 					product.attributes?.find(
 						attr =>
-							attr.id === '2b0c079d-9980-11ee-0a80-0ea300053894'
+							attr.id === '2ca97089-8ade-11ef-0a80-148c0011190c'
 					)?.value
 			)
 		)

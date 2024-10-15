@@ -53,7 +53,7 @@ export const getAttributes = (
 			},
 			{
 				meta: {
-					href: 'https://api.moysklad.ru/api/remap/1.2/entity/product/metadata//dee3a537-94dd-11ee-0a80-03920020a493',
+					href: 'https://api.moysklad.ru/api/remap/1.2/entity/product/metadata/attributes/dee3a537-94dd-11ee-0a80-03920020a493',
 					type: 'attributemetadata',
 					mediaType: 'application/json',
 				},

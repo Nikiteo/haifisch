@@ -43,26 +43,37 @@ exports.getOffers = void 0;
 var axios_1 = __importDefault(require("axios"));
 var service_1 = require("./service");
 var logger_1 = __importDefault(require("../../lib/logger"));
-var getOffers = function (store, businessId) { return __awaiter(void 0, void 0, void 0, function () {
-    var service, data, response, error_1, err;
+var getOffers = function (store, id, data) { return __awaiter(void 0, void 0, void 0, function () {
+    var service, getOffer_1, error_1, err;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 service = store === 'Haifisch' ? service_1.apiServiceHf : service_1.apiServiceTop;
-                data = {
-                    limit: 200,
-                    archived: false,
-                    tags: ['Мрамор', 'мрамор'],
-                };
                 _a.label = 1;
             case 1:
                 _a.trys.push([1, 3, , 4]);
-                return [4 /*yield*/, service.post("businesses/".concat(businessId, "/offer-mappings"), data)];
-            case 2:
-                response = _a.sent();
-                return [2 /*return*/, response.data];
+                getOffer_1 = function (token) { return __awaiter(void 0, void 0, void 0, function () {
+                    var response, offers, _a, _b;
+                    return __generator(this, function (_c) {
+                        switch (_c.label) {
+                            case 0: return [4 /*yield*/, service.post("businesses/".concat(id, "/offer-mappings?limit=200&page_token=").concat(token), data)];
+                            case 1:
+                                response = _c.sent();
+                                offers = response.data.result;
+                                if (!(offers.offerMappings.length > 0 &&
+                                    Object.keys(offers.paging).length > 0)) return [3 /*break*/, 3];
+                                _b = (_a = offers.offerMappings).concat;
+                                return [4 /*yield*/, getOffer_1(offers.paging.nextPageToken)];
+                            case 2: return [2 /*return*/, _b.apply(_a, [_c.sent()])];
+                            case 3: return [2 /*return*/, offers.offerMappings];
+                        }
+                    });
+                }); };
+                return [4 /*yield*/, getOffer_1('')];
+            case 2: return [2 /*return*/, _a.sent()];
             case 3:
                 error_1 = _a.sent();
+                logger_1.default.warn(error_1);
                 err = error_1;
                 if (axios_1.default.isAxiosError(err)) {
                     if ((err === null || err === void 0 ? void 0 : err.response) == null || err.code === null) {

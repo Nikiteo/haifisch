@@ -17,10 +17,10 @@ var createProduct_1 = require("./createProduct");
 var getAttributes_1 = require("./getAttributes");
 var prepareProducts = function (products, offers, domain) {
     if (products.length === 0 && offers.length === 0) {
-        return;
+        return [];
     }
     if (offers.length === 0) {
-        return;
+        return [];
     }
     if (products.length === 0) {
         return offers.reduce(function (acc, cur) {
@@ -56,5 +56,6 @@ var prepareProducts = function (products, offers, domain) {
         });
         return updatedProducts_1;
     }
+    return [];
 };
 exports.prepareProducts = prepareProducts;

@@ -19,7 +19,7 @@ var createProduct = function (domain, offer) {
         vatEnabled: false,
         useParentVat: false,
         uom: database_1.uom,
-        productFolder: database_1.productFolder.meta,
+        productFolder: database_1.productFolder,
         minPrice: {
             value: 0,
             currency: database_1.currency,

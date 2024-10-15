@@ -330,6 +330,7 @@ export const updateOzon = async (
 					name: item.product_name,
 					quantity: item.quantity,
 					price: item.price,
+					sku: item.sku,
 				})
 			} else {
 				const { product_name, quantity, price, ...rest } = item
@@ -340,6 +341,7 @@ export const updateOzon = async (
 							name: item.product_name,
 							quantity: item.quantity,
 							price: item.price,
+							sku: item.sku,
 						},
 					],
 				})

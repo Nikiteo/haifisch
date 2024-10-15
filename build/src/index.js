@@ -48,6 +48,7 @@ var afterArticlesAction_1 = require("./lib/afterArticlesAction");
 var syncCommand_1 = require("./lib/syncCommand");
 var stocksCommand_1 = require("./lib/stocksCommand");
 var remainingCommand_1 = require("./controllers/remainingCommand");
+var updateCommand_1 = require("./lib/updateCommand");
 var store = {
     username: '',
     project: '',
@@ -61,6 +62,7 @@ void bot_1.bot.telegram.setMyCommands([
     { command: '/sync', description: 'Синхронизировать' },
     // { command: '/spend', description: 'Записать трату' },
     { command: '/remainings', description: 'Покажи остатки' },
+    { command: '/offers', description: 'Обновить товары' },
     // { command: '/stocks', description: 'Проверить остатки' },
 ]);
 logger_1.default.info('Bot started!');
@@ -80,6 +82,7 @@ bot_1.bot.start(function (ctx) { return __awaiter(void 0, void 0, void 0, functi
     });
 }); });
 (0, syncCommand_1.syncCommand)();
+(0, updateCommand_1.updateCommand)();
 (0, spendCommand_1.spendCommand)(store);
 (0, remainingCommand_1.remainingCommand)();
 (0, stocksCommand_1.stocksCommand)();

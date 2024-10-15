@@ -8,13 +8,13 @@ export const prepareProducts = (
 	products: Product[],
 	offers: OfferMapping[],
 	domain: string
-): Product[] | undefined => {
+): Product[] => {
 	if (products.length === 0 && offers.length === 0) {
-		return
+		return []
 	}
 
 	if (offers.length === 0) {
-		return
+		return []
 	}
 
 	if (products.length === 0) {
@@ -68,4 +68,6 @@ export const prepareProducts = (
 
 		return updatedProducts
 	}
+
+	return []
 }

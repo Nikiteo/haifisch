@@ -28,7 +28,7 @@ export const createProduct = (domain: string, offer: OfferMapping): Product => {
 		vatEnabled: false,
 		useParentVat: false,
 		uom,
-		productFolder: productFolder.meta,
+		productFolder,
 		minPrice: {
 			value: 0,
 			currency,

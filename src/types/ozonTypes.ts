@@ -68,6 +68,7 @@ export interface Item {
 	primary_image: string
 	status: Status
 	price_index?: string
+	sku: number
 }
 
 export interface Source {
@@ -538,6 +539,7 @@ export interface OzonReturnFbs {
 			name?: string
 			quantity?: number
 			price?: number
+			sku?: number
 		}
 	]
 }
