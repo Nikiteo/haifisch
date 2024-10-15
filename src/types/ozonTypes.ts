@@ -514,9 +514,9 @@ export interface OzonReturnFbs {
 	returns_keeping_cost: number
 	return_reason_name: string
 	return_date: string
-	quantity: number
-	product_name: string
-	price: number
+	quantity?: number
+	product_name?: string
+	price?: number
 	waiting_for_seller_date_time: unknown
 	returned_to_seller_date_time: string
 	last_free_waiting_day: unknown
@@ -533,6 +533,13 @@ export interface OzonReturnFbs {
 	return_clearing_id: number
 	return_barcode: string
 	exemplar_id: number
+	items?: [
+		{
+			name?: string
+			quantity?: number
+			price?: number
+		}
+	]
 }
 
 export interface Returns<T> {

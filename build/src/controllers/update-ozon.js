@@ -46,247 +46,230 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
-    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
-        if (ar || !(i in from)) {
-            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
-            ar[i] = from[i];
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
         }
-    }
-    return to.concat(ar || Array.prototype.slice.call(from));
+    return t;
 };
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateOzon = void 0;
+/* eslint-disable @typescript-eslint/naming-convention */
 var dayjs_1 = __importDefault(require("dayjs"));
 var logger_1 = __importDefault(require("../lib/logger"));
-var demandController_1 = require("../services/moysklad/demandController");
-var ordersController_1 = require("../services/moysklad/ordersController");
-var paymentinController_1 = require("../services/moysklad/paymentinController");
-var paymentoutController_1 = require("../services/moysklad/paymentoutController");
 var productController_1 = require("../services/moysklad/productController");
-var salesreturnController_1 = require("../services/moysklad/salesreturnController");
-var orderController_1 = require("../services/ozon/orderController");
 var returnsController_1 = require("../services/ozon/returnsController");
-var ozonTypes_1 = require("../types/ozonTypes");
-var prepareOzonCustomerOrder_1 = require("../utils/ozon/prepareOzonCustomerOrder");
-var prepareOzonPaymentin_1 = require("../utils/ozon/prepareOzonPaymentin");
-var prepareOzonPaymentout_1 = require("../utils/ozon/prepareOzonPaymentout");
-var prepareDemands_1 = require("../utils/yandex/prepareDemands");
-var prepareSalesreturn_1 = require("../utils/yandex/prepareSalesreturn");
 var utc_1 = __importDefault(require("dayjs/plugin/utc"));
-var transactionsController_1 = require("../services/ozon/transactionsController");
+var prepareOzonMoves_1 = require("../utils/ozon/prepareOzonMoves");
+var moveController_1 = require("../services/moysklad/moveController");
 dayjs_1.default.extend(utc_1.default);
 var updateOzon = function (store, sendMessage) { return __awaiter(void 0, void 0, void 0, function () {
-    var dates, filter, ordersProps, transactionsProps, products, customerOrders, fboOrders, fbsOrders, fboReturns_1, fbsReturns_1, fboAfterReturns_1, fbsAfterReturns_1, filteredFboOrders, filteredFbsOrders, transactions, preparedCustomerOrders_1, createdCustomerOrders, demands, ordersForDemands, preparedDemands, newDemands, paymentins, preparedPaymentins, salesReturn, preparedSalesReturn, uniqReturns, newSalesReturns, paymentouts, preparedPaymentouts, err_1;
-    var _a;
-    return __generator(this, function (_b) {
-        switch (_b.label) {
+    var products, fbsReturns, moves_1, filteredReturns, returnsForMoves, preparedOzonMoves, err_1;
+    var _a, _b;
+    return __generator(this, function (_c) {
+        switch (_c.label) {
             case 0:
-                _b.trys.push([0, 19, , 20]);
-                dates = {
-                    dateFrom: (0, dayjs_1.default)()
-                        .set('hour', 0)
-                        .set('minute', 0)
-                        .set('second', 0)
-                        .set('milliseconds', 0)
-                        .subtract(1, 'month')
-                        .format('YYYY-MM-DD'),
-                    dateTo: (0, dayjs_1.default)()
-                        .set('hour', 0)
-                        .set('minute', 0)
-                        .set('second', 0)
-                        .set('milliseconds', 0)
-                        .add(1, 'month')
-                        .format('YYYY-MM-DD'),
-                };
-                filter = {
-                    since: (0, dayjs_1.default)()
-                        .set('hour', 0)
-                        .set('minute', 0)
-                        .set('second', 0)
-                        .set('milliseconds', 0)
-                        .subtract(1, 'month')
-                        .toISOString(),
-                    to: (0, dayjs_1.default)()
-                        .set('hour', 23)
-                        .set('minute', 59)
-                        .set('second', 59)
-                        .set('milliseconds', 59)
-                        .add(1, 'month')
-                        .toISOString(),
-                };
-                ordersProps = {
-                    dir: 'ASC',
-                    filter: filter,
-                    with: {
-                        analytics_data: true,
-                        barcodes: false,
-                        financial_data: true,
-                        translit: false,
-                    },
-                    limit: 1000,
-                    offset: 0,
-                };
-                transactionsProps = {
-                    filter: {
-                        date: {
-                            from: (0, dayjs_1.default)()
-                                .set('hour', 0)
-                                .set('minute', 0)
-                                .set('second', 0)
-                                .set('milliseconds', 0)
-                                .subtract(1, 'month')
-                                .add(1, 'day')
-                                .toISOString(),
-                            to: (0, dayjs_1.default)()
-                                .set('hour', 23)
-                                .set('minute', 59)
-                                .set('second', 59)
-                                .set('milliseconds', 59)
-                                .toISOString(),
-                        },
-                        transaction_type: 'all',
-                    },
-                    page_size: 1000,
-                };
-                return [4 /*yield*/, (0, productController_1.getProducts)()];
+                _c.trys.push([0, 5, , 6]);
+                return [4 /*yield*/, (0, productController_1.getProducts)()
+                    // Logger.info(`[${store}]: Получены данные по продуктам из МС...`)
+                    // const customerOrders = await getCustomerOrders(dates)
+                    // Logger.info(`[${store}]: Получены данные по заказам из МС...`)
+                    // const fboOrders = await getOzonFboOrders(ordersProps)
+                    // const fbsOrders = await getOzonFbsOrders(ordersProps)
+                    // Logger.info(`[${store}]: Получены данные по заказам магазина...`)
+                    // const fboReturns = await getOzonFboReturns({
+                    // 	filter: {},
+                    // 	last_id: 0,
+                    // 	limit: 1000,
+                    // })
+                ];
             case 1:
-                products = _b.sent();
-                logger_1.default.info("[".concat(store, "]: \u041F\u043E\u043B\u0443\u0447\u0435\u043D\u044B \u0434\u0430\u043D\u043D\u044B\u0435 \u043F\u043E \u043F\u0440\u043E\u0434\u0443\u043A\u0442\u0430\u043C \u0438\u0437 \u041C\u0421..."));
-                return [4 /*yield*/, (0, ordersController_1.getCustomerOrders)(dates)];
-            case 2:
-                customerOrders = _b.sent();
-                logger_1.default.info("[".concat(store, "]: \u041F\u043E\u043B\u0443\u0447\u0435\u043D\u044B \u0434\u0430\u043D\u043D\u044B\u0435 \u043F\u043E \u0437\u0430\u043A\u0430\u0437\u0430\u043C \u0438\u0437 \u041C\u0421..."));
-                return [4 /*yield*/, (0, orderController_1.getOzonFboOrders)(ordersProps)];
-            case 3:
-                fboOrders = _b.sent();
-                return [4 /*yield*/, (0, orderController_1.getOzonFbsOrders)(ordersProps)];
-            case 4:
-                fbsOrders = _b.sent();
-                logger_1.default.info("[".concat(store, "]: \u041F\u043E\u043B\u0443\u0447\u0435\u043D\u044B \u0434\u0430\u043D\u043D\u044B\u0435 \u043F\u043E \u0437\u0430\u043A\u0430\u0437\u0430\u043C \u043C\u0430\u0433\u0430\u0437\u0438\u043D\u0430..."));
-                return [4 /*yield*/, (0, returnsController_1.getOzonFboReturns)({
-                        filter: {},
-                        last_id: 0,
-                        limit: 1000,
-                    })];
-            case 5:
-                fboReturns_1 = _b.sent();
+                products = _c.sent();
                 return [4 /*yield*/, (0, returnsController_1.getOzonFbsReturns)({
                         filter: {},
                         last_id: 0,
                         limit: 1000,
-                    })];
-            case 6:
-                fbsReturns_1 = _b.sent();
-                logger_1.default.info("[".concat(store, "]: \u041F\u043E\u043B\u0443\u0447\u0435\u043D\u044B \u0434\u0430\u043D\u043D\u044B\u0435 \u043F\u043E \u0432\u043E\u0437\u0432\u0440\u0430\u0442\u0430\u043C \u043C\u0430\u0433\u0430\u0437\u0438\u043D\u0430..."));
-                fboAfterReturns_1 = fboOrders === null || fboOrders === void 0 ? void 0 : fboOrders.result.reduce(function (acc, cur) {
-                    fboReturns_1 === null || fboReturns_1 === void 0 ? void 0 : fboReturns_1.returns.forEach(function (item) {
-                        if (item.posting_number === cur.posting_number) {
-                            acc.push(__assign(__assign({}, cur), { status: ozonTypes_1.OrderStatusEnum.returned }));
-                        }
-                    });
-                    return acc;
-                }, []);
-                fbsAfterReturns_1 = fbsOrders === null || fbsOrders === void 0 ? void 0 : fbsOrders.result.postings.reduce(function (acc, cur) {
-                    fbsReturns_1 === null || fbsReturns_1 === void 0 ? void 0 : fbsReturns_1.returns.forEach(function (item) {
-                        if (item.posting_number === cur.posting_number) {
-                            acc.push(__assign(__assign({}, cur), { status: ozonTypes_1.OrderFbsOzonStatus.returned }));
-                        }
-                    });
-                    return acc;
-                }, []);
-                filteredFboOrders = fboOrders === null || fboOrders === void 0 ? void 0 : fboOrders.result.filter(function (order) {
-                    return fboAfterReturns_1 === null || fboAfterReturns_1 === void 0 ? void 0 : fboAfterReturns_1.every(function (fbo) { return fbo.posting_number !== order.posting_number; });
+                    })
+                    // Logger.info(`[${store}]: Получены данные по возвратам магазина...`)
+                    // const fboAfterReturns = fboOrders?.result.reduce<FboOrder[]>(
+                    // 	(acc, cur) => {
+                    // 		fboReturns?.returns.forEach(item => {
+                    // 			if (item.posting_number === cur.posting_number) {
+                    // 				acc.push({
+                    // 					...cur,
+                    // 					status: OrderStatusEnum.returned,
+                    // 				})
+                    // 			}
+                    // 		})
+                    // 		return acc
+                    // 	},
+                    // 	[]
+                    // )
+                    // const fbsAfterReturns = fbsOrders?.result.postings.reduce<Posting[]>(
+                    // 	(acc, cur) => {
+                    // 		fbsReturns?.returns.forEach(item => {
+                    // 			if (item.posting_number === cur.posting_number) {
+                    // 				acc.push({
+                    // 					...cur,
+                    // 					status: OrderFbsOzonStatus.returned,
+                    // 				})
+                    // 			}
+                    // 		})
+                    // 		return acc
+                    // 	},
+                    // 	[]
+                    // )
+                    // const filteredFboOrders = fboOrders?.result.filter(order =>
+                    // 	fboAfterReturns?.every(
+                    // 		fbo => fbo.posting_number !== order.posting_number
+                    // 	)
+                    // )
+                    // const filteredFbsOrders = fbsOrders?.result.postings.filter(order =>
+                    // 	fbsAfterReturns?.every(
+                    // 		fbs => fbs.posting_number !== order.posting_number
+                    // 	)
+                    // )
+                    // const transactions = await getTransactions(transactionsProps)
+                    // const preparedCustomerOrders = prepareOzonCustomerOrders(
+                    // 	products?.rows ?? [],
+                    // 	[...(filteredFboOrders ?? []), ...(fboAfterReturns ?? [])],
+                    // 	[...(filteredFbsOrders ?? []), ...(fbsAfterReturns ?? [])]
+                    // 		.filter(item => item.posting_number !== '0145992433-0031-1')
+                    // 		.filter(item => item.posting_number !== '28059370-0058-6')
+                    // 		.filter(item => item.posting_number !== '0122683245-0020-1'),
+                    // 	customerOrders ?? [],
+                    // 	transactions ?? []
+                    // )
+                    // Logger.info(`[${store}]: Создаю заказы покупателей...`)
+                    // const createdCustomerOrders = await createCustomerOrder(
+                    // 	preparedCustomerOrders
+                    // )
+                    // const demands = await getDemands(dates)
+                    // Logger.info(`[${store}]: Получаю документы отгрузок...`)
+                    // const ordersForDemands = createdCustomerOrders?.reduce<CustomerOrder[]>(
+                    // 	(acc, cur) => {
+                    // 		preparedCustomerOrders.forEach(order => {
+                    // 			if (order.name === cur.name) {
+                    // 				acc.push({
+                    // 					...order,
+                    // 					meta: cur.meta,
+                    // 				})
+                    // 			}
+                    // 		})
+                    // 		return acc
+                    // 	},
+                    // 	[]
+                    // )
+                    // const preparedDemands = prepareDemands(
+                    // 	ordersForDemands ?? [],
+                    // 	demands ?? [],
+                    // 	'OZON'
+                    // )
+                    // const newDemands = await createDemand(preparedDemands)
+                    // Logger.info(`[${store}]: Создаю документы отгрузок...`)
+                    // const paymentins = await getPaymentin(dates)
+                    // Logger.info(`[${store}]: Получаю документы входящих платежей...`)
+                    // const preparedPaymentins = prepareOzonPaymentin(
+                    // 	newDemands ?? [],
+                    // 	[...(filteredFboOrders ?? []), ...(fboAfterReturns ?? [])],
+                    // 	[...(filteredFbsOrders ?? []), ...(fbsAfterReturns ?? [])]
+                    // 		.filter(item => item.posting_number !== '0145992433-0031-1')
+                    // 		.filter(item => item.posting_number !== '28059370-0058-6')
+                    // 		.filter(item => item.posting_number !== '0122683245-0020-1'),
+                    // 	paymentins ?? []
+                    // )
+                    // await createPaymentin(preparedPaymentins)
+                    // Logger.info(`[${store}]: Создаю документы входящих платежей...`)
+                    // const salesReturn = await getSalesReturn(dates)
+                    // Logger.info(`[${store}]: Получаю документы возвратов...`)
+                    // const preparedSalesReturn = prepareSalesReturn(
+                    // 	newDemands ?? [],
+                    // 	ordersForDemands ?? [],
+                    // 	salesReturn ?? [],
+                    // 	'OZON'
+                    // )
+                    // const uniqReturns = preparedSalesReturn.reduce(
+                    // 	(acc, ret) => {
+                    // 		if (ret.name !== undefined) {
+                    // 			if (acc.forEach[ret.name]) return acc
+                    // 			acc.forEach[ret.name] = true
+                    // 			acc.uniqReturns.push(ret)
+                    // 		}
+                    // 		return acc
+                    // 	},
+                    // 	{
+                    // 		forEach: {} as unknown as Record<string, boolean>,
+                    // 		uniqReturns: [] as SalesReturn[],
+                    // 	}
+                    // ).uniqReturns
+                    // const newSalesReturns = await createSalesReturn(uniqReturns)
+                    // Logger.info(`[${store}]: Создаю документы возвратов...`)
+                    // const paymentouts = await getPaymentout(dates)
+                    // Logger.info(`[${store}]: Получаю документы исходящих платежей...`)
+                    // const preparedPaymentouts = prepareOzonPaymentout(
+                    // 	newSalesReturns ?? [],
+                    // 	[...(filteredFboOrders ?? []), ...(fboAfterReturns ?? [])],
+                    // 	[...(filteredFbsOrders ?? []), ...(fbsAfterReturns ?? [])]
+                    // 		.filter(item => item.posting_number !== '0145992433-0031-1')
+                    // 		.filter(item => item.posting_number !== '28059370-0058-6')
+                    // 		.filter(item => item.posting_number !== '0122683245-0020-1'),
+                    // 	paymentouts ?? []
+                    // )
+                    // if (preparedPaymentouts.length > 0) {
+                    // 	await createPaymentout(preparedPaymentouts)
+                    // }
+                    // Logger.info(`[${store}]: Создаю документы исходящих платежей...`)
+                ];
+            case 2:
+                fbsReturns = _c.sent();
+                return [4 /*yield*/, (0, moveController_1.getMoves)()];
+            case 3:
+                moves_1 = _c.sent();
+                logger_1.default.info("[".concat(store, "]: \u041F\u043E\u043B\u0443\u0447\u0430\u044E \u043F\u0435\u0440\u0435\u043C\u0435\u0449\u0435\u043D\u0438\u044F \u0438\u0437 \u041C\u0421..."));
+                filteredReturns = (_a = fbsReturns === null || fbsReturns === void 0 ? void 0 : fbsReturns.returns.filter(function (item) { return item.status === 'returned_to_seller'; })) === null || _a === void 0 ? void 0 : _a.filter(function (ret) {
+                    return moves_1 === null || moves_1 === void 0 ? void 0 : moves_1.every(function (move) { return move.name !== ret.posting_number.toString(); });
                 });
-                filteredFbsOrders = fbsOrders === null || fbsOrders === void 0 ? void 0 : fbsOrders.result.postings.filter(function (order) {
-                    return fbsAfterReturns_1 === null || fbsAfterReturns_1 === void 0 ? void 0 : fbsAfterReturns_1.every(function (fbs) { return fbs.posting_number !== order.posting_number; });
-                });
-                return [4 /*yield*/, (0, transactionsController_1.getTransactions)(transactionsProps)];
-            case 7:
-                transactions = _b.sent();
-                preparedCustomerOrders_1 = (0, prepareOzonCustomerOrder_1.prepareOzonCustomerOrders)((_a = products === null || products === void 0 ? void 0 : products.rows) !== null && _a !== void 0 ? _a : [], __spreadArray(__spreadArray([], (filteredFboOrders !== null && filteredFboOrders !== void 0 ? filteredFboOrders : []), true), (fboAfterReturns_1 !== null && fboAfterReturns_1 !== void 0 ? fboAfterReturns_1 : []), true), __spreadArray(__spreadArray([], (filteredFbsOrders !== null && filteredFbsOrders !== void 0 ? filteredFbsOrders : []), true), (fbsAfterReturns_1 !== null && fbsAfterReturns_1 !== void 0 ? fbsAfterReturns_1 : []), true).filter(function (item) { return item.posting_number !== '0145992433-0031-1'; })
-                    .filter(function (item) { return item.posting_number !== '28059370-0058-6'; })
-                    .filter(function (item) { return item.posting_number !== '0122683245-0020-1'; }), customerOrders !== null && customerOrders !== void 0 ? customerOrders : [], transactions !== null && transactions !== void 0 ? transactions : []);
-                logger_1.default.info("[".concat(store, "]: \u0421\u043E\u0437\u0434\u0430\u044E \u0437\u0430\u043A\u0430\u0437\u044B \u043F\u043E\u043A\u0443\u043F\u0430\u0442\u0435\u043B\u0435\u0439..."));
-                return [4 /*yield*/, (0, ordersController_1.createCustomerOrder)(preparedCustomerOrders_1)];
-            case 8:
-                createdCustomerOrders = _b.sent();
-                return [4 /*yield*/, (0, demandController_1.getDemands)(dates)];
-            case 9:
-                demands = _b.sent();
-                logger_1.default.info("[".concat(store, "]: \u041F\u043E\u043B\u0443\u0447\u0430\u044E \u0434\u043E\u043A\u0443\u043C\u0435\u043D\u0442\u044B \u043E\u0442\u0433\u0440\u0443\u0437\u043E\u043A..."));
-                ordersForDemands = createdCustomerOrders === null || createdCustomerOrders === void 0 ? void 0 : createdCustomerOrders.reduce(function (acc, cur) {
-                    preparedCustomerOrders_1.forEach(function (order) {
-                        if (order.name === cur.name) {
-                            acc.push(__assign(__assign({}, order), { meta: cur.meta }));
-                        }
-                    });
-                    return acc;
-                }, []);
-                preparedDemands = (0, prepareDemands_1.prepareDemands)(ordersForDemands !== null && ordersForDemands !== void 0 ? ordersForDemands : [], demands !== null && demands !== void 0 ? demands : [], 'OZON');
-                return [4 /*yield*/, (0, demandController_1.createDemand)(preparedDemands)];
-            case 10:
-                newDemands = _b.sent();
-                logger_1.default.info("[".concat(store, "]: \u0421\u043E\u0437\u0434\u0430\u044E \u0434\u043E\u043A\u0443\u043C\u0435\u043D\u0442\u044B \u043E\u0442\u0433\u0440\u0443\u0437\u043E\u043A..."));
-                return [4 /*yield*/, (0, paymentinController_1.getPaymentin)(dates)];
-            case 11:
-                paymentins = _b.sent();
-                logger_1.default.info("[".concat(store, "]: \u041F\u043E\u043B\u0443\u0447\u0430\u044E \u0434\u043E\u043A\u0443\u043C\u0435\u043D\u0442\u044B \u0432\u0445\u043E\u0434\u044F\u0449\u0438\u0445 \u043F\u043B\u0430\u0442\u0435\u0436\u0435\u0439..."));
-                preparedPaymentins = (0, prepareOzonPaymentin_1.prepareOzonPaymentin)(newDemands !== null && newDemands !== void 0 ? newDemands : [], __spreadArray(__spreadArray([], (filteredFboOrders !== null && filteredFboOrders !== void 0 ? filteredFboOrders : []), true), (fboAfterReturns_1 !== null && fboAfterReturns_1 !== void 0 ? fboAfterReturns_1 : []), true), __spreadArray(__spreadArray([], (filteredFbsOrders !== null && filteredFbsOrders !== void 0 ? filteredFbsOrders : []), true), (fbsAfterReturns_1 !== null && fbsAfterReturns_1 !== void 0 ? fbsAfterReturns_1 : []), true).filter(function (item) { return item.posting_number !== '0145992433-0031-1'; })
-                    .filter(function (item) { return item.posting_number !== '28059370-0058-6'; })
-                    .filter(function (item) { return item.posting_number !== '0122683245-0020-1'; }), paymentins !== null && paymentins !== void 0 ? paymentins : []);
-                return [4 /*yield*/, (0, paymentinController_1.createPaymentin)(preparedPaymentins)];
-            case 12:
-                _b.sent();
-                logger_1.default.info("[".concat(store, "]: \u0421\u043E\u0437\u0434\u0430\u044E \u0434\u043E\u043A\u0443\u043C\u0435\u043D\u0442\u044B \u0432\u0445\u043E\u0434\u044F\u0449\u0438\u0445 \u043F\u043B\u0430\u0442\u0435\u0436\u0435\u0439..."));
-                return [4 /*yield*/, (0, salesreturnController_1.getSalesReturn)(dates)];
-            case 13:
-                salesReturn = _b.sent();
-                logger_1.default.info("[".concat(store, "]: \u041F\u043E\u043B\u0443\u0447\u0430\u044E \u0434\u043E\u043A\u0443\u043C\u0435\u043D\u0442\u044B \u0432\u043E\u0437\u0432\u0440\u0430\u0442\u043E\u0432..."));
-                preparedSalesReturn = (0, prepareSalesreturn_1.prepareSalesReturn)(newDemands !== null && newDemands !== void 0 ? newDemands : [], ordersForDemands !== null && ordersForDemands !== void 0 ? ordersForDemands : [], salesReturn !== null && salesReturn !== void 0 ? salesReturn : [], 'OZON');
-                uniqReturns = preparedSalesReturn.reduce(function (acc, ret) {
-                    if (ret.name !== undefined) {
-                        if (acc.forEach[ret.name])
-                            return acc;
-                        acc.forEach[ret.name] = true;
-                        acc.uniqReturns.push(ret);
+                returnsForMoves = filteredReturns === null || filteredReturns === void 0 ? void 0 : filteredReturns.reduce(function (acc, item) {
+                    var found = acc.find(function (obj) { return obj.posting_number === item.posting_number; });
+                    if ((found === null || found === void 0 ? void 0 : found.items) != null) {
+                        found.items.push({
+                            name: item.product_name,
+                            quantity: item.quantity,
+                            price: item.price,
+                        });
+                    }
+                    else {
+                        var product_name = item.product_name, quantity = item.quantity, price = item.price, rest = __rest(item, ["product_name", "quantity", "price"]);
+                        acc.push(__assign(__assign({}, rest), { items: [
+                                {
+                                    name: item.product_name,
+                                    quantity: item.quantity,
+                                    price: item.price,
+                                },
+                            ] }));
                     }
                     return acc;
-                }, {
-                    forEach: {},
-                    uniqReturns: [],
-                }).uniqReturns;
-                return [4 /*yield*/, (0, salesreturnController_1.createSalesReturn)(uniqReturns)];
-            case 14:
-                newSalesReturns = _b.sent();
-                logger_1.default.info("[".concat(store, "]: \u0421\u043E\u0437\u0434\u0430\u044E \u0434\u043E\u043A\u0443\u043C\u0435\u043D\u0442\u044B \u0432\u043E\u0437\u0432\u0440\u0430\u0442\u043E\u0432..."));
-                return [4 /*yield*/, (0, paymentoutController_1.getPaymentout)(dates)];
-            case 15:
-                paymentouts = _b.sent();
-                logger_1.default.info("[".concat(store, "]: \u041F\u043E\u043B\u0443\u0447\u0430\u044E \u0434\u043E\u043A\u0443\u043C\u0435\u043D\u0442\u044B \u0438\u0441\u0445\u043E\u0434\u044F\u0449\u0438\u0445 \u043F\u043B\u0430\u0442\u0435\u0436\u0435\u0439..."));
-                preparedPaymentouts = (0, prepareOzonPaymentout_1.prepareOzonPaymentout)(newSalesReturns !== null && newSalesReturns !== void 0 ? newSalesReturns : [], __spreadArray(__spreadArray([], (filteredFboOrders !== null && filteredFboOrders !== void 0 ? filteredFboOrders : []), true), (fboAfterReturns_1 !== null && fboAfterReturns_1 !== void 0 ? fboAfterReturns_1 : []), true), __spreadArray(__spreadArray([], (filteredFbsOrders !== null && filteredFbsOrders !== void 0 ? filteredFbsOrders : []), true), (fbsAfterReturns_1 !== null && fbsAfterReturns_1 !== void 0 ? fbsAfterReturns_1 : []), true).filter(function (item) { return item.posting_number !== '0145992433-0031-1'; })
-                    .filter(function (item) { return item.posting_number !== '28059370-0058-6'; })
-                    .filter(function (item) { return item.posting_number !== '0122683245-0020-1'; }), paymentouts !== null && paymentouts !== void 0 ? paymentouts : []);
-                if (!(preparedPaymentouts.length > 0)) return [3 /*break*/, 17];
-                return [4 /*yield*/, (0, paymentoutController_1.createPaymentout)(preparedPaymentouts)];
-            case 16:
-                _b.sent();
-                _b.label = 17;
-            case 17:
-                logger_1.default.info("[".concat(store, "]: \u0421\u043E\u0437\u0434\u0430\u044E \u0434\u043E\u043A\u0443\u043C\u0435\u043D\u0442\u044B \u0438\u0441\u0445\u043E\u0434\u044F\u0449\u0438\u0445 \u043F\u043B\u0430\u0442\u0435\u0436\u0435\u0439..."));
+                }, []);
+                preparedOzonMoves = (0, prepareOzonMoves_1.prepareOzonMoves)(returnsForMoves !== null && returnsForMoves !== void 0 ? returnsForMoves : [], (_b = products === null || products === void 0 ? void 0 : products.rows) !== null && _b !== void 0 ? _b : []);
+                logger_1.default.warn(JSON.stringify(preparedOzonMoves));
                 return [4 /*yield*/, sendMessage("[".concat(store, "]: \u041C\u0430\u0433\u0430\u0437\u0438\u043D \u0441\u0438\u043D\u0445\u0440\u043E\u043D\u0438\u0437\u0438\u0440\u043E\u0432\u0430\u043D"))];
-            case 18:
-                _b.sent();
+            case 4:
+                _c.sent();
                 logger_1.default.info("[".concat(store, "]: \u041C\u0430\u0433\u0430\u0437\u0438\u043D \u0441\u0438\u043D\u0445\u0440\u043E\u043D\u0438\u0437\u0438\u0440\u043E\u0432\u0430\u043D"));
-                return [3 /*break*/, 20];
-            case 19:
-                err_1 = _b.sent();
+                return [3 /*break*/, 6];
+            case 5:
+                err_1 = _c.sent();
                 logger_1.default.error("[".concat(store, "]: ").concat(err_1));
-                return [3 /*break*/, 20];
-            case 20: return [2 /*return*/];
+                return [3 /*break*/, 6];
+            case 6: return [2 /*return*/];
         }
     });
 }); };

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import dayjs from 'dayjs'
 import Logger from '../lib/logger'
 import { createDemand, getDemands } from '../services/moysklad/demandController'
@@ -33,6 +34,7 @@ import {
 	type Posting,
 	OrderStatusEnum,
 	OrderFbsOzonStatus,
+	type OzonReturnFbs,
 } from '../types/ozonTypes'
 import { prepareOzonCustomerOrders } from '../utils/ozon/prepareOzonCustomerOrder'
 import { prepareOzonPaymentin } from '../utils/ozon/prepareOzonPaymentin'
@@ -41,6 +43,8 @@ import { prepareDemands } from '../utils/yandex/prepareDemands'
 import { prepareSalesReturn } from '../utils/yandex/prepareSalesreturn'
 import utc from 'dayjs/plugin/utc'
 import { getTransactions } from '../services/ozon/transactionsController'
+import { prepareOzonMoves } from '../utils/ozon/prepareOzonMoves'
+import { getMoves } from '../services/moysklad/moveController'
 
 dayjs.extend(utc)
 
@@ -136,6 +140,7 @@ export const updateOzon = async (
 			last_id: 0,
 			limit: 1000,
 		})
+
 		const fbsReturns = await getOzonFbsReturns({
 			filter: {},
 			last_id: 0,
@@ -303,6 +308,52 @@ export const updateOzon = async (
 		}
 
 		Logger.info(`[${store}]: Создаю документы исходящих платежей...`)
+
+		const moves = await getMoves()
+
+		Logger.info(`[${store}]: Получаю перемещения из МС...`)
+
+		const filteredReturns = fbsReturns?.returns
+			.filter(item => item.status === 'returned_to_seller')
+			?.filter(ret =>
+				moves?.every(
+					move => move.name !== ret.posting_number.toString()
+				)
+			)
+
+		const returnsForMoves = filteredReturns?.reduce((acc, item) => {
+			const found = acc.find(
+				obj => obj.posting_number === item.posting_number
+			)
+			if (found?.items != null) {
+				found.items.push({
+					name: item.product_name,
+					quantity: item.quantity,
+					price: item.price,
+				})
+			} else {
+				const { product_name, quantity, price, ...rest } = item
+				acc.push({
+					...rest,
+					items: [
+						{
+							name: item.product_name,
+							quantity: item.quantity,
+							price: item.price,
+						},
+					],
+				})
+			}
+			return acc
+		}, [] as OzonReturnFbs[])
+
+		const preparedOzonMoves = prepareOzonMoves(
+			returnsForMoves ?? [],
+			products?.rows ?? []
+		)
+
+		Logger.warn(JSON.stringify(preparedOzonMoves))
+
 		await sendMessage(`[${store}]: Магазин синхронизирован`)
 		Logger.info(`[${store}]: Магазин синхронизирован`)
 	} catch (err) {
