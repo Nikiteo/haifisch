@@ -54,8 +54,14 @@ var syncCommand = function () {
                 case 0:
                     username = ctx.from.username;
                     chatId = ctx.chat.id;
+                    if (!(username === 'Mi4ku')) return [3 /*break*/, 2];
+                    return [4 /*yield*/, ctx.reply('Миш, иди нахуй, а, шо доебался до меня?')];
+                case 1:
+                    _a.sent();
+                    _a.label = 2;
+                case 2:
                     logger_1.default.info("\u0411\u043E\u0442 \u043F\u044B\u0442\u0430\u043B\u0441\u044F \u0437\u0430\u043F\u0443\u0441\u0442\u0438\u0442\u044C: ".concat(username, " \u0441 \u0442\u0435\u043A\u0441\u0442\u043E\u043C ").concat(ctx.message.text));
-                    if (!(0, check_user_1.checkUser)(username)) return [3 /*break*/, 6];
+                    if (!(0, check_user_1.checkUser)(username)) return [3 /*break*/, 8];
                     sendMessage = function (text) { return __awaiter(void 0, void 0, void 0, function () {
                         return __generator(this, function (_a) {
                             switch (_a.label) {
@@ -67,24 +73,24 @@ var syncCommand = function () {
                         });
                     }); };
                     return [4 /*yield*/, ctx.reply('Начал обновление...')];
-                case 1:
-                    _a.sent();
-                    return [4 /*yield*/, (0, update_ozon_1.updateOzon)('Ozon', sendMessage)];
-                case 2:
-                    _a.sent();
-                    return [4 /*yield*/, (0, update_sber_1.updateSber)('Sber', sendMessage)];
                 case 3:
                     _a.sent();
-                    return [4 /*yield*/, (0, update_yandex_1.updateYandex)('Haifisch', sendMessage)];
+                    return [4 /*yield*/, (0, update_ozon_1.updateOzon)('Ozon', sendMessage)];
                 case 4:
                     _a.sent();
-                    return [4 /*yield*/, (0, update_yandex_1.updateYandex)('Top', sendMessage)];
+                    return [4 /*yield*/, (0, update_sber_1.updateSber)('Sber', sendMessage)];
                 case 5:
                     _a.sent();
-                    return [3 /*break*/, 8];
-                case 6: return [4 /*yield*/, ctx.reply('Прости, но ты не можешь использовать меня')];
-                case 7: return [2 /*return*/, _a.sent()];
-                case 8: return [2 /*return*/];
+                    return [4 /*yield*/, (0, update_yandex_1.updateYandex)('Haifisch', sendMessage)];
+                case 6:
+                    _a.sent();
+                    return [4 /*yield*/, (0, update_yandex_1.updateYandex)('Top', sendMessage)];
+                case 7:
+                    _a.sent();
+                    return [3 /*break*/, 10];
+                case 8: return [4 /*yield*/, ctx.reply('Прости, но ты не можешь использовать меня')];
+                case 9: return [2 /*return*/, _a.sent()];
+                case 10: return [2 /*return*/];
             }
         });
     }); });

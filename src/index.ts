@@ -24,6 +24,7 @@ void bot.telegram.setMyCommands([
 	// { command: '/spend', description: 'Записать трату' },
 	{ command: '/remainings', description: 'Покажи остатки' },
 	{ command: '/offers', description: 'Обновить товары' },
+	{ command: '/stocks', description: 'Обнови остатки' },
 	// { command: '/stocks', description: 'Проверить остатки' },
 ])
 

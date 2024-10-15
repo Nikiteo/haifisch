@@ -9,9 +9,7 @@ export const syncCommand = (): void => {
 	bot.command('sync', async ctx => {
 		const username = ctx.from.username
 		const chatId = ctx.chat.id
-		if (username === 'Mi4ku') {
-			await ctx.reply('Миш, иди нахуй, а, шо доебался до меня?')
-		}
+
 		Logger.info(
 			`Бот пытался запустить: ${username} с текстом ${ctx.message.text}`
 		)

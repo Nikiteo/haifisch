@@ -6,9 +6,7 @@ import { getRemainingGoods } from '../services/moysklad/remainingController'
 export const remainingCommand = (): void => {
 	bot.command('remainings', async ctx => {
 		const username = ctx.from.username
-		if (username === 'Mi4ku') {
-			await ctx.reply('Миш, иди нахуй, а, шо доебался до меня?')
-		}
+
 		Logger.info(
 			`Бот пытался запустить: ${username} с текстом ${ctx.message.text}`
 		)

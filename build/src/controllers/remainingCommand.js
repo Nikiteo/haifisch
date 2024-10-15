@@ -52,13 +52,19 @@ var remainingCommand = function () {
             switch (_b.label) {
                 case 0:
                     username = ctx.from.username;
-                    logger_1.default.info("\u0411\u043E\u0442 \u043F\u044B\u0442\u0430\u043B\u0441\u044F \u0437\u0430\u043F\u0443\u0441\u0442\u0438\u0442\u044C: ".concat(username, " \u0441 \u0442\u0435\u043A\u0441\u0442\u043E\u043C ").concat(ctx.message.text));
-                    if (!(0, check_user_1.checkUser)(username)) return [3 /*break*/, 6];
-                    _b.label = 1;
+                    if (!(username === 'Mi4ku')) return [3 /*break*/, 2];
+                    return [4 /*yield*/, ctx.reply('Миш, иди нахуй, а, шо доебался до меня?')];
                 case 1:
-                    _b.trys.push([1, 4, , 5]);
-                    return [4 /*yield*/, (0, remainingController_1.getRemainingGoods)()];
+                    _b.sent();
+                    _b.label = 2;
                 case 2:
+                    logger_1.default.info("\u0411\u043E\u0442 \u043F\u044B\u0442\u0430\u043B\u0441\u044F \u0437\u0430\u043F\u0443\u0441\u0442\u0438\u0442\u044C: ".concat(username, " \u0441 \u0442\u0435\u043A\u0441\u0442\u043E\u043C ").concat(ctx.message.text));
+                    if (!(0, check_user_1.checkUser)(username)) return [3 /*break*/, 8];
+                    _b.label = 3;
+                case 3:
+                    _b.trys.push([3, 6, , 7]);
+                    return [4 /*yield*/, (0, remainingController_1.getRemainingGoods)()];
+                case 4:
                     remainings = _b.sent();
                     response = (_a = remainings === null || remainings === void 0 ? void 0 : remainings.rows) === null || _a === void 0 ? void 0 : _a.map(function (row) {
                         if (row.quantity.toString().includes('-')) {
@@ -69,15 +75,15 @@ var remainingCommand = function () {
                     return [4 /*yield*/, ctx.reply("".concat(response === null || response === void 0 ? void 0 : response.join('\n')), {
                             parse_mode: 'Markdown',
                         })];
-                case 3: return [2 /*return*/, _b.sent()];
-                case 4:
+                case 5: return [2 /*return*/, _b.sent()];
+                case 6:
                     err_1 = _b.sent();
                     logger_1.default.error("[\u041E\u0448\u0438\u0431\u043A\u0430]: ".concat(err_1));
-                    return [3 /*break*/, 5];
-                case 5: return [3 /*break*/, 8];
-                case 6: return [4 /*yield*/, ctx.reply('Прости, но ты не можешь использовать меня')];
-                case 7: return [2 /*return*/, _b.sent()];
-                case 8: return [2 /*return*/];
+                    return [3 /*break*/, 7];
+                case 7: return [3 /*break*/, 10];
+                case 8: return [4 /*yield*/, ctx.reply('Прости, но ты не можешь использовать меня')];
+                case 9: return [2 /*return*/, _b.sent()];
+                case 10: return [2 /*return*/];
             }
         });
     }); });

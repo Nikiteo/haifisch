@@ -277,6 +277,10 @@ export interface Mapping {
 	marketCategoryName: string
 }
 
+export interface Stores {
+	status: string
+	result: StoresResponse
+}
 export interface StoresResponse {
 	paging: Paging
 	warehouses: Warehouse1[]
@@ -507,4 +511,13 @@ export interface Instance {
 	status: string
 	cis: string
 	imei: string
+}
+
+export interface StocksSendRequest {
+	sku: string
+	items: [
+		{
+			count: number
+		}
+	]
 }

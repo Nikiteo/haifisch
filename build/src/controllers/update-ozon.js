@@ -305,6 +305,7 @@ var updateOzon = function (store, sendMessage) { return __awaiter(void 0, void 0
                             name: item.product_name,
                             quantity: item.quantity,
                             price: item.price,
+                            sku: item.sku,
                         });
                     }
                     else {
@@ -314,6 +315,7 @@ var updateOzon = function (store, sendMessage) { return __awaiter(void 0, void 0
                                     name: item.product_name,
                                     quantity: item.quantity,
                                     price: item.price,
+                                    sku: item.sku,
                                 },
                             ] }));
                     }

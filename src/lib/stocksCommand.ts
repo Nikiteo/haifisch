@@ -1,13 +1,18 @@
 import { checkUser } from './check-user'
 import { bot } from '../bot'
-import { ozonStocks } from '../controllers/ozon-stocks'
+import { updateYandexStocks } from '../controllers/yandex-stocks'
 
 export const stocksCommand = (): void => {
 	bot.command('stocks', async ctx => {
 		const username = ctx.from.username
 		const chatId = ctx.chat.id
 		if (checkUser(username)) {
-			await ozonStocks()
+			const sendMessage = async (text: string): Promise<void> => {
+				await ctx.telegram.sendMessage(chatId, text)
+			}
+			await ctx.reply('Начал обновление...')
+			await updateYandexStocks('Haifisch', sendMessage)
+			await updateYandexStocks('Top', sendMessage)
 		} else {
 			return await ctx.reply('Прости, но ты не можешь использовать меня')
 		}
