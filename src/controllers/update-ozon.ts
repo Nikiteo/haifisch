@@ -44,7 +44,7 @@ import { prepareSalesReturn } from '../utils/yandex/prepareSalesreturn'
 import utc from 'dayjs/plugin/utc'
 import { getTransactions } from '../services/ozon/transactionsController'
 import { prepareOzonMoves } from '../utils/ozon/prepareOzonMoves'
-import { getMoves } from '../services/moysklad/moveController'
+import { createMove, getMoves } from '../services/moysklad/moveController'
 
 dayjs.extend(utc)
 
@@ -352,7 +352,11 @@ export const updateOzon = async (
 			products?.rows ?? []
 		)
 
-		Logger.warn(JSON.stringify(preparedOzonMoves))
+		if (preparedOzonMoves.length > 0) {
+			await createMove(preparedOzonMoves)
+		}
+
+		Logger.info(`[${store}]: Создаю документы перемещений...`)
 
 		await sendMessage(`[${store}]: Магазин синхронизирован`)
 		Logger.info(`[${store}]: Магазин синхронизирован`)
