@@ -48,7 +48,7 @@ var stocksCommand = function () {
                 case 0:
                     username = ctx.from.username;
                     chatId = ctx.chat.id;
-                    if (!(0, check_user_1.checkUser)(username)) return [3 /*break*/, 3];
+                    if (!(0, check_user_1.checkUser)(username)) return [3 /*break*/, 4];
                     sendMessage = function (text) { return __awaiter(void 0, void 0, void 0, function () {
                         return __generator(this, function (_a) {
                             switch (_a.label) {
@@ -59,20 +59,19 @@ var stocksCommand = function () {
                             }
                         });
                     }); };
-                    return [4 /*yield*/, ctx.reply('Начал обновление...')
-                        //await updateYandexStocks('Haifisch', sendMessage)
-                    ];
+                    return [4 /*yield*/, ctx.reply('Начал обновление...')];
                 case 1:
                     _a.sent();
-                    //await updateYandexStocks('Haifisch', sendMessage)
-                    return [4 /*yield*/, (0, yandex_stocks_1.updateYandexStocks)('Top', sendMessage)];
+                    return [4 /*yield*/, (0, yandex_stocks_1.updateYandexStocks)('Haifisch', sendMessage)];
                 case 2:
-                    //await updateYandexStocks('Haifisch', sendMessage)
                     _a.sent();
-                    return [3 /*break*/, 5];
-                case 3: return [4 /*yield*/, ctx.reply('Прости, но ты не можешь использовать меня')];
-                case 4: return [2 /*return*/, _a.sent()];
-                case 5: return [2 /*return*/];
+                    return [4 /*yield*/, (0, yandex_stocks_1.updateYandexStocks)('Top', sendMessage)];
+                case 3:
+                    _a.sent();
+                    return [3 /*break*/, 6];
+                case 4: return [4 /*yield*/, ctx.reply('Прости, но ты не можешь использовать меня')];
+                case 5: return [2 /*return*/, _a.sent()];
+                case 6: return [2 /*return*/];
             }
         });
     }); });

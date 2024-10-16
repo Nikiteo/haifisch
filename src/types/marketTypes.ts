@@ -521,3 +521,124 @@ export interface StocksSendRequest {
 		}
 	]
 }
+
+export interface PromosResponse {
+	status: string
+	result: Promos
+}
+
+export interface Promos {
+	promos: Promo[]
+}
+
+export interface Promo {
+	id: string
+	name: string
+	period: Period
+	participating: boolean
+	assortmentInfo: AssortmentInfo
+	mechanicsInfo: MechanicsInfo
+	bestsellerInfo: BestsellerInfo
+	channels?: string[]
+	constraints?: Constraints
+}
+
+export interface Period {
+	dateTimeFrom: string
+	dateTimeTo: string
+}
+
+export interface AssortmentInfo {
+	activeOffers: number
+	potentialOffers: number
+	processing: boolean
+}
+
+export interface MechanicsInfo {
+	type: string
+	promocodeInfo?: PromocodeInfo
+}
+
+export interface PromocodeInfo {
+	promocode: string
+	discount: number
+}
+
+export interface BestsellerInfo {
+	bestseller: boolean
+	entryDeadline?: string
+}
+
+export interface Constraints {
+	warehouseIds: number[]
+}
+
+export interface PromosOffers {
+	status: string
+	result: PromoOffers
+}
+
+export interface PromoOffers {
+	offers: PromoOffer[]
+	paging: Paging
+}
+
+export interface PromoOffer {
+	offerId: string
+	status: string
+	params: Params
+}
+
+export interface Params {
+	discountParams: PromocodeParams
+}
+
+export interface PromocodeParams {
+	maxPromoPrice: number
+}
+
+export interface UpdatePromosRequest {
+	promoId: string
+	offers: PromoOfferReq[]
+}
+
+export interface PromoOfferReq {
+	offerId: string
+	params: PromoParams
+}
+
+export interface PromoParams {
+	discountParams: DiscountParams
+}
+
+export interface DiscountParams {
+	price?: number
+	promoPrice: number
+}
+
+export interface UpdatePromosResponse {
+	status: string
+	result: UpdatePromosResp
+}
+
+export interface UpdatePromosResp {
+	rejectedOffers: RejectedOffer[]
+	warningOffers: WarningOffer[]
+}
+
+export interface RejectedOffer {
+	offerId: string
+	reason: string
+}
+
+export interface WarningOffer {
+	offerId: string
+	warnings: Warning[]
+}
+
+export interface Warning {
+	code: string
+	campaignIds: number[]
+}
+
+export type PromoOffersById = Record<string, PromoOffer[] | undefined>
