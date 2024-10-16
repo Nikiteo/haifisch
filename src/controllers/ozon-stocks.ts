@@ -33,22 +33,24 @@ export const updateOzonStocks = async (
 
 			Logger.info(`[${store}]: Получены данные по остаткам магазина...`)
 
-			const offersForSend = stocks?.reduce(
-				(acc, cur) => {
-					if (cur.present < 10) {
-						acc.stocks.push({
-							product_id: cur.product_id,
-							stock: 20,
-							warehouse_id: cur.warehouse_id,
-						})
-					}
+			const offersForSend = stocks
+				?.filter(stock => stock.warehouse_id === 1020000718066000)
+				?.reduce(
+					(acc, cur) => {
+						if (cur.present < 10) {
+							acc.stocks.push({
+								product_id: cur.product_id,
+								stock: 20,
+								warehouse_id: cur.warehouse_id,
+							})
+						}
 
-					return acc
-				},
-				{
-					stocks: [] as unknown as StockRequest[],
-				}
-			)
+						return acc
+					},
+					{
+						stocks: [] as unknown as StockRequest[],
+					}
+				)
 
 			if (
 				offersForSend !== undefined &&

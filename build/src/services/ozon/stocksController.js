@@ -61,7 +61,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getOzonStocks = void 0;
+exports.sendOzonStocks = exports.getOzonStocks = void 0;
 var axios_1 = __importDefault(require("axios"));
 var service_1 = require("./service");
 var logger_1 = __importDefault(require("../../lib/logger"));
@@ -96,3 +96,34 @@ var getOzonStocks = function (_a) { return __awaiter(void 0, void 0, void 0, fun
     });
 }); };
 exports.getOzonStocks = getOzonStocks;
+var sendOzonStocks = function (_a) { return __awaiter(void 0, void 0, void 0, function () {
+    var response, error_2, err;
+    var props = __rest(_a, []);
+    return __generator(this, function (_b) {
+        switch (_b.label) {
+            case 0:
+                _b.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, service_1.apiService.post('v2/products/stocks', __assign({}, props))];
+            case 1:
+                response = _b.sent();
+                return [2 /*return*/, response.data.result];
+            case 2:
+                error_2 = _b.sent();
+                err = error_2;
+                if (axios_1.default.isAxiosError(err)) {
+                    if ((err === null || err === void 0 ? void 0 : err.response) == null || err.code === null) {
+                        logger_1.default.error('No response');
+                    }
+                    else {
+                        logger_1.default.error(err.response.data);
+                    }
+                }
+                else {
+                    logger_1.default.error('different error than axios');
+                }
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
+        }
+    });
+}); };
+exports.sendOzonStocks = sendOzonStocks;

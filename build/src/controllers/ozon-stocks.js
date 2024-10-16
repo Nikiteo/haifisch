@@ -45,15 +45,16 @@ var productController_1 = require("../services/moysklad/productController");
 var stocksController_1 = require("../services/ozon/stocksController");
 var updateOzonStocks = function (store, sendMessage) { return __awaiter(void 0, void 0, void 0, function () {
     var products, articlesFromMS, stocks, offersForSend, err_1;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
+    var _a;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
             case 0:
-                _a.trys.push([0, 4, , 5]);
+                _b.trys.push([0, 8, , 9]);
                 return [4 /*yield*/, (0, productController_1.getProducts)()];
             case 1:
-                products = _a.sent();
+                products = _b.sent();
                 logger_1.default.info("[".concat(store, "]: \u041F\u043E\u043B\u0443\u0447\u0435\u043D\u044B \u0434\u0430\u043D\u043D\u044B\u0435 \u043F\u043E \u043F\u0440\u043E\u0434\u0443\u043A\u0442\u0430\u043C \u0438\u0437 \u041C\u0421..."));
-                if (!(products != null && products.rows.length > 0)) return [3 /*break*/, 3];
+                if (!(products != null && products.rows.length > 0)) return [3 /*break*/, 7];
                 articlesFromMS = products.rows
                     .map(function (row) {
                     var _a, _b;
@@ -67,9 +68,9 @@ var updateOzonStocks = function (store, sendMessage) { return __awaiter(void 0, 
                         sku: articlesFromMS,
                     })];
             case 2:
-                stocks = _a.sent();
+                stocks = _b.sent();
                 logger_1.default.info("[".concat(store, "]: \u041F\u043E\u043B\u0443\u0447\u0435\u043D\u044B \u0434\u0430\u043D\u043D\u044B\u0435 \u043F\u043E \u043E\u0441\u0442\u0430\u0442\u043A\u0430\u043C \u043C\u0430\u0433\u0430\u0437\u0438\u043D\u0430..."));
-                offersForSend = stocks === null || stocks === void 0 ? void 0 : stocks.reduce(function (acc, cur) {
+                offersForSend = (_a = stocks === null || stocks === void 0 ? void 0 : stocks.filter(function (stock) { return stock.warehouse_id === 1020000718066000; })) === null || _a === void 0 ? void 0 : _a.reduce(function (acc, cur) {
                     if (cur.present < 10) {
                         acc.stocks.push({
                             product_id: cur.product_id,
@@ -81,14 +82,28 @@ var updateOzonStocks = function (store, sendMessage) { return __awaiter(void 0, 
                 }, {
                     stocks: [],
                 });
-                logger_1.default.info(JSON.stringify(offersForSend));
-                _a.label = 3;
-            case 3: return [3 /*break*/, 5];
+                if (!(offersForSend !== undefined &&
+                    offersForSend.stocks.length > 0)) return [3 /*break*/, 5];
+                logger_1.default.info("[".concat(store, "]: \u041E\u0442\u043F\u0440\u0430\u0432\u043B\u044F\u044E \u043D\u043E\u0432\u044B\u0435 \u043E\u0441\u0442\u0430\u0442\u043A\u0438..."));
+                return [4 /*yield*/, (0, stocksController_1.sendOzonStocks)(offersForSend)];
+            case 3:
+                _b.sent();
+                return [4 /*yield*/, sendMessage("[".concat(store, "]: \u041C\u0430\u0433\u0430\u0437\u0438\u043D \u0441\u0438\u043D\u0445\u0440\u043E\u043D\u0438\u0437\u0438\u0440\u043E\u0432\u0430\u043D"))];
             case 4:
-                err_1 = _a.sent();
+                _b.sent();
+                logger_1.default.info("[".concat(store, "]: \u041C\u0430\u0433\u0430\u0437\u0438\u043D \u0441\u0438\u043D\u0445\u0440\u043E\u043D\u0438\u0437\u0438\u0440\u043E\u0432\u0430\u043D"));
+                return [3 /*break*/, 7];
+            case 5: return [4 /*yield*/, sendMessage("[".concat(store, "]: \u0412\u0441\u0435 \u043E\u0441\u0442\u0430\u0442\u043A\u0438 \u0431\u043E\u043B\u044C\u0448\u0435 10 - \u043E\u0431\u043D\u043E\u0432\u043B\u044F\u0442\u044C \u043D\u0435\u0447\u0435\u0433\u043E"))];
+            case 6:
+                _b.sent();
+                logger_1.default.info("[".concat(store, "]: \u0412\u0441\u0435 \u043E\u0441\u0442\u0430\u0442\u043A\u0438 \u0431\u043E\u043B\u044C\u0448\u0435 10 - \u043E\u0431\u043D\u043E\u0432\u043B\u044F\u0442\u044C \u043D\u0435\u0447\u0435\u0433\u043E"));
+                _b.label = 7;
+            case 7: return [3 /*break*/, 9];
+            case 8:
+                err_1 = _b.sent();
                 logger_1.default.error("[Ozon]: ".concat(err_1));
-                return [3 /*break*/, 5];
-            case 5: return [2 /*return*/];
+                return [3 /*break*/, 9];
+            case 9: return [2 /*return*/];
         }
     });
 }); };
