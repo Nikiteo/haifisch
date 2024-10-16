@@ -72,10 +72,10 @@ var getOzonStocks = function (_a) { return __awaiter(void 0, void 0, void 0, fun
         switch (_b.label) {
             case 0:
                 _b.trys.push([0, 2, , 3]);
-                return [4 /*yield*/, service_1.apiService.post('v2/analytics/stock_on_warehouses', __assign({}, props))];
+                return [4 /*yield*/, service_1.apiService.post('/v1/product/info/stocks-by-warehouse/fbs', __assign({}, props))];
             case 1:
                 response = _b.sent();
-                return [2 /*return*/, response.data];
+                return [2 /*return*/, response.data.result];
             case 2:
                 error_1 = _b.sent();
                 err = error_1;

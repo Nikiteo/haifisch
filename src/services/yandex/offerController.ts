@@ -3,6 +3,8 @@ import {
 	type OfferResponse,
 	type ErrorResponse,
 	type OfferMapping,
+	type SendOffersResponse,
+	type SendOffer,
 } from '../../types/marketTypes'
 import { apiServiceHf, apiServiceTop } from './service'
 import Logger from '../../lib/logger'
@@ -37,6 +39,37 @@ export const getOffers = async (
 			}
 		}
 		return await getOffer('')
+	} catch (error: unknown) {
+		Logger.warn(error)
+		const err = error as ErrorResponse
+		if (axios.isAxiosError(err)) {
+			if (err?.response == null || err.code === null) {
+				Logger.error('No response')
+			} else {
+				Logger.error(err.response.data)
+			}
+		} else {
+			Logger.error('different error than axios')
+		}
+	}
+}
+
+export const sendOffers = async (
+	store: string,
+	id: number,
+	data: {
+		offerMappings: OfferMapping[]
+	}
+): Promise<SendOffer[] | undefined> => {
+	const service = store === 'Haifisch' ? apiServiceHf : apiServiceTop
+
+	try {
+		const response = await service.post<SendOffersResponse>(
+			`businesses/${id}/offer-mappings/update`,
+			data
+		)
+
+		return response.data.results
 	} catch (error: unknown) {
 		Logger.warn(error)
 		const err = error as ErrorResponse

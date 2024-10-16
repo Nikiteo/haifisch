@@ -26,6 +26,7 @@ export interface OffersAttributesOzonRequest {
 	filter: {
 		offer_id: Array<Item['offer_id']>
 	}
+	visibility?: string
 	limit: number
 }
 
@@ -692,4 +693,63 @@ export interface TransactionsPosting {
 	order_date: string
 	posting_number: string
 	warehouse_id: number
+}
+
+export interface StocksResponse {
+	result: StockResponse
+}
+
+export interface StockResponse {
+	items: StockItem[]
+	total: number
+	last_id: string
+}
+
+export interface StockItem {
+	product_id: number
+	offer_id: string
+	stocks: Stock[]
+}
+
+export interface Stock {
+	type: string
+	present: number
+	reserved: number
+}
+
+export interface StocksResponseFbs {
+	result: StockResponseFbs[]
+}
+
+export interface StockResponseFbs {
+	sku: number
+	fbs_sku: number
+	present: number
+	product_id: number
+	reserved: number
+	warehouse_id: number
+	warehouse_name: string
+}
+
+export interface SendOzonStocksRequest {
+	stocks: StockRequest[]
+}
+
+export interface StockRequest {
+	offer_id?: string
+	product_id: number
+	stock: number
+	warehouse_id: number
+}
+
+export interface SendOzonStocks {
+	result: SendOzonStock[]
+}
+
+export interface SendOzonStock {
+	warehouse_id: number
+	product_id: number
+	offer_id: string
+	updated: boolean
+	errors: any[]
 }

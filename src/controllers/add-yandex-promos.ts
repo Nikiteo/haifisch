@@ -174,7 +174,7 @@ export const addYandexPromos = async (
 							response?.warningOffers.length > 0
 						) {
 							await sendReply(
-								`В акцию ["${
+								`[${store}]: В акцию ["${
 									promos?.find(promo => promo.id === promoId)
 										?.name
 								}"](https://partner.market.yandex.ru/business/${businessId}/business-promo?campaignId=${
@@ -184,7 +184,7 @@ export const addYandexPromos = async (
 									.join(', ')}`
 							)
 							Logger.warn(
-								`В акцию "${
+								`[${store}]: В акцию "${
 									promos?.find(promo => promo.id === promoId)
 										?.name
 								}" не были добавлены товары с ID - ${response?.warningOffers
@@ -198,7 +198,7 @@ export const addYandexPromos = async (
 							response?.rejectedOffers.length > 0
 						) {
 							await sendReply(
-								`В акции ["${
+								`[${store}]: В акции ["${
 									promos?.find(promo => promo.id === promoId)
 										?.name
 								}"](https://partner.market.yandex.ru/business/${businessId}/business-promo?campaignId=${
@@ -208,7 +208,7 @@ export const addYandexPromos = async (
 									.join(', ')}`
 							)
 							Logger.warn(
-								`В акции "${
+								`[${store}]: В акции "${
 									promos?.find(promo => promo.id === promoId)
 										?.name
 								}" нужно проверить товары с ID - ${response?.rejectedOffers

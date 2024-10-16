@@ -9,6 +9,7 @@ import { stocksCommand } from './lib/stocksCommand'
 import { remainingCommand } from './controllers/remainingCommand'
 import { updateCommand } from './lib/updateCommand'
 import { addPromos } from './lib/addPromos'
+import { addYandexCofinance } from './lib/addCofinance'
 
 const store = {
 	username: '',
@@ -27,6 +28,7 @@ void bot.telegram.setMyCommands([
 	{ command: '/offers', description: 'Обновить товары' },
 	{ command: '/stocks', description: 'Обнови остатки' },
 	{ command: '/promos', description: 'Добавить в акции' },
+	{ command: '/cofinance', description: 'Проставить цену софинансирования' },
 ])
 
 Logger.info('Bot started!')
@@ -39,6 +41,7 @@ bot.start(async ctx => {
 })
 
 syncCommand()
+addYandexCofinance()
 updateCommand()
 spendCommand(store)
 addPromos()

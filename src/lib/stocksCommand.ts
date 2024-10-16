@@ -1,6 +1,7 @@
 import { checkUser } from './check-user'
 import { bot } from '../bot'
 import { updateYandexStocks } from '../controllers/yandex-stocks'
+import { updateOzonStocks } from '../controllers/ozon-stocks'
 
 export const stocksCommand = (): void => {
 	bot.command('stocks', async ctx => {
@@ -11,6 +12,7 @@ export const stocksCommand = (): void => {
 				await ctx.telegram.sendMessage(chatId, text)
 			}
 			await ctx.reply('Начал обновление...')
+			await updateOzonStocks('Ozon', sendMessage)
 			await updateYandexStocks('Haifisch', sendMessage)
 			await updateYandexStocks('Top', sendMessage)
 		} else {

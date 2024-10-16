@@ -243,7 +243,7 @@ export interface BasicPrice {
 export interface PurchasePrice {
 	value: number
 	currencyId: string
-	updatedAt: string
+	updatedAt?: string
 }
 
 export interface AdditionalExpenses {
@@ -255,7 +255,7 @@ export interface AdditionalExpenses {
 export interface CofinancePrice {
 	value: number
 	currencyId: string
-	updatedAt: string
+	updatedAt?: string
 }
 
 export interface OfferCampaign {
@@ -642,3 +642,26 @@ export interface Warning {
 }
 
 export type PromoOffersById = Record<string, PromoOffer[] | undefined>
+
+export interface SendOffersResponse {
+	status: string
+	results: SendOffer[]
+}
+
+export interface SendOffer {
+	offerId: string
+	errors: Error[]
+	warnings: WarningSendOffer[]
+}
+
+export interface Error {
+	type: string
+	parameterId: number
+	message: string
+}
+
+export interface WarningSendOffer {
+	type: string
+	parameterId: number
+	message: string
+}

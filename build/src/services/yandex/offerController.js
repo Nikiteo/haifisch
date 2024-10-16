@@ -39,7 +39,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getOffers = void 0;
+exports.sendOffers = exports.getOffers = void 0;
 var axios_1 = __importDefault(require("axios"));
 var service_1 = require("./service");
 var logger_1 = __importDefault(require("../../lib/logger"));
@@ -92,3 +92,37 @@ var getOffers = function (store, id, data) { return __awaiter(void 0, void 0, vo
     });
 }); };
 exports.getOffers = getOffers;
+var sendOffers = function (store, id, data) { return __awaiter(void 0, void 0, void 0, function () {
+    var service, response, error_2, err;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                service = store === 'Haifisch' ? service_1.apiServiceHf : service_1.apiServiceTop;
+                _a.label = 1;
+            case 1:
+                _a.trys.push([1, 3, , 4]);
+                return [4 /*yield*/, service.post("businesses/".concat(id, "/offer-mappings/update"), data)];
+            case 2:
+                response = _a.sent();
+                return [2 /*return*/, response.data.results];
+            case 3:
+                error_2 = _a.sent();
+                logger_1.default.warn(error_2);
+                err = error_2;
+                if (axios_1.default.isAxiosError(err)) {
+                    if ((err === null || err === void 0 ? void 0 : err.response) == null || err.code === null) {
+                        logger_1.default.error('No response');
+                    }
+                    else {
+                        logger_1.default.error(err.response.data);
+                    }
+                }
+                else {
+                    logger_1.default.error('different error than axios');
+                }
+                return [3 /*break*/, 4];
+            case 4: return [2 /*return*/];
+        }
+    });
+}); };
+exports.sendOffers = sendOffers;
