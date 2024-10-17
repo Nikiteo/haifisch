@@ -594,12 +594,19 @@ export interface Params {
 }
 
 export interface PromocodeParams {
+	promoPrice?: number
 	maxPromoPrice: number
 }
 
 export interface UpdatePromosRequest {
 	promoId: string
 	offers: PromoOfferReq[]
+}
+
+export interface DeletePromosOffersRequest {
+	promoId: string
+	deleteAllOffers: boolean
+	offerIds: string[]
 }
 
 export interface PromoOfferReq {

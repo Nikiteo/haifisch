@@ -176,7 +176,7 @@ export const addOzonPromos = async (
 						}
 					} else {
 						await sendReply(
-							`[${store}]: В акциию ["${
+							`[${store}]: В акцию ["${
 								promos?.find(promo => promo.id === +promoId)
 									?.title
 							}"](https://seller.ozon.ru/app/highlights/${promoId}) можно добавить ${

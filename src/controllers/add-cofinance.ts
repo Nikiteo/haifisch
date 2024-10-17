@@ -46,12 +46,25 @@ export const addCofinance = async (
 									'209bade1-8a19-11ef-0a80-156400730036'
 							)?.value ?? 0
 
-						if (optPrice !== 0) {
+						const basicPrice =
+							product?.salePrices?.find(
+								item =>
+									item.priceType.id ===
+									'5f713df2-9981-11ee-0a80-0b5a00058c80'
+							)?.value ?? 0
+
+						if (optPrice !== 0 && basicPrice !== 0) {
 							acc.offerMappings.push({
 								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 								// @ts-expect-error
 								offer: {
 									offerId: cur.offer.offerId,
+									basicPrice: {
+										...cur.offer.basicPrice,
+										value: basicPrice / 100,
+										discountBase: basicPrice / 100 + 300,
+										currencyId: 'RUR',
+									},
 									cofinancePrice: {
 										value: minPrice / 100,
 										currencyId: 'RUR',
