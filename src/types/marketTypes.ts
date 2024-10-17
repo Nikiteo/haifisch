@@ -672,3 +672,75 @@ export interface WarningSendOffer {
 	parameterId: number
 	message: string
 }
+
+export interface GetFeedbacksResponse {
+	status: string
+	result: GetFeedbacks
+}
+
+export interface GetFeedbacks {
+	feedbacks: Feedback[]
+	paging: Paging
+}
+
+export interface Feedback {
+	feedbackId: number
+	createdAt: string
+	needReaction: boolean
+	identifiers: Identifiers
+	description: Description
+	media: Media
+	statistics: Statistics
+	author?: string
+}
+
+export interface Identifiers {
+	orderId: number
+	modelId: number
+}
+
+export interface Description {
+	advantages: string
+	disadvantages?: string
+	comment?: string
+}
+
+export interface Media {
+	photos?: string[]
+	videos?: string[]
+}
+
+export interface Statistics {
+	rating: number
+	commentsCount: number
+	paidAmount?: number
+}
+
+export interface FeedbackSendReq {
+	feedbackId: number
+	comment: Comment
+}
+
+export interface Comment {
+	id?: number
+	parentId?: number
+	text: string
+}
+
+export interface FeedbacksSendResp {
+	status: string
+	result: FeedbackSendResp
+}
+
+export interface FeedbackSendResp {
+	id: number
+	text: string
+	canModify: boolean
+	author: Author
+	status: string
+}
+
+export interface Author {
+	type: string
+	name: string
+}

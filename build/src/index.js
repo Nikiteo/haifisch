@@ -51,6 +51,7 @@ var remainingCommand_1 = require("./controllers/remainingCommand");
 var updateCommand_1 = require("./lib/updateCommand");
 var addPromos_1 = require("./lib/addPromos");
 var addCofinance_1 = require("./lib/addCofinance");
+var feedbacks_1 = require("./lib/feedbacks");
 var store = {
     username: '',
     project: '',
@@ -68,6 +69,7 @@ void bot_1.bot.telegram.setMyCommands([
     { command: '/stocks', description: 'Обнови остатки' },
     { command: '/promos', description: 'Добавить в акции' },
     { command: '/cofinance', description: 'Проставить цену софинансирования' },
+    { command: '/feedbacks', description: 'Ответить на отзывы' },
 ]);
 logger_1.default.info('Bot started!');
 bot_1.bot.start(function (ctx) { return __awaiter(void 0, void 0, void 0, function () {
@@ -86,6 +88,7 @@ bot_1.bot.start(function (ctx) { return __awaiter(void 0, void 0, void 0, functi
     });
 }); });
 (0, syncCommand_1.syncCommand)();
+(0, feedbacks_1.feedbacks)();
 (0, addCofinance_1.addYandexCofinance)();
 (0, updateCommand_1.updateCommand)();
 (0, spendCommand_1.spendCommand)(store);

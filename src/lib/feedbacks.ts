@@ -1,9 +1,10 @@
 import { bot } from '../bot'
-import { addCofinance } from '../controllers/add-cofinance'
+import { feedbackAnswer } from '../controllers/feedback-answer'
+
 import Logger from './logger'
 
-export const addYandexCofinance = (): void => {
-	bot.command('cofinance', async ctx => {
+export const feedbacks = (): void => {
+	bot.command('feedbacks', async ctx => {
 		const username = ctx.from.username
 		const chatId = ctx.chat.id
 
@@ -18,8 +19,8 @@ export const addYandexCofinance = (): void => {
 				await ctx.telegram.sendMessage(chatId, text)
 			}
 			await ctx.reply('Начал обновление...')
-			await addCofinance('Haifisch', sendMessage, sendReply)
-			await addCofinance('Top', sendMessage, sendReply)
+			await feedbackAnswer('Haifisch', sendMessage, sendReply)
+			await feedbackAnswer('Top', sendMessage, sendReply)
 		} else {
 			return await ctx.reply('Прости, но ты не можешь использовать меня')
 		}
