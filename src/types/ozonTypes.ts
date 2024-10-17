@@ -753,3 +753,140 @@ export interface SendOzonStock {
 	updated: boolean
 	errors: any[]
 }
+
+export interface Promos {
+	result: Promo[]
+}
+
+export interface Promo {
+	id: number
+	title: string
+	date_start: string
+	date_end: string
+	potential_products_count: number
+	is_participating: boolean
+	participating_products_count: number
+	description: string
+	action_type: string
+	banned_products_count: number
+	with_targeting: boolean
+	discount_type: string
+	discount_value: number
+	order_amount: number
+	freeze_date: string
+	is_voucher_action: boolean
+}
+
+export interface PromosHotSale {
+	result: PromoHotSale[]
+}
+
+export interface PromoHotSale {
+	date_end: string
+	date_start: string
+	description: string
+	freeze_date: string
+	hotsale_id: number
+	is_participating: boolean
+	title: string
+}
+
+export interface PromosOffersReq {
+	action_id: number
+	limit: number
+	offset?: number
+}
+export interface PromosOffersHotSaleReq {
+	hotsale_id: number
+	limit: number
+	offset?: number
+}
+
+export interface PromosOffersResponse {
+	result: PromoOffersResponse
+}
+
+export interface PromoOffersResponse {
+	products: PromoProduct[]
+	total: number
+}
+
+export interface PromoProduct {
+	id: number
+	price: number
+	action_price: number
+	max_action_price: number
+	add_mode: string
+	stock: number
+	min_stock: number
+}
+
+export interface PromosOffersHotSaleResponse {
+	result: PromoOffersHotSaleResponse
+}
+
+export interface PromoOffersHotSaleResponse {
+	products: PromoHotSaleProduct[]
+	total: number
+}
+
+export interface PromoHotSaleProduct {
+	action_price: number
+	date_day_promo: string
+	id: number
+	is_active: boolean
+	max_action_price: number
+	min_stock: number
+	stock: number
+}
+
+export interface SendPromosOffers {
+	action_id: number
+	products: SendPromoOffer[]
+}
+
+export interface SendPromoOffer {
+	action_price: number
+	product_id: number
+	stock?: number
+}
+
+export interface SendPromosOffersResponse {
+	result: SendPromoOfferResponse
+}
+
+export interface SendPromoOfferResponse {
+	product_ids: number[]
+	rejected: [
+		{
+			product_id: number
+			reason: string
+		}
+	]
+}
+
+export interface SendPromosOffersHotSale {
+	hotsale_id: number
+	products: SendPromoOfferHotSale[]
+}
+
+export interface SendPromoOfferHotSale {
+	action_price: number
+	product_id: number
+	stock: number
+}
+
+export interface SendPromoOfferHotSaleResponse {
+	result: SendPromoOffersHotSaleResponse
+}
+
+export interface SendPromoOffersHotSaleResponse {
+	rejected: Rejected[]
+}
+
+export interface Rejected {
+	product_id: number
+	reason: string
+}
+
+export type PromoOffersById = Record<number, PromoProduct[] | undefined>

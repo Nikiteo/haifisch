@@ -39,6 +39,17 @@ var getAttributes = function (offer) {
             type: 'string',
             value: offer.sku.toString(),
         },
+        {
+            meta: {
+                href: 'https://api.moysklad.ru/api/remap/1.2/entity/product/metadata/attributes/8966aa35-8c49-11ef-0a80-0dcd0004b2ca',
+                type: 'attributemetadata',
+                mediaType: 'application/json',
+            },
+            id: '8966aa35-8c49-11ef-0a80-0dcd0004b2ca',
+            name: 'ID Озон',
+            type: 'string',
+            value: offer.id.toString(),
+        },
     ];
 };
 exports.getAttributes = getAttributes;

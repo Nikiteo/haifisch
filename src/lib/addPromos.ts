@@ -1,4 +1,5 @@
 import { bot } from '../bot'
+import { addOzonPromos } from '../controllers/add-ozon-promos'
 import { addYandexPromos } from '../controllers/add-yandex-promos'
 import { checkUser } from './check-user'
 import Logger from './logger'
@@ -19,6 +20,7 @@ export const addPromos = (): void => {
 				await ctx.telegram.sendMessage(chatId, text)
 			}
 			await ctx.reply('Начал обновление...')
+			await addOzonPromos('Ozon', sendMessage, sendReply)
 			await addYandexPromos('Haifisch', sendMessage, sendReply)
 			await addYandexPromos('Top', sendMessage, sendReply)
 		} else {

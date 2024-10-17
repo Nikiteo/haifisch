@@ -39,6 +39,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.stocksCommand = void 0;
 var check_user_1 = require("./check-user");
 var bot_1 = require("../bot");
+var yandex_stocks_1 = require("../controllers/yandex-stocks");
 var ozon_stocks_1 = require("../controllers/ozon-stocks");
 var stocksCommand = function () {
     bot_1.bot.command('stocks', function (ctx) { return __awaiter(void 0, void 0, void 0, function () {
@@ -48,7 +49,7 @@ var stocksCommand = function () {
                 case 0:
                     username = ctx.from.username;
                     chatId = ctx.chat.id;
-                    if (!(0, check_user_1.checkUser)(username)) return [3 /*break*/, 3];
+                    if (!(0, check_user_1.checkUser)(username)) return [3 /*break*/, 5];
                     sendMessage = function (text) { return __awaiter(void 0, void 0, void 0, function () {
                         return __generator(this, function (_a) {
                             switch (_a.label) {
@@ -62,16 +63,19 @@ var stocksCommand = function () {
                     return [4 /*yield*/, ctx.reply('Начал обновление...')];
                 case 1:
                     _a.sent();
-                    return [4 /*yield*/, (0, ozon_stocks_1.updateOzonStocks)('Ozon', sendMessage)
-                        // await updateYandexStocks('Haifisch', sendMessage)
-                        // await updateYandexStocks('Top', sendMessage)
-                    ];
+                    return [4 /*yield*/, (0, ozon_stocks_1.updateOzonStocks)('Ozon', sendMessage)];
                 case 2:
                     _a.sent();
-                    return [3 /*break*/, 5];
-                case 3: return [4 /*yield*/, ctx.reply('Прости, но ты не можешь использовать меня')];
-                case 4: return [2 /*return*/, _a.sent()];
-                case 5: return [2 /*return*/];
+                    return [4 /*yield*/, (0, yandex_stocks_1.updateYandexStocks)('Haifisch', sendMessage)];
+                case 3:
+                    _a.sent();
+                    return [4 /*yield*/, (0, yandex_stocks_1.updateYandexStocks)('Top', sendMessage)];
+                case 4:
+                    _a.sent();
+                    return [3 /*break*/, 7];
+                case 5: return [4 /*yield*/, ctx.reply('Прости, но ты не можешь использовать меня')];
+                case 6: return [2 /*return*/, _a.sent()];
+                case 7: return [2 /*return*/];
             }
         });
     }); });
