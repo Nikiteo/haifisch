@@ -1,4 +1,4 @@
-import { currency, priceTypeOzon } from '../../database'
+import { currency, organization, priceTypeOzon } from '../../database'
 import { type Product } from '../../types/msTypes'
 import { type OfferOzonWithAttributes } from '../../types/ozonTypes'
 import { createOzonProduct } from './createOzonProduct'
@@ -33,6 +33,7 @@ export const prepareOzonOffers = (
 					if (prod.article === cur.offer_id) {
 						acc.push({
 							...prod,
+							supplier: organization,
 							salePrices: [
 								{
 									value: parseFloat(cur.price) * 100,

@@ -1,4 +1,9 @@
-import { currency, priceTypeHF, priceTypeTop } from '../../database'
+import {
+	currency,
+	organization,
+	priceTypeHF,
+	priceTypeTop,
+} from '../../database'
 import { type OfferMapping } from '../../types/marketTypes'
 import { type Product } from '../../types/msTypes'
 import { createProduct } from './createProduct'
@@ -31,6 +36,7 @@ export const prepareProducts = (
 					if (prod.article === cur.offer.offerId.toString()) {
 						acc.push({
 							...prod,
+							supplier: organization,
 							salePrices: [
 								{
 									value: cur.offer.basicPrice.value * 100,

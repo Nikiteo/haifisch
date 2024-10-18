@@ -4,8 +4,8 @@ import {
 	productFolder,
 	currency,
 	priceTypeOzon,
-	hfSupplier,
 	country,
+	organization,
 } from '../../database'
 import { type Product } from '../../types/msTypes'
 import { type OfferOzonWithAttributes } from '../../types/ozonTypes'
@@ -47,7 +47,7 @@ export const createOzonProduct = (offer: OfferOzonWithAttributes): Product => {
 				ean13: offer.barcode,
 			},
 		],
-		supplier: hfSupplier,
+		supplier: organization,
 		attributes: getAttributes(offer),
 		paymentItemType: 'GOOD',
 		discountProhibited: false,

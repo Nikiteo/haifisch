@@ -5,8 +5,8 @@ import {
 	currency,
 	priceTypeHF,
 	priceTypeTop,
-	hfSupplier,
 	country,
+	organization,
 } from '../../database'
 import { type OfferMapping } from '../../types/marketTypes'
 import { type Product } from '../../types/msTypes'
@@ -49,7 +49,7 @@ export const createProduct = (domain: string, offer: OfferMapping): Product => {
 				ean13: offer.offer.barcodes[0].toString(),
 			},
 		],
-		supplier: hfSupplier,
+		supplier: organization,
 		attributes: getAttributes(domain, offer),
 		paymentItemType: 'GOOD',
 		discountProhibited: false,

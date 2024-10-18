@@ -33,7 +33,7 @@ var prepareProducts = function (products, offers, domain) {
             products.forEach(function (prod) {
                 var _a, _b, _c, _d, _e, _f, _g, _h, _j;
                 if (prod.article === cur.offer.offerId.toString()) {
-                    acc.push(__assign(__assign({}, prod), { salePrices: [
+                    acc.push(__assign(__assign({}, prod), { supplier: database_1.organization, salePrices: [
                             {
                                 value: cur.offer.basicPrice.value * 100,
                                 currency: database_1.currency,

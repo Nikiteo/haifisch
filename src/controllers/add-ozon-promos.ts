@@ -175,15 +175,20 @@ export const addOzonPromos = async (
 							)
 						}
 					} else {
-						await sendReply(
-							`[${store}]: В акцию ["${
-								promos?.find(promo => promo.id === +promoId)
-									?.title
-							}"](https://seller.ozon.ru/app/highlights/${promoId}) можно добавить ${
-								promos?.find(promo => promo.id === +promoId)
-									?.potential_products_count
-							}, но товары не прошли ценовой отбор`
-						)
+						const countProducts = promos?.find(
+							promo => promo.id === +promoId
+						)?.potential_products_count
+						if (countProducts !== undefined && countProducts > 0) {
+							await sendReply(
+								`[${store}]: В акцию ["${
+									promos?.find(promo => promo.id === +promoId)
+										?.title
+								}"](https://seller.ozon.ru/app/highlights/${promoId}) можно добавить ${
+									promos?.find(promo => promo.id === +promoId)
+										?.potential_products_count
+								}, но товары не прошли ценовой отбор`
+							)
+						}
 					}
 				}
 			}

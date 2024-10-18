@@ -53,12 +53,27 @@ export const addCofinance = async (
 									'5f713df2-9981-11ee-0a80-0b5a00058c80'
 							)?.value ?? 0
 
-						if (optPrice !== 0 && basicPrice !== 0) {
+						if (
+							optPrice !== 0 &&
+							basicPrice !== 0 &&
+							cur.offer.basicPrice.value !== basicPrice / 100
+						) {
+							const newName = cur.offer.name.includes(
+								'из литьевого мрамора'
+							)
+								? cur.offer.name.replace(
+										'из литьевого мрамора',
+										'из искусственного камня'
+										// eslint-disable-next-line no-mixed-spaces-and-tabs
+								  )
+								: cur.offer.name
 							acc.offerMappings.push({
 								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 								// @ts-expect-error
 								offer: {
+									name: newName,
 									offerId: cur.offer.offerId,
+									manufacturerCountries: ['Россия'],
 									basicPrice: {
 										...cur.offer.basicPrice,
 										value: basicPrice / 100,
@@ -89,6 +104,8 @@ export const addCofinance = async (
 				) {
 					await sendOffers(store, businessId, offersForSend)
 				}
+
+				Logger.warn(offersForSend?.offerMappings.length)
 
 				await sendMessage(`[${store}]: Магазин синхронизирован`)
 				Logger.info(`[${store}]: Магазин синхронизирован`)

@@ -40,7 +40,7 @@ var createProduct = function (domain, offer) {
                 ean13: offer.offer.barcodes[0].toString(),
             },
         ],
-        supplier: database_1.hfSupplier,
+        supplier: database_1.organization,
         attributes: (0, getAttributes_1.getAttributes)(domain, offer),
         paymentItemType: 'GOOD',
         discountProhibited: false,
