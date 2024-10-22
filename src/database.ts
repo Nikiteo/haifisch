@@ -541,6 +541,21 @@ export const states = {
 		stateType: 'Unsuccessful',
 		entityType: 'customerorder',
 	},
+	PICKED_REFUND: {
+		meta: {
+			href: 'https://api.moysklad.ru/api/remap/1.2/entity/customerorder/metadata/states/b7bad68e-9052-11ef-0a80-0b71000c3a7b',
+			metadataHref:
+				'https://api.moysklad.ru/api/remap/1.2/entity/customerorder/metadata',
+			type: 'state',
+			mediaType: 'application/json',
+		},
+		id: 'b7bad68e-9052-11ef-0a80-0b71000c3a7b',
+		accountId: '4f45c052-f557-11ed-0a80-0cd400013e78',
+		name: 'Возврат получен',
+		color: 34617,
+		stateType: 'Unsuccessful',
+		entityType: 'customerorder',
+	},
 }
 
 export const salesChannels = {

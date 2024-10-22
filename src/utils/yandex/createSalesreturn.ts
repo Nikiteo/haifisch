@@ -4,13 +4,13 @@ import {
 	fbsTopRefund,
 	fbsHfRefund,
 	fboOzonRefund,
-	fbsOzonRefund,
 	fboOzonProject,
 	fbsHfProject,
 	fbsTopProject,
 	fbyHfProject,
 	fbyTopProject,
 	fbosOzonProject,
+	sourceStore,
 } from '../../database'
 import {
 	type Demand,
@@ -31,7 +31,7 @@ const prepareStore = (project?: Project): Project | undefined => {
 		case fboOzonProject.meta.href:
 			return fboOzonRefund
 		case fbosOzonProject.meta.href:
-			return fbsOzonRefund
+			return sourceStore
 	}
 }
 

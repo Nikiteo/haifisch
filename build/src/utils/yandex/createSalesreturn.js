@@ -37,7 +37,7 @@ var prepareStore = function (project) {
         case database_1.fboOzonProject.meta.href:
             return database_1.fboOzonRefund;
         case database_1.fbosOzonProject.meta.href:
-            return database_1.fbsOzonRefund;
+            return database_1.sourceStore;
     }
 };
 var createSalesReturn = function (demand) {

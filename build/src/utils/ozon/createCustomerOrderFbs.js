@@ -91,7 +91,7 @@ var createCustomerOrderFbs = function (order, boughtProducts, transactions) {
             },
         ],
         organization: database_1.organization,
-        state: (0, prepareOzonFbsStatuses_1.prepareOzonFbsStatuses)(order.status, order.cancellation.cancelled_after_ship),
+        state: (0, prepareOzonFbsStatuses_1.prepareOzonFbsStatuses)(order.status),
         printed: false,
         published: false,
         positions: (0, prepareOzonPositions_1.prepareOzonPositions)(boughtProducts, order.products, order.status),

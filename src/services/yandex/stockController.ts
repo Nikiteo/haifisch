@@ -18,11 +18,25 @@ export const getStocks = async (
 	const service = store === 'Haifisch' ? apiServiceHf : apiServiceTop
 
 	try {
-		const response = await service.post<Stores>(
-			`campaigns/${id}/offers/stocks`,
-			data
-		)
-		return response.data.result.warehouses[0].offers
+		const getStock = async (token: string): Promise<OfferStores[]> => {
+			const response = await service.post<Stores>(
+				`campaigns/${id}/offers/stocks?page_token=${token}`,
+				data
+			)
+			const stocks = response.data.result
+
+			if (
+				stocks.warehouses[0].offers.length > 0 &&
+				Object.keys(stocks.paging).length > 0
+			) {
+				return stocks.warehouses[0].offers.concat(
+					await getStock(stocks.paging.nextPageToken)
+				)
+			} else {
+				return stocks.warehouses[0].offers
+			}
+		}
+		return await getStock('')
 	} catch (error: unknown) {
 		const err = error as ErrorResponse
 		if (axios.isAxiosError(err)) {
@@ -48,7 +62,9 @@ export const sendStocks = async (
 			{
 				status: string
 			},
-			any>
+			any
+			// eslint-disable-next-line no-mixed-spaces-and-tabs
+	  >
 	| undefined
 > => {
 	const service = store === 'Haifisch' ? apiServiceHf : apiServiceTop

@@ -2,21 +2,11 @@ import { states } from '../../database'
 import { type State } from '../../types/msTypes'
 import { OrderFbsOzonStatus } from '../../types/ozonTypes'
 
-const refundCheck = (after?: boolean): State => {
-	if (after !== undefined && after) {
-		return states.RETURNED
-	}
-	return states.CANCELLED
-}
-
-export const prepareOzonFbsStatuses = (
-	status: OrderFbsOzonStatus,
-	refund?: boolean
-): State => {
+export const prepareOzonFbsStatuses = (status: OrderFbsOzonStatus): State => {
 	switch (status) {
 		case OrderFbsOzonStatus.cancelled:
 		case OrderFbsOzonStatus.cancelled_from_split_pending:
-			return refundCheck(refund)
+			return states.CANCELLED
 		case OrderFbsOzonStatus.awaiting_deliver:
 			return states.READY_TO_SHIP
 		case OrderFbsOzonStatus.delivering:
@@ -31,6 +21,8 @@ export const prepareOzonFbsStatuses = (
 			return states.NEW
 		case OrderFbsOzonStatus.returned:
 			return states.RETURNED
+		case OrderFbsOzonStatus.picked_return:
+			return states.PICKED_REFUND
 		default:
 			return states.UNKNOWN
 	}

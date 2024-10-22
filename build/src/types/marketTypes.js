@@ -16,6 +16,7 @@ var OrderStatusEnum;
     OrderStatusEnum["PROCESSING"] = "PROCESSING";
     OrderStatusEnum["RESERVED"] = "RESERVED";
     OrderStatusEnum["RETURNED"] = "RETURNED";
+    OrderStatusEnum["PICKED_REFUND"] = "PICKED_REFUND";
     OrderStatusEnum["REJECTED"] = "REJECTED";
     OrderStatusEnum["UNKNOWN"] = "UNKNOWN";
     OrderStatusEnum["UNPAID"] = "UNPAID";

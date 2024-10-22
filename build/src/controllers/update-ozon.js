@@ -207,7 +207,12 @@ var updateOzon = function (store, sendMessage) { return __awaiter(void 0, void 0
                 fbsAfterReturns_1 = fbsOrders === null || fbsOrders === void 0 ? void 0 : fbsOrders.result.postings.reduce(function (acc, cur) {
                     fbsReturns_1 === null || fbsReturns_1 === void 0 ? void 0 : fbsReturns_1.returns.forEach(function (item) {
                         if (item.posting_number === cur.posting_number) {
-                            acc.push(__assign(__assign({}, cur), { status: ozonTypes_1.OrderFbsOzonStatus.returned }));
+                            if (item.status === 'returned_to_seller') {
+                                acc.push(__assign(__assign({}, cur), { status: ozonTypes_1.OrderFbsOzonStatus.picked_return }));
+                            }
+                            else {
+                                acc.push(__assign(__assign({}, cur), { status: ozonTypes_1.OrderFbsOzonStatus.returned }));
+                            }
                         }
                     });
                     return acc;
@@ -221,9 +226,7 @@ var updateOzon = function (store, sendMessage) { return __awaiter(void 0, void 0
                 return [4 /*yield*/, (0, transactionsController_1.getTransactions)(transactionsProps)];
             case 7:
                 transactions = _d.sent();
-                preparedCustomerOrders_1 = (0, prepareOzonCustomerOrder_1.prepareOzonCustomerOrders)((_a = products === null || products === void 0 ? void 0 : products.rows) !== null && _a !== void 0 ? _a : [], __spreadArray(__spreadArray([], (filteredFboOrders !== null && filteredFboOrders !== void 0 ? filteredFboOrders : []), true), (fboAfterReturns_1 !== null && fboAfterReturns_1 !== void 0 ? fboAfterReturns_1 : []), true), __spreadArray(__spreadArray([], (filteredFbsOrders !== null && filteredFbsOrders !== void 0 ? filteredFbsOrders : []), true), (fbsAfterReturns_1 !== null && fbsAfterReturns_1 !== void 0 ? fbsAfterReturns_1 : []), true).filter(function (item) { return item.posting_number !== '0145992433-0031-1'; })
-                    .filter(function (item) { return item.posting_number !== '28059370-0058-6'; })
-                    .filter(function (item) { return item.posting_number !== '0122683245-0020-1'; }), customerOrders !== null && customerOrders !== void 0 ? customerOrders : [], transactions !== null && transactions !== void 0 ? transactions : []);
+                preparedCustomerOrders_1 = (0, prepareOzonCustomerOrder_1.prepareOzonCustomerOrders)((_a = products === null || products === void 0 ? void 0 : products.rows) !== null && _a !== void 0 ? _a : [], __spreadArray(__spreadArray([], (filteredFboOrders !== null && filteredFboOrders !== void 0 ? filteredFboOrders : []), true), (fboAfterReturns_1 !== null && fboAfterReturns_1 !== void 0 ? fboAfterReturns_1 : []), true), __spreadArray(__spreadArray([], (filteredFbsOrders !== null && filteredFbsOrders !== void 0 ? filteredFbsOrders : []), true), (fbsAfterReturns_1 !== null && fbsAfterReturns_1 !== void 0 ? fbsAfterReturns_1 : []), true), customerOrders !== null && customerOrders !== void 0 ? customerOrders : [], transactions !== null && transactions !== void 0 ? transactions : []);
                 logger_1.default.info("[".concat(store, "]: \u0421\u043E\u0437\u0434\u0430\u044E \u0437\u0430\u043A\u0430\u0437\u044B \u043F\u043E\u043A\u0443\u043F\u0430\u0442\u0435\u043B\u0435\u0439..."));
                 return [4 /*yield*/, (0, ordersController_1.createCustomerOrder)(preparedCustomerOrders_1)];
             case 8:
@@ -249,9 +252,7 @@ var updateOzon = function (store, sendMessage) { return __awaiter(void 0, void 0
             case 11:
                 paymentins = _d.sent();
                 logger_1.default.info("[".concat(store, "]: \u041F\u043E\u043B\u0443\u0447\u0430\u044E \u0434\u043E\u043A\u0443\u043C\u0435\u043D\u0442\u044B \u0432\u0445\u043E\u0434\u044F\u0449\u0438\u0445 \u043F\u043B\u0430\u0442\u0435\u0436\u0435\u0439..."));
-                preparedPaymentins = (0, prepareOzonPaymentin_1.prepareOzonPaymentin)(newDemands !== null && newDemands !== void 0 ? newDemands : [], __spreadArray(__spreadArray([], (filteredFboOrders !== null && filteredFboOrders !== void 0 ? filteredFboOrders : []), true), (fboAfterReturns_1 !== null && fboAfterReturns_1 !== void 0 ? fboAfterReturns_1 : []), true), __spreadArray(__spreadArray([], (filteredFbsOrders !== null && filteredFbsOrders !== void 0 ? filteredFbsOrders : []), true), (fbsAfterReturns_1 !== null && fbsAfterReturns_1 !== void 0 ? fbsAfterReturns_1 : []), true).filter(function (item) { return item.posting_number !== '0145992433-0031-1'; })
-                    .filter(function (item) { return item.posting_number !== '28059370-0058-6'; })
-                    .filter(function (item) { return item.posting_number !== '0122683245-0020-1'; }), paymentins !== null && paymentins !== void 0 ? paymentins : []);
+                preparedPaymentins = (0, prepareOzonPaymentin_1.prepareOzonPaymentin)(newDemands !== null && newDemands !== void 0 ? newDemands : [], __spreadArray(__spreadArray([], (filteredFboOrders !== null && filteredFboOrders !== void 0 ? filteredFboOrders : []), true), (fboAfterReturns_1 !== null && fboAfterReturns_1 !== void 0 ? fboAfterReturns_1 : []), true), __spreadArray(__spreadArray([], (filteredFbsOrders !== null && filteredFbsOrders !== void 0 ? filteredFbsOrders : []), true), (fbsAfterReturns_1 !== null && fbsAfterReturns_1 !== void 0 ? fbsAfterReturns_1 : []), true), paymentins !== null && paymentins !== void 0 ? paymentins : []);
                 return [4 /*yield*/, (0, paymentinController_1.createPaymentin)(preparedPaymentins)];
             case 12:
                 _d.sent();
@@ -281,9 +282,7 @@ var updateOzon = function (store, sendMessage) { return __awaiter(void 0, void 0
             case 15:
                 paymentouts = _d.sent();
                 logger_1.default.info("[".concat(store, "]: \u041F\u043E\u043B\u0443\u0447\u0430\u044E \u0434\u043E\u043A\u0443\u043C\u0435\u043D\u0442\u044B \u0438\u0441\u0445\u043E\u0434\u044F\u0449\u0438\u0445 \u043F\u043B\u0430\u0442\u0435\u0436\u0435\u0439..."));
-                preparedPaymentouts = (0, prepareOzonPaymentout_1.prepareOzonPaymentout)(newSalesReturns !== null && newSalesReturns !== void 0 ? newSalesReturns : [], __spreadArray(__spreadArray([], (filteredFboOrders !== null && filteredFboOrders !== void 0 ? filteredFboOrders : []), true), (fboAfterReturns_1 !== null && fboAfterReturns_1 !== void 0 ? fboAfterReturns_1 : []), true), __spreadArray(__spreadArray([], (filteredFbsOrders !== null && filteredFbsOrders !== void 0 ? filteredFbsOrders : []), true), (fbsAfterReturns_1 !== null && fbsAfterReturns_1 !== void 0 ? fbsAfterReturns_1 : []), true).filter(function (item) { return item.posting_number !== '0145992433-0031-1'; })
-                    .filter(function (item) { return item.posting_number !== '28059370-0058-6'; })
-                    .filter(function (item) { return item.posting_number !== '0122683245-0020-1'; }), paymentouts !== null && paymentouts !== void 0 ? paymentouts : []);
+                preparedPaymentouts = (0, prepareOzonPaymentout_1.prepareOzonPaymentout)(newSalesReturns !== null && newSalesReturns !== void 0 ? newSalesReturns : [], __spreadArray(__spreadArray([], (filteredFboOrders !== null && filteredFboOrders !== void 0 ? filteredFboOrders : []), true), (fboAfterReturns_1 !== null && fboAfterReturns_1 !== void 0 ? fboAfterReturns_1 : []), true), __spreadArray(__spreadArray([], (filteredFbsOrders !== null && filteredFbsOrders !== void 0 ? filteredFbsOrders : []), true), (fbsAfterReturns_1 !== null && fbsAfterReturns_1 !== void 0 ? fbsAfterReturns_1 : []), true), paymentouts !== null && paymentouts !== void 0 ? paymentouts : []);
                 if (!(preparedPaymentouts.length > 0)) return [3 /*break*/, 17];
                 return [4 /*yield*/, (0, paymentoutController_1.createPaymentout)(preparedPaymentouts)];
             case 16:

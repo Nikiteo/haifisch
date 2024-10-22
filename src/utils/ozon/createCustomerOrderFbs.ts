@@ -124,8 +124,7 @@ export const createCustomerOrderFbs = (
 		],
 		organization,
 		state: prepareOzonFbsStatuses(
-			order.status,
-			order.cancellation.cancelled_after_ship
+			order.status
 		),
 		printed: false,
 		published: false,

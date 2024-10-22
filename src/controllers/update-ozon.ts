@@ -168,10 +168,17 @@ export const updateOzon = async (
 			(acc, cur) => {
 				fbsReturns?.returns.forEach(item => {
 					if (item.posting_number === cur.posting_number) {
-						acc.push({
-							...cur,
-							status: OrderFbsOzonStatus.returned,
-						})
+						if (item.status === 'returned_to_seller') {
+							acc.push({
+								...cur,
+								status: OrderFbsOzonStatus.picked_return,
+							})
+						} else {
+							acc.push({
+								...cur,
+								status: OrderFbsOzonStatus.returned,
+							})
+						}
 					}
 				})
 				return acc
@@ -196,10 +203,7 @@ export const updateOzon = async (
 		const preparedCustomerOrders = prepareOzonCustomerOrders(
 			products?.rows ?? [],
 			[...(filteredFboOrders ?? []), ...(fboAfterReturns ?? [])],
-			[...(filteredFbsOrders ?? []), ...(fbsAfterReturns ?? [])]
-				.filter(item => item.posting_number !== '0145992433-0031-1')
-				.filter(item => item.posting_number !== '28059370-0058-6')
-				.filter(item => item.posting_number !== '0122683245-0020-1'),
+			[...(filteredFbsOrders ?? []), ...(fbsAfterReturns ?? [])],
 			customerOrders ?? [],
 			transactions ?? []
 		)
@@ -246,10 +250,7 @@ export const updateOzon = async (
 		const preparedPaymentins = prepareOzonPaymentin(
 			newDemands ?? [],
 			[...(filteredFboOrders ?? []), ...(fboAfterReturns ?? [])],
-			[...(filteredFbsOrders ?? []), ...(fbsAfterReturns ?? [])]
-				.filter(item => item.posting_number !== '0145992433-0031-1')
-				.filter(item => item.posting_number !== '28059370-0058-6')
-				.filter(item => item.posting_number !== '0122683245-0020-1'),
+			[...(filteredFbsOrders ?? []), ...(fbsAfterReturns ?? [])],
 			paymentins ?? []
 		)
 
@@ -296,10 +297,7 @@ export const updateOzon = async (
 		const preparedPaymentouts = prepareOzonPaymentout(
 			newSalesReturns ?? [],
 			[...(filteredFboOrders ?? []), ...(fboAfterReturns ?? [])],
-			[...(filteredFbsOrders ?? []), ...(fbsAfterReturns ?? [])]
-				.filter(item => item.posting_number !== '0145992433-0031-1')
-				.filter(item => item.posting_number !== '28059370-0058-6')
-				.filter(item => item.posting_number !== '0122683245-0020-1'),
+			[...(filteredFbsOrders ?? []), ...(fbsAfterReturns ?? [])],
 			paymentouts ?? []
 		)
 

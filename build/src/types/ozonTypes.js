@@ -30,6 +30,7 @@ var OrderFbsOzonStatus;
     OrderFbsOzonStatus["not_accepted"] = "not_accepted";
     OrderFbsOzonStatus["sent_by_seller"] = "sent_by_seller";
     OrderFbsOzonStatus["returned"] = "returned";
+    OrderFbsOzonStatus["picked_return"] = "picked_return";
 })(OrderFbsOzonStatus || (exports.OrderFbsOzonStatus = OrderFbsOzonStatus = {}));
 // eslint-disable-next-line no-shadow
 var SubstatusOzon;

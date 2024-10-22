@@ -323,6 +323,7 @@ export enum OrderFbsOzonStatus {
 	not_accepted = 'not_accepted', // не принят на сортировочном центре,
 	sent_by_seller = 'sent_by_seller', // отправлено продавцом.
 	returned = 'returned',
+	picked_return = 'picked_return'
 }
 
 // eslint-disable-next-line no-shadow

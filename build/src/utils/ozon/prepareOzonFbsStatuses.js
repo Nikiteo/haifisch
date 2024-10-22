@@ -3,17 +3,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.prepareOzonFbsStatuses = void 0;
 var database_1 = require("../../database");
 var ozonTypes_1 = require("../../types/ozonTypes");
-var refundCheck = function (after) {
-    if (after !== undefined && after) {
-        return database_1.states.RETURNED;
-    }
-    return database_1.states.CANCELLED;
-};
-var prepareOzonFbsStatuses = function (status, refund) {
+var prepareOzonFbsStatuses = function (status) {
     switch (status) {
         case ozonTypes_1.OrderFbsOzonStatus.cancelled:
         case ozonTypes_1.OrderFbsOzonStatus.cancelled_from_split_pending:
-            return refundCheck(refund);
+            return database_1.states.CANCELLED;
         case ozonTypes_1.OrderFbsOzonStatus.awaiting_deliver:
             return database_1.states.READY_TO_SHIP;
         case ozonTypes_1.OrderFbsOzonStatus.delivering:
@@ -28,6 +22,8 @@ var prepareOzonFbsStatuses = function (status, refund) {
             return database_1.states.NEW;
         case ozonTypes_1.OrderFbsOzonStatus.returned:
             return database_1.states.RETURNED;
+        case ozonTypes_1.OrderFbsOzonStatus.picked_return:
+            return database_1.states.PICKED_REFUND;
         default:
             return database_1.states.UNKNOWN;
     }
