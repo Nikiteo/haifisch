@@ -34,7 +34,6 @@ import {
 	type Posting,
 	OrderStatusEnum,
 	OrderFbsOzonStatus,
-	type OzonReturnFbs,
 } from '../types/ozonTypes'
 import { prepareOzonCustomerOrders } from '../utils/ozon/prepareOzonCustomerOrder'
 import { prepareOzonPaymentin } from '../utils/ozon/prepareOzonPaymentin'
@@ -43,8 +42,6 @@ import { prepareDemands } from '../utils/yandex/prepareDemands'
 import { prepareSalesReturn } from '../utils/yandex/prepareSalesreturn'
 import utc from 'dayjs/plugin/utc'
 import { getTransactions } from '../services/ozon/transactionsController'
-import { prepareOzonMoves } from '../utils/ozon/prepareOzonMoves'
-import { createMove, getMoves } from '../services/moysklad/moveController'
 
 dayjs.extend(utc)
 
@@ -307,54 +304,54 @@ export const updateOzon = async (
 
 		Logger.info(`[${store}]: Создаю документы исходящих платежей...`)
 
-		const moves = await getMoves()
+		// const moves = await getMoves()
 
-		Logger.info(`[${store}]: Получаю перемещения из МС...`)
+		// Logger.info(`[${store}]: Получаю перемещения из МС...`)
 
-		const filteredReturns = fbsReturns?.returns
-			.filter(item => item.status === 'returned_to_seller')
-			?.filter(ret =>
-				moves?.every(
-					move => move.name !== ret.posting_number.toString()
-				)
-			)
+		// const filteredReturns = fbsReturns?.returns
+		// 	.filter(item => item.status === 'returned_to_seller')
+		// 	?.filter(ret =>
+		// 		moves?.every(
+		// 			move => move.name !== ret.posting_number.toString()
+		// 		)
+		// 	)
 
-		const returnsForMoves = filteredReturns?.reduce((acc, item) => {
-			const found = acc.find(
-				obj => obj.posting_number === item.posting_number
-			)
-			if (found?.items != null) {
-				found.items.push({
-					name: item.product_name,
-					quantity: item.quantity,
-					price: item.price,
-					sku: item.sku,
-				})
-			} else {
-				const { product_name, quantity, price, ...rest } = item
-				acc.push({
-					...rest,
-					items: [
-						{
-							name: item.product_name,
-							quantity: item.quantity,
-							price: item.price,
-							sku: item.sku,
-						},
-					],
-				})
-			}
-			return acc
-		}, [] as OzonReturnFbs[])
+		// const returnsForMoves = filteredReturns?.reduce((acc, item) => {
+		// 	const found = acc.find(
+		// 		obj => obj.posting_number === item.posting_number
+		// 	)
+		// 	if (found?.items != null) {
+		// 		found.items.push({
+		// 			name: item.product_name,
+		// 			quantity: item.quantity,
+		// 			price: item.price,
+		// 			sku: item.sku,
+		// 		})
+		// 	} else {
+		// 		const { product_name, quantity, price, ...rest } = item
+		// 		acc.push({
+		// 			...rest,
+		// 			items: [
+		// 				{
+		// 					name: item.product_name,
+		// 					quantity: item.quantity,
+		// 					price: item.price,
+		// 					sku: item.sku,
+		// 				},
+		// 			],
+		// 		})
+		// 	}
+		// 	return acc
+		// }, [] as OzonReturnFbs[])
 
-		const preparedOzonMoves = prepareOzonMoves(
-			returnsForMoves ?? [],
-			products?.rows ?? []
-		)
+		// const preparedOzonMoves = prepareOzonMoves(
+		// 	returnsForMoves ?? [],
+		// 	products?.rows ?? []
+		// )
 
-		if (preparedOzonMoves.length > 0) {
-			await createMove(preparedOzonMoves)
-		}
+		// if (preparedOzonMoves.length > 0) {
+		// 	await createMove(preparedOzonMoves)
+		// }
 
 		Logger.info(`[${store}]: Создаю документы перемещений...`)
 
