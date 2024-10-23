@@ -25,7 +25,7 @@ export const prepareSalesReturn = (
 		if (salesreturn.length === 0) {
 			if (place === 'OZON') {
 				const filteredOrders = orders.filter(
-					order => order.state?.meta === states.PICKED_REFUND
+					order => order.state?.meta === states.PICKED_REFUND.meta
 				)
 				const addPositionsToDemands = demands.reduce<Demand[]>(
 					(acc: Demand[], cur: Demand) => {
@@ -97,9 +97,7 @@ export const prepareSalesReturn = (
 		if (salesreturn.length !== 0) {
 			if (place === 'OZON') {
 				const filteredOrders = orders.filter(
-					order =>
-						order.state?.meta === states.RETURNED.meta ||
-						order.state?.meta === states.PARTIALLY_RETURNED.meta
+					order => order.state?.meta === states.PICKED_REFUND.meta
 				)
 				const updatedSalesreturn = demands.reduce(
 					(acc: SalesReturn[], cur: Demand) => {
