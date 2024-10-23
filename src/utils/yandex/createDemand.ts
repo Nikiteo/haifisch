@@ -104,6 +104,22 @@ export const createDemand = (order: CustomerOrder, place?: string): Demand => {
 					: 0,
 			distribution: 'price',
 		},
+		attributes: [
+			{
+				meta: {
+					href: 'https://api.moysklad.ru/api/remap/1.2/entity/demand/metadata/attributes/807c3874-9100-11ef-0a80-0de10004c634',
+					type: 'attributemetadata',
+					mediaType: 'application/json',
+				},
+				id: '807c3874-9100-11ef-0a80-0de10004c634',
+				name: 'Дата получения возврата',
+				type: 'string',
+				value: order.attributes?.find(
+					attribute =>
+						attribute.id === 'c09d1b3e-90ff-11ef-0a80-0efd00046bc2'
+				)?.value,
+			},
+		],
 		consignee,
 		carrier: createCarrier(place),
 		moment: order.deliveryPlannedMoment,

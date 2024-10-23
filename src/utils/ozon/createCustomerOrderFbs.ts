@@ -121,11 +121,22 @@ export const createCustomerOrderFbs = (
 					.map(prod => `${prod.name.split(' ').at(-1)}`)
 					.join('\n'),
 			},
+			{
+				meta: {
+					href: 'https://api.moysklad.ru/api/remap/1.2/entity/customerorder/metadata/attributes/c09d1b3e-90ff-11ef-0a80-0efd00046bc2',
+					type: 'attributemetadata',
+					mediaType: 'application/json',
+				},
+				id: 'c09d1b3e-90ff-11ef-0a80-0efd00046bc2',
+				name: 'Дата получения возврата',
+				type: 'string',
+				value: dayjs(order.refundDate).format(
+					'YYYY-MM-DD HH:mm:ss.SSS'
+				),
+			},
 		],
 		organization,
-		state: prepareOzonFbsStatuses(
-			order.status
-		),
+		state: prepareOzonFbsStatuses(order.status),
 		printed: false,
 		published: false,
 		positions: prepareOzonPositions(

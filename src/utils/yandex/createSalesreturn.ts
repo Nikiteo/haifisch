@@ -65,6 +65,11 @@ export const createSalesReturn = (demand: Demand): SalesReturn => {
 		demand: {
 			meta: demand.meta,
 		},
+		moment:
+			demand.attributes?.find(
+				attribute =>
+					attribute.id === '807c3874-9100-11ef-0a80-0de10004c634'
+			)?.value ?? demand.moment,
 		store: prepareStore(demand.project),
 	}
 }

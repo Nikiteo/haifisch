@@ -169,6 +169,7 @@ export const updateOzon = async (
 							acc.push({
 								...cur,
 								status: OrderFbsOzonStatus.picked_return,
+								refundDate: item.returned_to_seller_date_time,
 							})
 						} else {
 							acc.push({

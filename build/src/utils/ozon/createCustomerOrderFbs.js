@@ -89,6 +89,17 @@ var createCustomerOrderFbs = function (order, boughtProducts, transactions) {
                     .map(function (prod) { return "".concat(prod.name.split(' ').at(-1)); })
                     .join('\n'),
             },
+            {
+                meta: {
+                    href: 'https://api.moysklad.ru/api/remap/1.2/entity/customerorder/metadata/attributes/c09d1b3e-90ff-11ef-0a80-0efd00046bc2',
+                    type: 'attributemetadata',
+                    mediaType: 'application/json',
+                },
+                id: 'c09d1b3e-90ff-11ef-0a80-0efd00046bc2',
+                name: 'Дата получения возврата',
+                type: 'string',
+                value: (0, dayjs_1.default)(order.refundDate).format('YYYY-MM-DD HH:mm:ss.SSS'),
+            },
         ],
         organization: database_1.organization,
         state: (0, prepareOzonFbsStatuses_1.prepareOzonFbsStatuses)(order.status),

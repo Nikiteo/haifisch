@@ -381,6 +381,7 @@ export interface Posting {
 	is_multibox: boolean
 	substatus: SubstatusOzon
 	prr_option: string
+	refundDate?: string
 }
 
 export interface Barcodes {
