@@ -55,7 +55,6 @@ export const createSalesReturn = (demand: Demand): SalesReturn => {
 		shipmentAddressFull,
 		overhead,
 		payments,
-		attributes,
 		...rest
 	} = demand
 
@@ -66,6 +65,7 @@ export const createSalesReturn = (demand: Demand): SalesReturn => {
 		demand: {
 			meta: demand.meta,
 		},
+		attributes: [],
 		moment:
 			demand.attributes?.find(
 				attribute =>

@@ -431,6 +431,7 @@ export interface SalesReturn {
 	payedSum?: number
 	salesChannel?: SalesChannel
 	description?: string
+	attributes?: Attribute[]
 }
 
 export interface Paymentout {
