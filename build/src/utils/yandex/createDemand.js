@@ -59,6 +59,7 @@ var createCarrier = function (place) {
     }
 };
 var createDemand = function (order, place) {
+    var _a, _b;
     var meta = order.meta, id = order.id, accountId = order.accountId, applicable = order.applicable, attributes = order.attributes, owner = order.owner, organizationAccount = order.organizationAccount, deliveryPlannedMoment = order.deliveryPlannedMoment, externalCode = order.externalCode, syncId = order.syncId, updated = order.updated, state = order.state, sum = order.sum, agentAccount = order.agentAccount, created = order.created, printed = order.printed, published = order.published, reservedSum = order.reservedSum, payedSum = order.payedSum, shippedSum = order.shippedSum, invoicedSum = order.invoicedSum, rest = __rest(order, ["meta", "id", "accountId", "applicable", "attributes", "owner", "organizationAccount", "deliveryPlannedMoment", "externalCode", "syncId", "updated", "state", "sum", "agentAccount", "created", "printed", "published", "reservedSum", "payedSum", "shippedSum", "invoicedSum"]);
     return __assign(__assign({}, rest), { customerOrder: {
             meta: order.meta,
@@ -67,6 +68,20 @@ var createDemand = function (order, place) {
                 ? (0, exports.createOverhadSum)(order.attributes, place)
                 : 0,
             distribution: 'price',
-        }, consignee: database_1.consignee, carrier: createCarrier(place), moment: order.deliveryPlannedMoment });
+        }, attributes: [
+            {
+                meta: {
+                    href: 'https://api.moysklad.ru/api/remap/1.2/entity/demand/metadata/attributes/807c3874-9100-11ef-0a80-0de10004c634',
+                    type: 'attributemetadata',
+                    mediaType: 'application/json',
+                },
+                id: '807c3874-9100-11ef-0a80-0de10004c634',
+                name: 'Дата получения возврата',
+                type: 'string',
+                value: (_b = (_a = order.attributes) === null || _a === void 0 ? void 0 : _a.find(function (attribute) {
+                    return attribute.id === 'c09d1b3e-90ff-11ef-0a80-0efd00046bc2';
+                })) === null || _b === void 0 ? void 0 : _b.value,
+            },
+        ], consignee: database_1.consignee, carrier: createCarrier(place), moment: order.deliveryPlannedMoment });
 };
 exports.createDemand = createDemand;

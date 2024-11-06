@@ -41,6 +41,7 @@ var prepareStore = function (project) {
     }
 };
 var createSalesReturn = function (demand) {
+    var _a, _b, _c;
     var meta = demand.meta, id = demand.id, accountId = demand.accountId, applicable = demand.applicable, owner = demand.owner, externalCode = demand.externalCode, updated = demand.updated, sum = demand.sum, created = demand.created, printed = demand.printed, published = demand.published, payedSum = demand.payedSum, carrier = demand.carrier, consignee = demand.consignee, customerOrder = demand.customerOrder, shipmentAddressFull = demand.shipmentAddressFull, overhead = demand.overhead, payments = demand.payments, rest = __rest(demand
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-expect-error
@@ -49,6 +50,8 @@ var createSalesReturn = function (demand) {
     // @ts-expect-error
     return __assign(__assign({}, rest), { demand: {
             meta: demand.meta,
-        }, store: prepareStore(demand.project) });
+        }, moment: (_c = (_b = (_a = demand.attributes) === null || _a === void 0 ? void 0 : _a.find(function (attribute) {
+            return attribute.id === '807c3874-9100-11ef-0a80-0de10004c634';
+        })) === null || _b === void 0 ? void 0 : _b.value) !== null && _c !== void 0 ? _c : demand.moment, store: prepareStore(demand.project) });
 };
 exports.createSalesReturn = createSalesReturn;

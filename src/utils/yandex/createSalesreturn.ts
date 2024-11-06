@@ -55,6 +55,7 @@ export const createSalesReturn = (demand: Demand): SalesReturn => {
 		shipmentAddressFull,
 		overhead,
 		payments,
+		attributes,
 		...rest
 	} = demand
 

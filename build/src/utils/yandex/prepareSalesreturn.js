@@ -28,7 +28,8 @@ var prepareSalesReturn = function (demands, orders, salesreturn, place) {
         }
         if (salesreturn.length === 0) {
             if (place === 'OZON') {
-                var filteredOrders_1 = orders.filter(function (order) { var _a; return ((_a = order.state) === null || _a === void 0 ? void 0 : _a.meta) === database_1.states.PICKED_REFUND; });
+                var filteredOrders_1 = orders.filter(function (order) { var _a; return ((_a = order.state) === null || _a === void 0 ? void 0 : _a.meta) === database_1.states.PICKED_REFUND.meta; });
+                logger_1.default.warn(JSON.stringify(filteredOrders_1));
                 var addPositionsToDemands = demands.reduce(function (acc, cur) {
                     filteredOrders_1.forEach(function (order) {
                         var _a;
@@ -73,11 +74,7 @@ var prepareSalesReturn = function (demands, orders, salesreturn, place) {
         }
         if (salesreturn.length !== 0) {
             if (place === 'OZON') {
-                var filteredOrders_3 = orders.filter(function (order) {
-                    var _a, _b;
-                    return ((_a = order.state) === null || _a === void 0 ? void 0 : _a.meta) === database_1.states.RETURNED.meta ||
-                        ((_b = order.state) === null || _b === void 0 ? void 0 : _b.meta) === database_1.states.PARTIALLY_RETURNED.meta;
-                });
+                var filteredOrders_3 = orders.filter(function (order) { var _a; return ((_a = order.state) === null || _a === void 0 ? void 0 : _a.meta) === database_1.states.PICKED_REFUND.meta; });
                 var updatedSalesreturn_1 = demands.reduce(function (acc, cur) {
                     salesreturn.forEach(function (returns) {
                         if (returns.name === cur.name) {
