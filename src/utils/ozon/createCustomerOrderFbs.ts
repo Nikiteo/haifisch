@@ -68,9 +68,7 @@ export const createCustomerOrderFbs = (
 		shared: true,
 		group,
 		name: order.posting_number,
-		moment: dayjs(order.in_process_at)
-			.subtract(3, 'hour')
-			.format('YYYY-MM-DD HH:mm:ss.SSS'),
+		moment: dayjs(order.in_process_at).format('YYYY-MM-DD HH:mm:ss.SSS'),
 		applicable: true,
 		rate: {
 			currency,
@@ -147,10 +145,9 @@ export const createCustomerOrderFbs = (
 		vatEnabled: true,
 		vatIncluded: true,
 		vatSum: 0.0,
-		deliveryPlannedMoment: dayjs(order.shipment_date)
-			.subtract(3, 'hour')
-			.add(10, 'hour')
-			.format('YYYY-MM-DD HH:mm:ss.SSS'),
+		deliveryPlannedMoment: dayjs(order.shipment_date).format(
+			'YYYY-MM-DD HH:mm:ss.SSS'
+		),
 		shipmentAddressFull: {
 			country,
 			city: order?.analytics_data.city,
