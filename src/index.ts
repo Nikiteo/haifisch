@@ -11,6 +11,7 @@ import { updateCommand } from './lib/updateCommand'
 import { addPromos } from './lib/addPromos'
 import { addYandexCofinance } from './lib/addCofinance'
 import { feedbacks } from './lib/feedbacks'
+import { deletePromos } from './lib/deletePromos'
 
 const store = {
 	username: '',
@@ -29,6 +30,7 @@ void bot.telegram.setMyCommands([
 	{ command: '/offers', description: 'Обновить товары' },
 	{ command: '/stocks', description: 'Обнови остатки' },
 	{ command: '/promos', description: 'Добавить в акции' },
+	{ command: '/deletePromos', description: 'Удали из акций' },
 	{ command: '/cofinance', description: 'Проставить цену софинансирования' },
 	{ command: '/feedbacks', description: 'Ответить на отзывы' },
 ])
@@ -48,6 +50,7 @@ addYandexCofinance()
 updateCommand()
 spendCommand(store)
 addPromos()
+deletePromos()
 remainingCommand()
 stocksCommand()
 articlesAction(store)
