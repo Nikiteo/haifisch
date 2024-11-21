@@ -193,6 +193,7 @@ export interface CustomerOrder {
 	invoicedSum?: number
 	salesChannel?: SalesChannel
 	description?: string
+	demands?: Meta[]
 }
 
 export interface Store {

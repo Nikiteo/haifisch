@@ -28,9 +28,7 @@ export const updateOzonStocks = async (
 				.filter(item => Boolean(item))
 
 			const stocks = await getOzonStocks({
-				sku: articlesFromMS
-					.filter(sku => sku !== 9999667)
-					.filter(sku => sku !== 9999666),
+				sku: articlesFromMS,
 			})
 
 			Logger.info(`[${store}]: Получены данные по остаткам магазина...`)
@@ -39,7 +37,7 @@ export const updateOzonStocks = async (
 				?.filter(stock => stock.warehouse_id === 1020000718066000)
 				?.reduce(
 					(acc, cur) => {
-						if (cur.present < 10) {
+						if (cur.present < 10 && cur.present !== 0) {
 							acc.stocks.push({
 								product_id: cur.product_id,
 								stock: 20,

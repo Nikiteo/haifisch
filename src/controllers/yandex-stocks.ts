@@ -36,7 +36,11 @@ export const updateYandexStocks = async (
 						const available = cur.stocks.find(
 							item => item.type === 'AVAILABLE'
 						)
-						if (available != null && available?.count < 10) {
+						if (
+							available != null &&
+							available?.count < 10 &&
+							available.count !== 0
+						) {
 							acc.push(cur)
 						}
 						return acc
