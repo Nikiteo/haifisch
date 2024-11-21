@@ -4,7 +4,7 @@ import { checkUser } from './check-user'
 import Logger from './logger'
 
 export const deletePromos = (): void => {
-	bot.command('deletePromos', async ctx => {
+	bot.command('del', async ctx => {
 		const username = ctx.from.username
 		const chatId = ctx.chat.id
 

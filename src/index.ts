@@ -1,5 +1,4 @@
 import Logger from './lib/logger'
-import { spendCommand } from './lib/spendCommand'
 import { bot } from './bot'
 import { articlesAction } from './lib/articlesAction'
 import { onText } from './lib/onText'
@@ -25,12 +24,11 @@ const store = {
 
 void bot.telegram.setMyCommands([
 	{ command: '/sync', description: 'Синхронизировать' },
-	// { command: '/spend', description: 'Записать трату' },
-	{ command: '/remainings', description: 'Покажи остатки' },
+	{ command: '/remainings', description: 'Показать остатки' },
 	{ command: '/offers', description: 'Обновить товары' },
-	{ command: '/stocks', description: 'Обнови остатки' },
+	{ command: '/stocks', description: 'Обновить остатки' },
 	{ command: '/promos', description: 'Добавить в акции' },
-	{ command: '/deletePromos', description: 'Удали из акций' },
+	{ command: '/del', description: 'Удалить из акций' },
 	{ command: '/cofinance', description: 'Проставить цену софинансирования' },
 	{ command: '/feedbacks', description: 'Ответить на отзывы' },
 ])
@@ -48,7 +46,6 @@ syncCommand()
 feedbacks()
 addYandexCofinance()
 updateCommand()
-spendCommand(store)
 addPromos()
 deletePromos()
 remainingCommand()
