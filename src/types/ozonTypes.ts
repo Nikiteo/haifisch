@@ -323,7 +323,7 @@ export enum OrderFbsOzonStatus {
 	not_accepted = 'not_accepted', // не принят на сортировочном центре,
 	sent_by_seller = 'sent_by_seller', // отправлено продавцом.
 	returned = 'returned',
-	picked_return = 'picked_return'
+	picked_return = 'picked_return',
 }
 
 // eslint-disable-next-line no-shadow
@@ -857,6 +857,10 @@ export interface SendPromosOffersResponse {
 	result: SendPromoOfferResponse
 }
 
+export interface DeletePromosOffersResponse {
+	result: SendPromoOfferResponse
+}
+
 export interface SendPromoOfferResponse {
 	product_ids: number[]
 	rejected: [
@@ -892,3 +896,8 @@ export interface Rejected {
 }
 
 export type PromoOffersById = Record<number, PromoProduct[] | undefined>
+
+export interface DeletePromosReq {
+	action_id: number
+	product_ids: number[]
+}

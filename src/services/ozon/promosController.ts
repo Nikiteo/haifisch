@@ -19,6 +19,8 @@ import {
 	type SendPromosOffersResponse,
 	type SendPromoOfferHotSaleResponse,
 	type SendPromoOffersHotSaleResponse,
+	type DeletePromosReq,
+	type DeletePromosOffersResponse,
 } from '../../types/ozonTypes'
 
 export const getPromos = async (): Promise<Promo[] | undefined> => {
@@ -145,6 +147,30 @@ export const getPromosOffersHotSale = async (
 			data
 		)
 		return response.data.result.products
+	} catch (error: unknown) {
+		Logger.warn(error)
+		const err = error as ErrorResponse
+		if (axios.isAxiosError(err)) {
+			if (err?.response == null || err.code === null) {
+				Logger.error('No response')
+			} else {
+				Logger.error(err.response.data)
+			}
+		} else {
+			Logger.error('different error than axios')
+		}
+	}
+}
+
+export const deletePromosOffers = async (
+	data: DeletePromosReq
+): Promise<SendPromoOfferResponse | undefined> => {
+	try {
+		const response = await apiService.post<DeletePromosOffersResponse>(
+			'v1/actions/products/deactivate',
+			data
+		)
+		return response.data.result
 	} catch (error: unknown) {
 		Logger.warn(error)
 		const err = error as ErrorResponse
