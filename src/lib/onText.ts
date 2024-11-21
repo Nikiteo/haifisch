@@ -22,6 +22,17 @@ export const onText = (store: Store): void => {
 			const text = ctx.message.text
 			Logger.info(`Бот пытался запустить: ${username} с текстом ${text}`)
 
+			if (text.toLocaleLowerCase() === 'женя сегодня молодец?') {
+				const randomValue = Math.random()
+
+				const result =
+					randomValue < 0.5
+						? 'Да, похвалите Женю'
+						: 'Сегодня нет, но может быть в другой раз я отвечу иначе...'
+
+				return await ctx.reply(result)
+			}
+
 			if (text.toLocaleLowerCase() === 'логи') {
 				Logger.info(
 					`Бот пытался запустить: ${username} с текстом ${text}`

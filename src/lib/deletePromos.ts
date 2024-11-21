@@ -1,5 +1,4 @@
 import { bot } from '../bot'
-import { deleteOzonPromos } from '../controllers/delete-ozon-promos'
 import { deletePromosYandex } from '../controllers/delete-promos-yandex'
 import { checkUser } from './check-user'
 import Logger from './logger'
@@ -20,7 +19,7 @@ export const deletePromos = (): void => {
 				await ctx.telegram.sendMessage(chatId, text)
 			}
 			await ctx.reply('Начал обновление...')
-			await deleteOzonPromos('Ozon', sendMessage, sendReply)
+			// await deleteOzonPromos('Ozon', sendMessage, sendReply)
 			await deletePromosYandex('Haifisch', sendMessage, sendReply)
 			await deletePromosYandex('Top', sendMessage, sendReply)
 		} else {
