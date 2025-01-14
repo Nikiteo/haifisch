@@ -109,8 +109,6 @@ export const deleteOzonPromos = async (
 						promoForSend?.product_ids?.length > 0
 					) {
 						const response = await deletePromosOffers(promoForSend)
-						Logger.info(JSON.stringify(promoForSend))
-						Logger.info(JSON.stringify(response))
 
 						if (
 							response?.product_ids != null &&
