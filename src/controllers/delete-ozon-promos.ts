@@ -3,7 +3,7 @@ import { getProducts } from '../services/moysklad/productController'
 import {
 	deletePromosOffers,
 	getPromos,
-	getPromosOffers,
+	getPromosProducts,
 } from '../services/ozon/promosController'
 import {
 	type PromoProduct,
@@ -33,7 +33,7 @@ export const deleteOzonPromos = async (
 			const fetchOneOffer = async (
 				id: number
 			): Promise<PromoProduct[] | undefined> => {
-				return await getPromosOffers({
+				return await getPromosProducts({
 					action_id: id,
 					limit: 1000,
 				})
@@ -109,6 +109,8 @@ export const deleteOzonPromos = async (
 						promoForSend?.product_ids?.length > 0
 					) {
 						const response = await deletePromosOffers(promoForSend)
+						Logger.info(JSON.stringify(promoForSend))
+						Logger.info(JSON.stringify(response))
 
 						if (
 							response?.product_ids != null &&
@@ -120,7 +122,7 @@ export const deleteOzonPromos = async (
 										?.title
 								}"](https://seller.ozon.ru/app/highlights/${promoId}) было удалено ${
 									response?.product_ids.length
-								} товаров}`
+								} товаров`
 							)
 						}
 					}

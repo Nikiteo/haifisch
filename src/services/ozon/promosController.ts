@@ -90,6 +90,30 @@ export const getPromosOffers = async (
 	}
 }
 
+export const getPromosProducts = async (
+	data: PromosOffersReq
+): Promise<PromoProduct[] | undefined> => {
+	try {
+		const response = await apiService.post<PromosOffersResponse>(
+			'v1/actions/products',
+			data
+		)
+		return response.data.result.products
+	} catch (error: unknown) {
+		Logger.warn(error)
+		const err = error as ErrorResponse
+		if (axios.isAxiosError(err)) {
+			if (err?.response == null || err.code === null) {
+				Logger.error('No response')
+			} else {
+				Logger.error(err.response.data)
+			}
+		} else {
+			Logger.error('different error than axios')
+		}
+	}
+}
+
 export const sendPromosOffers = async (
 	data: SendPromosOffers
 ): Promise<SendPromoOfferResponse | undefined> => {
