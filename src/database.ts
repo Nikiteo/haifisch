@@ -932,6 +932,78 @@ export const refund = {
 	},
 }
 
+export const writing = {
+	meta: {
+		href: 'https://api.moysklad.ru/api/remap/1.2/entity/expenseitem/59c98ad6-eded-11e4-8ace-0cc47a02273e',
+		metadataHref:
+			'https://api.moysklad.ru/api/remap/1.2/entity/expenseitem/metadata',
+		type: 'expenseitem',
+		mediaType: 'application/json',
+	},
+}
+
+export const consumables = {
+	meta: {
+		href: 'https://api.moysklad.ru/api/remap/1.2/entity/expenseitem/94858c24-e2f9-11ef-0a80-1a3f00109ad4',
+		metadataHref:
+			'https://api.moysklad.ru/api/remap/1.2/entity/expenseitem/metadata',
+		type: 'expenseitem',
+		mediaType: 'application/json',
+	},
+}
+
+export const equipment = {
+	meta: {
+		href: 'https://api.moysklad.ru/api/remap/1.2/entity/expenseitem/948837e9-e2f9-11ef-0a80-1a3f00109ad5',
+		metadataHref:
+			'https://api.moysklad.ru/api/remap/1.2/entity/expenseitem/metadata',
+		type: 'expenseitem',
+		mediaType: 'application/json',
+	},
+}
+
+export const forms = {
+	meta: {
+		href: 'https://api.moysklad.ru/api/remap/1.2/entity/expenseitem/948865dc-e2f9-11ef-0a80-1a3f00109ad6',
+		metadataHref:
+			'https://api.moysklad.ru/api/remap/1.2/entity/expenseitem/metadata',
+		type: 'expenseitem',
+		mediaType: 'application/json',
+	},
+}
+
+export const improvement = {
+	meta: {
+		href: 'https://api.moysklad.ru/api/remap/1.2/entity/expenseitem/94888ff2-e2f9-11ef-0a80-1a3f00109ad7',
+		metadataHref:
+			'https://api.moysklad.ru/api/remap/1.2/entity/expenseitem/metadata',
+		type: 'expenseitem',
+		mediaType: 'application/json',
+	},
+}
+
+export const optimization = {
+	meta: {
+		href: 'https://api.moysklad.ru/api/remap/1.2/entity/expenseitem/9488ba52-e2f9-11ef-0a80-1a3f00109ad8',
+		metadataHref:
+			'https://api.moysklad.ru/api/remap/1.2/entity/expenseitem/metadata',
+		type: 'expenseitem',
+		mediaType: 'application/json',
+	},
+}
+
+export const retailer = {
+	meta: {
+		href: 'https://api.moysklad.ru/api/remap/1.2/entity/counterparty/123c00da-d71a-11ee-0a80-157900185b7c',
+		metadataHref:
+			'https://api.moysklad.ru/api/remap/1.2/entity/counterparty/metadata',
+		type: 'counterparty',
+		mediaType: 'application/json',
+		uuidHref:
+			'https://online.moysklad.ru/app/#company/edit?id=123c00da-d71a-11ee-0a80-157900185b7c',
+	},
+}
+
 export const returnPicked = {
 	meta: {
 		href: 'https://api.moysklad.ru/api/remap/1.2/entity/move/metadata/states/539a9278-a582-11ee-0a80-0b8100123600',

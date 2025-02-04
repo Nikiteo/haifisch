@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import axios from 'axios'
 import { type Cashout, type ErrorResponse } from '../../types/msTypes'
 import { apiService } from './service'
@@ -17,11 +18,20 @@ export const createCashout = async (
 		if (axios.isAxiosError(err)) {
 			if (err?.response == null || err.code === null) {
 				Logger.error('No response')
+				throw new Error('No response from server')
 			} else {
-				Logger.error(err.response.data)
+				const errorMessage =
+					// eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
+					err.response.data.errors &&
+					Array.isArray(err.response.data.errors)
+						? err.response.data.errors[0].error
+						: 'Unknown error occurred'
+				Logger.error(errorMessage)
+				throw new Error(errorMessage)
 			}
 		} else {
-			Logger.error('different error than axios')
+			Logger.error('Different error than axios')
+			throw new Error('An unexpected error occurred')
 		}
 	}
 }

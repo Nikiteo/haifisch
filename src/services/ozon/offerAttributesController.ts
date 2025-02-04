@@ -14,7 +14,7 @@ export const getOzonAttributes = async ({
 > => {
 	try {
 		const response = await apiService.post<OfferAttributesResponse>(
-			'v3/products/info/attributes',
+			'v4/products/info/attributes',
 			{ ...props }
 		)
 		return response.data

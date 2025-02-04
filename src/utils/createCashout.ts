@@ -1,38 +1,30 @@
 import {
-	agent,
 	anyaOwner,
+	consumables,
 	currency,
 	entertainment,
-	fboOzonProject,
-	fbosOzonProject,
-	fbsHfProject,
-	fbsTopProject,
-	fbyHfProject,
-	fbyTopProject,
+	equipment,
+	forms,
+	improvement,
 	mishaOwner,
 	moving,
+	optimization,
 	organization,
 	owner,
-	ozonAgent,
-	ozonSalesChannel,
 	purchase,
 	refund,
 	rent,
+	retailer,
 	salary,
-	salesChannels,
+	services,
 	taxes,
+	writing,
 } from '../database'
-import {
-	type Owner,
-	type Cashout,
-	type Project,
-	type Meta,
-} from '../types/msTypes'
+import { type Owner, type Cashout, type Meta } from '../types/msTypes'
 
 interface CreateCashoutObjectProps {
 	username?: string
-	project?: string
-	sum?: string
+	sum: number
 	description?: string
 	expenseItem?: string
 }
@@ -41,57 +33,167 @@ const getOwner = (username?: string): Owner => {
 	switch (username) {
 		case 'Nikiteo':
 			return owner
-		case 'puleekdun':
+		case 'chekannaa':
 			return anyaOwner
-		case 'Mi4ku':
+		case 'Haifisch_store':
 			return mishaOwner
 		default:
 			return owner
 	}
 }
 
-const getProject = (project?: string): Project => {
-	switch (project) {
-		case 'fbsOzon':
-			return fbosOzonProject
-		case 'fbsTop':
-			return fbsTopProject
-		case 'fbsHf':
-			return fbsHfProject
-		case 'fbyOzon':
-			return fboOzonProject
-		case 'fbyTop':
-			return fbyTopProject
-		case 'fbyHf':
-			return fbyHfProject
-		default:
-			return fbosOzonProject
-	}
-}
+export const getExpenseItem = (
+	expenseItem?: string
+): Record<string, Meta> | undefined => {
+	const movingKeywords = [
+		'перемещение',
+		'перестановка',
+		'трансфер',
+		'перемещение средств',
+		'перемещение денег',
+	]
+	const rentalKeywords = [
+		'аренда',
+		'подписка',
+		'лизинг',
+		'арендные платежи',
+		'арендные расходы',
+	]
+	const salaryKeywords = [
+		'зарплата',
+		'оклад',
+		'вознаграждение',
+		'премия',
+		'доплаты',
+		'надбавки',
+	]
+	const withdrawalKeywords = [
+		'вывод',
+		'выводы',
+		'вывод средств',
+		'перевод',
+		'снятие',
+	]
+	const writeOffKeywords = [
+		'списание',
+		'списания',
+		'аннулирование',
+		'уменьшение',
+		'выбытие',
+	]
+	const rawMaterialKeywords = [
+		'сырье',
+		'техкарта',
+		'материалы',
+		'первичные материалы',
+		'основные материалы',
+	]
+	const purchaseKeywords = [
+		'закупка',
+		'товары',
+		'приобретение',
+		'покупка',
+		'закупочные расходы',
+	]
+	const returnKeywords = [
+		'возврат',
+		'возврат товара',
+		'возврат средств',
+		'возврат платежа',
+	]
+	const taxKeywords = [
+		'налоги',
+		'сборы',
+		'налоговые платежи',
+		'обязательные платежи',
+		'фискальные сборы',
+	]
+	const consumablesKeywords = [
+		'расходники',
+		'расходные материалы',
+		'потребляемые материалы',
+		'канцелярские товары',
+	]
+	const equipmentKeywords = [
+		'оборудование',
+		'аппаратура',
+		'инструменты',
+		'техника',
+		'механизмы',
+	]
+	const formsKeywords = ['формы', 'модели', 'шаблоны', 'документы', 'образцы']
+	const improvementKeywords = [
+		'благоустройство',
+		'помещение',
+		'ремонт',
+		'обновление',
+		'модернизация',
+	]
+	const optimizationKeywords = [
+		'оптимизация',
+		'улучшение',
+		'повышение эффективности',
+		'совершенствование',
+		'рационализация',
+	]
 
-const getExpenseItem = (expenseItem?: string): Record<string, Meta> => {
-	switch (expenseItem) {
-		case 'moving':
-			return moving
-		case 'rent':
-			return rent
-		case 'salary':
-			return salary
-		case 'entertainment':
-			return entertainment
-		case 'purchase':
+	if (expenseItem != null) {
+		if (purchaseKeywords.some(keyword => expenseItem.includes(keyword))) {
 			return purchase
-		case 'taxes':
+		}
+		if (taxKeywords.some(keyword => expenseItem.includes(keyword))) {
 			return taxes
-		default:
+		}
+		if (movingKeywords.some(keyword => expenseItem.includes(keyword))) {
+			return moving
+		}
+		if (rentalKeywords.some(keyword => expenseItem.includes(keyword))) {
+			return rent
+		}
+		if (salaryKeywords.some(keyword => expenseItem.includes(keyword))) {
+			return salary
+		}
+		if (withdrawalKeywords.some(keyword => expenseItem.includes(keyword))) {
+			return entertainment
+		}
+		if (
+			rawMaterialKeywords.some(keyword => expenseItem.includes(keyword))
+		) {
+			return services
+		}
+		if (returnKeywords.some(keyword => expenseItem.includes(keyword))) {
 			return refund
+		}
+		if (writeOffKeywords.some(keyword => expenseItem.includes(keyword))) {
+			return writing
+		}
+		if (
+			consumablesKeywords.some(keyword => expenseItem.includes(keyword))
+		) {
+			return consumables
+		}
+		if (equipmentKeywords.some(keyword => expenseItem.includes(keyword))) {
+			return equipment
+		}
+		if (formsKeywords.some(keyword => expenseItem.includes(keyword))) {
+			return forms
+		}
+		if (
+			improvementKeywords.some(keyword => expenseItem.includes(keyword))
+		) {
+			return improvement
+		}
+		if (
+			optimizationKeywords.some(keyword => expenseItem.includes(keyword))
+		) {
+			return optimization
+		}
 	}
 }
 
 export const createCashoutObject = ({
 	username,
-	project = 'fbsOzon',
-	sum = '0',
+	sum,
 	description,
 	expenseItem,
 }: CreateCashoutObjectProps): Cashout => {
@@ -102,13 +204,9 @@ export const createCashoutObject = ({
 		rate: {
 			currency,
 		},
-		project: getProject(project),
-		agent: project.includes('Ozon') ? ozonAgent : agent,
 		organization,
-		salesChannel: project.includes('Ozon')
-			? ozonSalesChannel
-			: salesChannels,
-		sum: parseFloat((parseFloat(sum) * 100).toFixed(2)),
+		agent: retailer,
+		sum: parseFloat((sum * 100).toFixed(2)),
 		paymentPurpose: description,
 		expenseItem: getExpenseItem(expenseItem),
 		state: {

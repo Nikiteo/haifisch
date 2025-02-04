@@ -32,6 +32,13 @@ export const addCofinance = async (
 						const product = products.rows.find(
 							item => item.article === cur.offer.offerId
 						)
+						const hfName =
+							product?.attributes.find(
+								item =>
+									item.id ===
+									'47e81023-9269-11ee-0a80-022f00336d0c'
+							)?.value ?? ''
+
 						const minPrice =
 							product?.salePrices?.find(
 								item =>
@@ -52,6 +59,17 @@ export const addCofinance = async (
 									item.priceType.id ===
 									'5f713df2-9981-11ee-0a80-0b5a00058c80'
 							)?.value ?? 0
+
+						if (hfName !== '') {
+							acc.offerMappings.push({
+								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+								// @ts-expect-error
+								offer: {
+									name: hfName,
+									offerId: cur.offer.offerId,
+								},
+							})
+						}
 
 						if (
 							optPrice !== 0 &&

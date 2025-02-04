@@ -23,11 +23,14 @@ export interface OffersOzonRequest {
 }
 
 export interface OffersAttributesOzonRequest {
-	filter: {
+	filter?: {
 		offer_id: Array<Item['offer_id']>
+		product_id?: string[]
+		sku?: string[]
+		visibility?: string
 	}
-	visibility?: string
-	limit: number
+	limit?: number
+	sort_dir?: string
 }
 
 export interface Result {
@@ -149,29 +152,28 @@ export interface OfferAttributesResponse {
 export interface OfferAttribute {
 	id: number
 	barcode: string
-	category_id: number
 	name: string
 	offer_id: string
+	type_id: number
 	height: number
 	depth: number
 	width: number
 	dimension_unit: string
 	weight: number
 	weight_unit: string
-	images: Image[]
-	image_group_id: string
-	images360: unknown[]
-	pdf_list: unknown[]
+	primary_image: string
+	model_info: ModelInfo
+	images: string[]
+	pdf_list: any[]
 	attributes: Attribute[]
-	complex_attributes: unknown[]
+	complex_attributes: any[]
 	color_image: string
-	last_id: string
+	description_category_id: number
 }
 
-export interface Image {
-	file_name: string
-	default: boolean
-	index: number
+export interface ModelInfo {
+	model_id: number
+	count: number
 }
 
 export interface Attribute {

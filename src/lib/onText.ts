@@ -3,24 +3,13 @@ import { bot } from '../bot'
 import { checkUser } from './check-user'
 import { message } from 'telegraf/filters'
 import { createCashout } from '../services/moysklad/cashoutController'
-import { createCashoutObject } from '../utils/createCashout'
+import { createCashoutObject, getExpenseItem } from '../utils/createCashout'
 
-interface Store {
-	username: string
-	project: string
-	sum: string
-	description: string
-	expenseItem: string
-	cashOutQuestionId: number
-	whatBuyedQuestion: number
-}
-
-export const onText = (store: Store): void => {
+export const onText = (): void => {
 	bot.on(message('text'), async ctx => {
 		try {
 			const username = ctx.from.username
 			const text = ctx.message.text
-			Logger.info(`Бот пытался запустить: ${username} с текстом ${text}`)
 
 			if (text.toLocaleLowerCase() === 'логи') {
 				Logger.info(
@@ -37,49 +26,67 @@ export const onText = (store: Store): void => {
 				}
 			}
 
-			if (ctx.update.message.message_id === store.cashOutQuestionId + 1) {
+			if (
+				text.toLocaleLowerCase().includes('трата') &&
+				ctx.message.chat.id === -1002457683199
+			) {
+				Logger.info(
+					`Бот пытался запустить: ${username} с текстом ${text}`
+				)
 				if (checkUser(username)) {
-					const whatBuyedQuestion = await ctx.reply(
-						'На что потратили?',
-						{
-							reply_markup: {
-								force_reply: true,
-							},
-						}
-					)
-					store.whatBuyedQuestion = whatBuyedQuestion.message_id
-					store.sum = ctx.update.message.text
-				} else {
-					return await ctx.reply(
-						'Прости, но ты не можешь использовать меня'
-					)
-				}
-			}
+					const textArray = text.split(',')
+					const numberMatch = textArray[0].match(/\d+/)
+					const sum =
+						numberMatch != null
+							? parseInt(numberMatch[0], 10)
+							: null
+					const expenseItem = textArray[1].trim()
+					const description = textArray[2].trim()
 
-			if (ctx.update.message.message_id === store.whatBuyedQuestion + 1) {
-				if (checkUser(username)) {
-					try {
-						const newCashOut = createCashoutObject({
-							username: store.username,
-							project: store.project,
-							sum: store.sum,
-							description: ctx.message.text,
-							expenseItem: store.expenseItem,
-						})
-						if (newCashOut !== undefined) {
-							const createdCashOut = await createCashout(
-								newCashOut
-							)
-							await ctx.reply(
-								`Держи ссылку на созданный документ и проверь правильность - ${createdCashOut?.meta?.uuidHref}`
-							)
-							Logger.info(
-								`${store.username} создал расходный ордер: ${store.project} - ${store.sum} - ${ctx.message.text} - ${store.expenseItem}`
-							)
+					const expenseItemNew = getExpenseItem(expenseItem)
+
+					if (expenseItemNew === undefined) {
+						return await ctx.reply(
+							`Прости, но я не могу распознать твою cтатью расходов - ${expenseItem}\nВведи трату в формате: трата {сумма}, {статья расходов}, {комментарий}`
+						)
+					}
+
+					if (sum === null) {
+						return await ctx.reply(
+							`Прости, но я не могу распознать твою сумму расходов - ${sum}\nВведи трату в формате: трата {сумма}, {статья расходов}, {комментарий}`
+						)
+					}
+
+					if (sum !== null && expenseItemNew !== undefined) {
+						try {
+							const newCashOut = createCashoutObject({
+								username,
+								sum,
+								description,
+								expenseItem,
+							})
+
+							if (newCashOut !== undefined) {
+								const createdCashOut = await createCashout(
+									newCashOut
+								)
+								await ctx.reply(
+									`Держи ссылку на созданный документ и проверь правильность - ${createdCashOut?.meta?.uuidHref}`
+								)
+								Logger.info(
+									`${username} создал расходный ордер: ${sum} - ${description} - ${expenseItem}`
+								)
+							}
+						} catch (err) {
+							// eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/ban-ts-comment
+							// @ts-expect-error
+							// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+							return await ctx.reply(err.message)
 						}
-					} catch (err) {
-						Logger.error(err)
-						return await ctx.reply('Кажется, я сломался :(')
+					} else {
+						return await ctx.reply(
+							'Прости, но что-то пошло не так\nВведи трату в формате: трата {сумма}, {статья расходов}, {комментарий}'
+						)
 					}
 				} else {
 					return await ctx.reply(

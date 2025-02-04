@@ -1,8 +1,6 @@
 import Logger from './lib/logger'
 import { bot } from './bot'
-import { articlesAction } from './lib/articlesAction'
 import { onText } from './lib/onText'
-import { afterArticlesAction } from './lib/afterArticlesAction'
 import { syncCommand } from './lib/syncCommand'
 import { stocksCommand } from './lib/stocksCommand'
 import { remainingCommand } from './controllers/remainingCommand'
@@ -11,16 +9,6 @@ import { addPromos } from './lib/addPromos'
 import { addYandexCofinance } from './lib/addCofinance'
 import { feedbacks } from './lib/feedbacks'
 import { deletePromos } from './lib/deletePromos'
-
-const store = {
-	username: '',
-	project: '',
-	sum: '',
-	description: '',
-	expenseItem: '',
-	cashOutQuestionId: 0,
-	whatBuyedQuestion: 0,
-}
 
 void bot.telegram.setMyCommands([
 	{ command: '/sync', description: 'Синхронизировать' },
@@ -43,16 +31,14 @@ bot.start(async ctx => {
 })
 
 syncCommand()
-feedbacks()
-addYandexCofinance()
+remainingCommand()
 updateCommand()
+stocksCommand()
 addPromos()
 deletePromos()
-remainingCommand()
-stocksCommand()
-articlesAction(store)
-afterArticlesAction(store)
-onText(store)
+addYandexCofinance()
+feedbacks()
+onText()
 
 void bot.launch({
 	dropPendingUpdates: true,
