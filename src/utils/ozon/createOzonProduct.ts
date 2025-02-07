@@ -44,7 +44,7 @@ export const createOzonProduct = (offer: OfferOzonWithAttributes): Product => {
 		},
 		barcodes: [
 			{
-				ean13: offer.barcode,
+				ean13: offer.barcodes[0],
 			},
 		],
 		supplier: organization,

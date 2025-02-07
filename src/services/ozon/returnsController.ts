@@ -1,46 +1,24 @@
 import axios from 'axios'
 import {
-	type RequestOzonReturns,
-	type OzonReturnFbo,
-	type OzonReturnFbs,
+	type GetRequestOzonReturns,
 	type ErrorResponse,
-	type Returns,
+	type OzonReturns,
+	type ResponseOzonReturns,
 } from '../../types/ozonTypes'
 import { apiService } from './service'
 import Logger from '../../lib/logger'
 
-export const getOzonFboReturns = async ({
+export const getOzonReturns = async ({
 	...props
-}: RequestOzonReturns): Promise<Returns<OzonReturnFbo> | undefined> => {
+}: GetRequestOzonReturns): Promise<OzonReturns[] | undefined> => {
 	try {
-		const response = await apiService.post<Returns<OzonReturnFbo>>(
-			'v3/returns/company/fbo',
-			{ ...props }
-		)
-		return response.data
-	} catch (error: unknown) {
-		const err = error as ErrorResponse
-		if (axios.isAxiosError(err)) {
-			if (err?.response == null || err.code === null) {
-				Logger.error('No response')
-			} else {
-				Logger.error(err.response.data)
+		const response = await apiService.post<ResponseOzonReturns>(
+			'v1/returns/list',
+			{
+				...props,
 			}
-		} else {
-			Logger.error('different error than axios')
-		}
-	}
-}
-
-export const getOzonFbsReturns = async ({
-	...props
-}: RequestOzonReturns): Promise<Returns<OzonReturnFbs> | undefined> => {
-	try {
-		const response = await apiService.post<Returns<OzonReturnFbs>>(
-			'v3/returns/company/fbs',
-			{ ...props }
 		)
-		return response.data
+		return response.data.returns
 	} catch (error: unknown) {
 		const err = error as ErrorResponse
 		if (axios.isAxiosError(err)) {

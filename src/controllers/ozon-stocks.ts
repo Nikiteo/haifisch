@@ -16,41 +16,39 @@ export const updateOzonStocks = async (
 		Logger.info(`[${store}]: Получены данные по продуктам из МС...`)
 
 		if (products != null && products.rows.length > 0) {
-			const articlesFromMS = products.rows
-				.map(
-					row =>
-						row.attributes?.find(
-							item =>
-								item.id ===
-								'2ca97089-8ade-11ef-0a80-148c0011190c'
-						)?.value
-				)
-				.filter(item => Boolean(item))
-
+			const articlesFromMS = products.rows.map(row => row.article)
 			const stocks = await getOzonStocks({
-				sku: articlesFromMS,
+				filter: {
+					offer_id: articlesFromMS,
+					visibility: 'ALL',
+				},
+				limit: 1000,
 			})
 
 			Logger.info(`[${store}]: Получены данные по остаткам магазина...`)
 
-			const offersForSend = stocks
-				?.filter(stock => stock.warehouse_id === 1020000718066000)
-				?.reduce(
-					(acc, cur) => {
-						if (cur.present < 10 && cur.present !== 0) {
-							acc.stocks.push({
-								product_id: cur.product_id,
-								stock: 20,
-								warehouse_id: cur.warehouse_id,
-							})
-						}
-
-						return acc
-					},
-					{
-						stocks: [] as unknown as StockRequest[],
+			const offersForSend = stocks?.reduce(
+				(acc, item) => {
+					const fbsStock = item.stocks.find(
+						stock => stock.type === 'fbs'
+					)
+					if (
+						fbsStock != null &&
+						fbsStock.present < 10 &&
+						fbsStock.present !== 0
+					) {
+						acc.stocks.push({
+							product_id: item.product_id,
+							stock: 30,
+							warehouse_id: 1020000718066000,
+						})
 					}
-				)
+					return acc
+				},
+				{ stocks: [] as unknown as StockRequest[] }
+			)
+
+			Logger.info(JSON.stringify(offersForSend))
 
 			if (
 				offersForSend !== undefined &&
@@ -58,7 +56,6 @@ export const updateOzonStocks = async (
 			) {
 				Logger.info(`[${store}]: Отправляю новые остатки...`)
 				await sendOzonStocks(offersForSend)
-
 				await sendMessage(`[${store}]: Магазин синхронизирован`)
 				Logger.info(`[${store}]: Магазин синхронизирован`)
 			} else {

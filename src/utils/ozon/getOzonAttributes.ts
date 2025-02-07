@@ -35,17 +35,17 @@ export const getAttributes = (offer: OfferOzonWithAttributes): Attribute[] => {
 			type: 'string',
 			value: prepareVolume(offer.depth, offer.width, offer.height),
 		},
-		{
-			meta: {
-				href: 'https://api.moysklad.ru/api/remap/1.2/entity/product/metadata/attributes/2ca97089-8ade-11ef-0a80-148c0011190c',
-				type: 'attributemetadata',
-				mediaType: 'application/json',
-			},
-			id: '2ca97089-8ade-11ef-0a80-148c0011190c',
-			name: 'Sku Озон',
-			type: 'string',
-			value: offer.sku.toString(),
-		},
+		// {
+		// 	meta: {
+		// 		href: 'https://api.moysklad.ru/api/remap/1.2/entity/product/metadata/attributes/2ca97089-8ade-11ef-0a80-148c0011190c',
+		// 		type: 'attributemetadata',
+		// 		mediaType: 'application/json',
+		// 	},
+		// 	id: '2ca97089-8ade-11ef-0a80-148c0011190c',
+		// 	name: 'Sku Озон',
+		// 	type: 'string',
+		// 	value: offer.sku.toString(),
+		// },
 		{
 			meta: {
 				href: 'https://api.moysklad.ru/api/remap/1.2/entity/product/metadata/attributes/8966aa35-8c49-11ef-0a80-0dcd0004b2ca',

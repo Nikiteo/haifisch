@@ -12,7 +12,7 @@ export const getOzonOffers = async ({
 }: OffersOzonRequest): Promise<OfferResponseOzon | undefined> => {
 	try {
 		const response = await apiService.post<OfferResponseOzon>(
-			'v2/product/info/list',
+			'v3/product/info/list',
 			{ ...props }
 		)
 		return response.data

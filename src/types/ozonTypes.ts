@@ -15,11 +15,13 @@ export interface Detail {
 }
 
 export interface OfferResponseOzon {
-	result: Result
+	items: Item[]
 }
 
 export interface OffersOzonRequest {
 	offer_id: Array<Item['offer_id']>
+	product_id?: string[]
+	sku?: string[]
 }
 
 export interface OffersAttributesOzonRequest {
@@ -33,52 +35,58 @@ export interface OffersAttributesOzonRequest {
 	sort_dir?: string
 }
 
-export interface Result {
-	items: Item[]
-}
-
 export interface Item {
 	id: number
 	name: string
 	offer_id: string
-	barcode: string
-	barcodes?: string[]
-	buybox_price: string
-	category_id: number
+	is_archived: boolean
+	is_autoarchived: boolean
+	barcodes: string[]
+	description_category_id: number
+	type_id: number
 	created_at: string
-	images: unknown[]
-	currency_code?: string
+	images: string[]
+	currency_code: string
 	marketing_price: string
 	min_price: string
 	old_price: string
-	premium_price: string
 	price: string
-	recommended_price: string
 	sources: Source[]
-	has_discounted_item?: boolean
-	is_discounted?: boolean
-	discounted_stocks?: DiscountedStocks
-	state: string
+	model_info: ModelInfo
+	commissions: Commission[]
+	is_prepayment_allowed: boolean
+	volume_weight: number
+	has_discounted_fbo_item: boolean
+	is_discounted: boolean
+	discounted_fbo_stocks: number
 	stocks: Stocks
-	errors: unknown[]
+	errors: any[]
 	updated_at: string
 	vat: string
-	visible: boolean
 	visibility_details: VisibilityDetails
-	price_indexes?: PriceIndexes
-	images360: unknown[]
+	price_indexes: PriceIndexes
+	images360: any[]
 	is_kgt: boolean
-	color_image: string
-	primary_image: string
-	status: Status
-	price_index?: string
-	sku: number
+	color_image: string[]
+	primary_image: string[]
+	statuses: Statuses
+	is_super: boolean
+}
+
+export interface Commission {
+	delivery_amount?: number
+	percent: number
+	return_amount?: number
+	sale_schema: string
+	value: number
 }
 
 export interface Source {
-	is_enabled: boolean
 	sku: number
 	source: string
+	created_at: string
+	shipment_type: string
+	quant_code: string
 }
 
 export interface DiscountedStocks {
@@ -88,59 +96,52 @@ export interface DiscountedStocks {
 }
 
 export interface Stocks {
-	coming: number
-	present: number
-	reserved: number
+	has_stock: boolean
+	stocks: Stock[]
 }
 
 export interface VisibilityDetails {
 	has_price: boolean
 	has_stock: boolean
-	active_product: boolean
-	reasons: Reasons
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface Reasons {}
 
 export interface PriceIndexes {
+	color_index: string
 	external_index_data: ExternalIndexData
 	ozon_index_data: OzonIndexData
-	price_index: string
 	self_marketplaces_index_data: SelfMarketplacesIndexData
 }
 
 export interface ExternalIndexData {
-	minimal_price: string
-	minimal_price_currency: string
+	min_price: number
+	min_price_currency: string
 	price_index_value: number
 }
 
 export interface OzonIndexData {
-	minimal_price: string
-	minimal_price_currency: string
+	min_price: number
+	min_price_currency: string
 	price_index_value: number
 }
 
 export interface SelfMarketplacesIndexData {
-	minimal_price: string
-	minimal_price_currency: string
+	min_price: number
+	min_price_currency: string
 	price_index_value: number
 }
-
-export interface Status {
-	state: string
-	state_failed: string
+export interface Statuses {
+	status: string
+	status_failed: string
 	moderate_status: string
-	decline_reasons: unknown[]
-	validation_state: string
-	state_name: string
-	state_description: string
-	is_failed: boolean
+	validation_status: string
+	status_name: string
+	status_description: string
 	is_created: boolean
-	state_tooltip: string
-	item_errors: unknown[]
-	state_updated_at: string
+	status_tooltip: string
+	status_updated_at: string
 }
 
 export interface OfferAttributesResponse {
@@ -553,10 +554,6 @@ export interface Returns<T> {
 	returns: T[]
 }
 
-export interface ProductPrices {
-	result: ProductPrice
-}
-
 export interface ProductPrice {
 	items: ItemPrice[]
 	total: number
@@ -565,53 +562,59 @@ export interface ProductPrice {
 
 export interface ItemPrice {
 	acquiring: number
-	product_id: number
 	offer_id: string
+	product_id: number
+	volume_weight: number
+	commissions: Commissions
+	marketing_actions: MarketingActions
 	price: Price
 	price_indexes: PriceIndexes
-	commissions: Commissions
-	marketing_actions: any
-	volume_weight: number
+}
+
+export interface MarketingActions {
+	current_period_from: string
+	current_period_to: string
+	actions: Action[]
+	ozon_actions_exist: boolean
+}
+
+export interface Action {
+	title: string
+	value: number
+	date_from: string
+	date_to: string
 }
 
 export interface Price {
-	currency_code: string
-	price: string
-	old_price: string
-	premium_price: string
-	recommended_price: string
-	retail_price: string
-	vat: string
-	min_ozon_price: string
-	marketing_price: string
-	marketing_seller_price: string
 	auto_action_enabled: boolean
+	currency_code: string
+	marketing_price: number
+	marketing_seller_price: number
+	min_price: number
+	old_price: number
+	price: number
+	retail_price: number
+	vat: number
 }
 
 export interface Commissions {
-	sales_percent: number
-	sales_percent_fbo: number
-	sales_percent_fbs: number
-	fbo_fulfillment_amount: number
-	fbo_direct_flow_trans_min_amount: number
-	fbo_direct_flow_trans_max_amount: number
 	fbo_deliv_to_customer_amount: number
+	fbo_direct_flow_trans_max_amount: number
+	fbo_direct_flow_trans_min_amount: number
 	fbo_return_flow_amount: number
-	fbo_return_flow_trans_min_amount: number
-	fbo_return_flow_trans_max_amount: number
-	fbs_first_mile_min_amount: number
-	fbs_first_mile_max_amount: number
+	fbs_deliv_to_customer_amount: number
 	fbs_direct_flow_trans_min_amount: number
 	fbs_direct_flow_trans_max_amount: number
-	fbs_deliv_to_customer_amount: number
+	fbs_first_mile_max_amount: number
+	fbs_first_mile_min_amount: number
 	fbs_return_flow_amount: number
-	fbs_return_flow_trans_min_amount: number
-	fbs_return_flow_trans_max_amount: number
+	sales_percent_fbo: number
+	sales_percent_fbs: number
 }
 
 export interface ProductPricesRequest {
+	cursor?: string
 	filter: Filter
-	last_id: string
 	limit: number
 }
 
@@ -637,6 +640,7 @@ export interface Filter {
 	offer_id: string[]
 	product_id?: string[]
 	visibility: string
+	withQuant?: WithQuant
 }
 
 export interface GetStocks {
@@ -716,23 +720,45 @@ export interface StockItem {
 }
 
 export interface Stock {
-	type: string
 	present: number
 	reserved: number
+	sku: number
+	source: string
 }
 
 export interface StocksResponseFbs {
 	result: StockResponseFbs[]
 }
 
+export interface StockRequestFbs {
+	cursor?: string
+	filter: Filter
+	limit: number
+}
+
+export interface WithQuant {
+	created: boolean
+	exists: boolean
+}
+
 export interface StockResponseFbs {
-	sku: number
-	fbs_sku: number
-	present: number
+	cursor: string
+	items: ItemStocks[]
+	total: number
+}
+
+export interface ItemStocks {
+	offer_id: string
 	product_id: number
+	stocks: StockFbs[]
+}
+
+export interface StockFbs {
+	present: number
 	reserved: number
-	warehouse_id: number
-	warehouse_name: string
+	shipment_type: string
+	sku: number
+	type: string
 }
 
 export interface SendOzonStocksRequest {
@@ -743,7 +769,7 @@ export interface StockRequest {
 	offer_id?: string
 	product_id: number
 	stock: number
-	warehouse_id: number
+	warehouse_id?: number
 }
 
 export interface SendOzonStocks {
@@ -902,4 +928,152 @@ export type PromoOffersById = Record<number, PromoProduct[] | undefined>
 export interface DeletePromosReq {
 	action_id: number
 	product_ids: number[]
+}
+
+export interface GetRequestOzonReturns {
+	filter: FilterRequestOzonReturns
+	limit: number
+	last_id: number
+}
+
+export interface FilterRequestOzonReturns {
+	logistic_return_date: LogisticReturnDate
+	storage_tariffication_start_date?: StorageTarifficationStartDate
+	visual_status_change_moment?: VisualStatusChangeMoment
+	order_id?: string
+	posting_numbers?: string[]
+	product_name?: string
+	offer_id?: string
+	visual_status_name?: string
+	warehouse_id?: string
+	barcode?: string
+	return_schema?: string
+}
+
+export interface LogisticReturnDate {
+	time_from: string
+	time_to: string
+}
+
+export interface StorageTarifficationStartDate {
+	time_from: string
+	time_to: string
+}
+
+export interface VisualStatusChangeMoment {
+	time_from: string
+	time_to: string
+}
+
+export interface ResponseOzonReturns {
+	returns: OzonReturns[]
+	has_next: boolean
+}
+
+export interface OzonReturns {
+	exemplars: Exemplar[]
+	id: string
+	company_id: string
+	return_reason_name: string
+	type: string
+	schema: string
+	order_id: string
+	order_number: string
+	place: Place
+	target_place: TargetPlace
+	storage: Storage
+	product: ProductOzonReturns
+	logistic: Logistic
+	visual: Visual
+	additional_info: AdditionalInfo
+	source_id: string
+	posting_number: string
+	clearing_id: string
+	return_clearing_id: any
+}
+
+export interface Exemplar {
+	id: string
+}
+
+export interface Place {
+	id: string
+	name: string
+	address: string
+}
+
+export interface TargetPlace {
+	id: string
+	name: string
+	address: string
+}
+
+export interface Storage {
+	sum: Sum
+	tariffication_first_date: string
+	tariffication_start_date: string
+	arrived_moment: string
+	days: string
+	utilization_sum: UtilizationSum
+	utilization_forecast_date: string
+}
+
+export interface Sum {
+	currency_code: string
+	price: string
+}
+
+export interface UtilizationSum {
+	currency_code: string
+	price: string
+}
+
+export interface ProductOzonReturns {
+	sku: string
+	offer_id: string
+	name: string
+	price: PriceOzonReturns
+	price_without_commission: PriceWithoutCommission
+	commission_percent: string
+	commission: CommissionOzonReturns
+	quantity: number
+}
+
+export interface PriceOzonReturns {
+	currency_code: string
+	price: string
+}
+
+export interface PriceWithoutCommission {
+	currency_code: string
+	price: string
+}
+
+export interface CommissionOzonReturns {
+	currency_code: string
+	price: string
+}
+
+export interface Logistic {
+	technical_return_moment: string
+	final_moment: string
+	cancelled_with_compensation_moment: string
+	return_date: string
+	barcode: string
+}
+
+export interface Visual {
+	status: Status
+	change_moment: string
+}
+
+export interface Status {
+	id: number
+	display_name: string
+	sys_name: string
+}
+
+export interface AdditionalInfo {
+	is_opened: boolean
+	is_super_econom: boolean
 }

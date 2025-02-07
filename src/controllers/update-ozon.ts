@@ -23,10 +23,7 @@ import {
 	getOzonFboOrders,
 	getOzonFbsOrders,
 } from '../services/ozon/orderController'
-import {
-	getOzonFboReturns,
-	getOzonFbsReturns,
-} from '../services/ozon/returnsController'
+import { getOzonReturns } from '../services/ozon/returnsController'
 
 import { type CustomerOrder, type SalesReturn } from '../types/msTypes'
 import {
@@ -132,23 +129,35 @@ export const updateOzon = async (
 
 		Logger.info(`[${store}]: Получены данные по заказам магазина...`)
 
-		const fboReturns = await getOzonFboReturns({
-			filter: {},
+		const fboReturns = await getOzonReturns({
+			filter: {
+				logistic_return_date: {
+					time_from: filter.since,
+					time_to: filter.to,
+				},
+				return_schema: 'FBO',
+			},
 			last_id: 0,
-			limit: 1000,
+			limit: 500,
 		})
 
-		const fbsReturns = await getOzonFbsReturns({
-			filter: {},
+		const fbsReturns = await getOzonReturns({
+			filter: {
+				logistic_return_date: {
+					time_from: filter.since,
+					time_to: filter.to,
+				},
+				return_schema: 'FBS',
+			},
 			last_id: 0,
-			limit: 1000,
+			limit: 500,
 		})
 
 		Logger.info(`[${store}]: Получены данные по возвратам магазина...`)
 
 		const fboAfterReturns = fboOrders?.result.reduce<FboOrder[]>(
 			(acc, cur) => {
-				fboReturns?.returns.forEach(item => {
+				fboReturns?.forEach(item => {
 					if (item.posting_number === cur.posting_number) {
 						acc.push({
 							...cur,
@@ -163,13 +172,13 @@ export const updateOzon = async (
 
 		const fbsAfterReturns = fbsOrders?.result.postings.reduce<Posting[]>(
 			(acc, cur) => {
-				fbsReturns?.returns.forEach(item => {
+				fbsReturns?.forEach(item => {
 					if (item.posting_number === cur.posting_number) {
-						if (item.status === 'returned_to_seller') {
+						if (item.visual.status.display_name === 'Уже у вас') {
 							acc.push({
 								...cur,
 								status: OrderFbsOzonStatus.picked_return,
-								refundDate: item.returned_to_seller_date_time,
+								refundDate: item.visual.change_moment,
 							})
 						} else {
 							acc.push({
@@ -304,57 +313,6 @@ export const updateOzon = async (
 		}
 
 		Logger.info(`[${store}]: Создаю документы исходящих платежей...`)
-
-		// const moves = await getMoves()
-
-		// Logger.info(`[${store}]: Получаю перемещения из МС...`)
-
-		// const filteredReturns = fbsReturns?.returns
-		// 	.filter(item => item.status === 'returned_to_seller')
-		// 	?.filter(ret =>
-		// 		moves?.every(
-		// 			move => move.name !== ret.posting_number.toString()
-		// 		)
-		// 	)
-
-		// const returnsForMoves = filteredReturns?.reduce((acc, item) => {
-		// 	const found = acc.find(
-		// 		obj => obj.posting_number === item.posting_number
-		// 	)
-		// 	if (found?.items != null) {
-		// 		found.items.push({
-		// 			name: item.product_name,
-		// 			quantity: item.quantity,
-		// 			price: item.price,
-		// 			sku: item.sku,
-		// 		})
-		// 	} else {
-		// 		const { product_name, quantity, price, ...rest } = item
-		// 		acc.push({
-		// 			...rest,
-		// 			items: [
-		// 				{
-		// 					name: item.product_name,
-		// 					quantity: item.quantity,
-		// 					price: item.price,
-		// 					sku: item.sku,
-		// 				},
-		// 			],
-		// 		})
-		// 	}
-		// 	return acc
-		// }, [] as OzonReturnFbs[])
-
-		// const preparedOzonMoves = prepareOzonMoves(
-		// 	returnsForMoves ?? [],
-		// 	products?.rows ?? []
-		// )
-
-		// if (preparedOzonMoves.length > 0) {
-		// 	await createMove(preparedOzonMoves)
-		// }
-
-		Logger.info(`[${store}]: Создаю документы перемещений...`)
 
 		await sendMessage(`[${store}]: Магазин синхронизирован`)
 		Logger.info(`[${store}]: Магазин синхронизирован`)

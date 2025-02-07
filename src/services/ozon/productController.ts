@@ -2,17 +2,17 @@ import axios from 'axios'
 import {
 	type ProductPricesRequest,
 	type ErrorResponse,
-	type ProductPrices,
+	type ProductPrice,
 } from '../../types/ozonTypes'
 import { apiService } from './service'
 import Logger from '../../lib/logger'
 
 export const getProductPrices = async ({
 	...props
-}: ProductPricesRequest): Promise<ProductPrices | undefined> => {
+}: ProductPricesRequest): Promise<ProductPrice | undefined> => {
 	try {
-		const response = await apiService.post<ProductPrices>(
-			'v4/product/info/prices',
+		const response = await apiService.post<ProductPrice>(
+			'v5/product/info/prices',
 			{ ...props }
 		)
 		return response.data

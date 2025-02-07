@@ -38,7 +38,7 @@ export const updateOzonProducts = async (
 				`[${store}]: Получены данные по атрибутам товаров из магазина...`
 			)
 
-			const updatedOzonOffers = ozonOffers?.result.items.reduce(
+			const updatedOzonOffers = ozonOffers?.items.reduce(
 				(acc, cur) => {
 					ozonOffersAttributes?.result.forEach(att => {
 						if (att.offer_id === cur.offer_id) {

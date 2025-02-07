@@ -1,26 +1,25 @@
 import axios from 'axios'
 import {
 	type ErrorResponse,
-	type StocksResponseFbs,
 	type StockResponseFbs,
 	type SendOzonStock,
 	type StockRequest,
 	type SendOzonStocks,
+	type StockRequestFbs,
+	type ItemStocks,
 } from '../../types/ozonTypes'
 import { apiService } from './service'
 import Logger from '../../lib/logger'
 
 export const getOzonStocks = async ({
 	...props
-}: {
-	sku: string[]
-}): Promise<StockResponseFbs[] | undefined> => {
+}: StockRequestFbs): Promise<ItemStocks[] | undefined> => {
 	try {
-		const response = await apiService.post<StocksResponseFbs>(
-			'/v1/product/info/stocks-by-warehouse/fbs',
+		const response = await apiService.post<StockResponseFbs>(
+			'/v4/product/info/stocks',
 			{ ...props }
 		)
-		return response.data.result
+		return response.data.items
 	} catch (error: unknown) {
 		const err = error as ErrorResponse
 		if (axios.isAxiosError(err)) {
