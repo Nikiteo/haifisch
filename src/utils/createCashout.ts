@@ -51,14 +51,26 @@ export const getExpenseItem = (
 		'трансфер',
 		'перемещение средств',
 		'перемещение денег',
+		'транспортировка',
+		'транспортные услуги',
+		'логистика',
+		'перемещения',
+		'трансферы',
 	]
+
 	const rentalKeywords = [
 		'аренда',
 		'подписка',
+		'подписки',
 		'лизинг',
 		'арендные платежи',
 		'арендные расходы',
+		'арендатор',
+		'арендаторы',
+		'долгосрочная аренда',
+		'краткосрочная аренда',
 	]
+
 	const salaryKeywords = [
 		'зарплата',
 		'оклад',
@@ -66,125 +78,231 @@ export const getExpenseItem = (
 		'премия',
 		'доплаты',
 		'надбавки',
+		'бонусы',
+		'вознаграждения',
+		'зарплатные ведомости',
+		'оклады',
 	]
+
 	const withdrawalKeywords = [
 		'вывод',
 		'выводы',
 		'вывод средств',
 		'перевод',
 		'снятие',
+		'снятия',
+		'транзакции',
+		'операции',
+		'выводы денег',
+		'вывод средств на карту',
 	]
+
 	const writeOffKeywords = [
 		'списание',
 		'списания',
 		'аннулирование',
 		'уменьшение',
 		'выбытие',
+		'списания активов',
+		'списание долгов',
+		'списание затрат',
+		'списания средств',
 	]
+
 	const rawMaterialKeywords = [
 		'сырье',
 		'техкарта',
 		'материалы',
 		'первичные материалы',
 		'основные материалы',
+		'вторичные материалы',
+		'компоненты',
+		'материальные запасы',
+		'сырьевые ресурсы',
 	]
+
 	const purchaseKeywords = [
 		'закупка',
 		'товары',
 		'приобретение',
 		'покупка',
 		'закупочные расходы',
+		'закупки',
+		'покупки',
+		'поставки',
+		'договоры поставки',
 	]
+
 	const returnKeywords = [
 		'возврат',
 		'возврат товара',
 		'возврат средств',
 		'возврат платежа',
+		'возвраты',
+		'возвратные операции',
+		'возвратные товары',
 	]
+
 	const taxKeywords = [
 		'налоги',
 		'сборы',
 		'налоговые платежи',
 		'обязательные платежи',
 		'фискальные сборы',
+		'налоговые декларации',
+		'налоговые обязательства',
+		'налоговые вычеты',
 	]
+
 	const consumablesKeywords = [
 		'расходники',
 		'расходные материалы',
 		'потребляемые материалы',
 		'канцелярские товары',
+		'расходные запасы',
+		'расходные изделия',
+		'потребительские товары',
 	]
+
 	const equipmentKeywords = [
 		'оборудование',
 		'аппаратура',
 		'инструменты',
 		'техника',
 		'механизмы',
+		'устройства',
+		'оборудования',
+		'технические средства',
 	]
-	const formsKeywords = ['формы', 'модели', 'шаблоны', 'документы', 'образцы']
+
+	const formsKeywords = [
+		'формы',
+		'модели',
+		'шаблоны',
+		'документы',
+		'образцы',
+		'форматы',
+		'формуляры',
+		'документация',
+	]
+
 	const improvementKeywords = [
 		'благоустройство',
 		'помещение',
 		'ремонт',
 		'обновление',
 		'модернизация',
+		'улучшение',
+		'оптимизация',
+		'развитие',
 	]
+
 	const optimizationKeywords = [
 		'оптимизация',
 		'улучшение',
 		'повышение эффективности',
 		'совершенствование',
 		'рационализация',
+		'оптимизации',
+		'оптимальные решения',
 	]
 
 	if (expenseItem != null) {
-		if (purchaseKeywords.some(keyword => expenseItem.includes(keyword))) {
+		if (
+			purchaseKeywords.some(keyword =>
+				expenseItem.includes(keyword.toLowerCase())
+			)
+		) {
 			return purchase
 		}
-		if (taxKeywords.some(keyword => expenseItem.includes(keyword))) {
+		if (
+			taxKeywords.some(keyword =>
+				expenseItem.includes(keyword.toLowerCase())
+			)
+		) {
 			return taxes
 		}
-		if (movingKeywords.some(keyword => expenseItem.includes(keyword))) {
+		if (
+			movingKeywords.some(keyword =>
+				expenseItem.includes(keyword.toLowerCase())
+			)
+		) {
 			return moving
 		}
-		if (rentalKeywords.some(keyword => expenseItem.includes(keyword))) {
+		if (
+			rentalKeywords.some(keyword =>
+				expenseItem.includes(keyword.toLowerCase())
+			)
+		) {
 			return rent
 		}
-		if (salaryKeywords.some(keyword => expenseItem.includes(keyword))) {
+		if (
+			salaryKeywords.some(keyword =>
+				expenseItem.includes(keyword.toLowerCase())
+			)
+		) {
 			return salary
 		}
-		if (withdrawalKeywords.some(keyword => expenseItem.includes(keyword))) {
+		if (
+			withdrawalKeywords.some(keyword =>
+				expenseItem.includes(keyword.toLowerCase())
+			)
+		) {
 			return entertainment
 		}
 		if (
-			rawMaterialKeywords.some(keyword => expenseItem.includes(keyword))
+			rawMaterialKeywords.some(keyword =>
+				expenseItem.includes(keyword.toLowerCase())
+			)
 		) {
 			return services
 		}
-		if (returnKeywords.some(keyword => expenseItem.includes(keyword))) {
+		if (
+			returnKeywords.some(keyword =>
+				expenseItem.includes(keyword.toLowerCase())
+			)
+		) {
 			return refund
 		}
-		if (writeOffKeywords.some(keyword => expenseItem.includes(keyword))) {
+		if (
+			writeOffKeywords.some(keyword =>
+				expenseItem.includes(keyword.toLowerCase())
+			)
+		) {
 			return writing
 		}
 		if (
-			consumablesKeywords.some(keyword => expenseItem.includes(keyword))
+			consumablesKeywords.some(keyword =>
+				expenseItem.includes(keyword.toLowerCase())
+			)
 		) {
 			return consumables
 		}
-		if (equipmentKeywords.some(keyword => expenseItem.includes(keyword))) {
+		if (
+			equipmentKeywords.some(keyword =>
+				expenseItem.includes(keyword.toLowerCase())
+			)
+		) {
 			return equipment
 		}
-		if (formsKeywords.some(keyword => expenseItem.includes(keyword))) {
+		if (
+			formsKeywords.some(keyword =>
+				expenseItem.includes(keyword.toLowerCase())
+			)
+		) {
 			return forms
 		}
 		if (
-			improvementKeywords.some(keyword => expenseItem.includes(keyword))
+			improvementKeywords.some(keyword =>
+				expenseItem.includes(keyword.toLowerCase())
+			)
 		) {
 			return improvement
 		}
 		if (
-			optimizationKeywords.some(keyword => expenseItem.includes(keyword))
+			optimizationKeywords.some(keyword =>
+				expenseItem.includes(keyword.toLowerCase())
+			)
 		) {
 			return optimization
 		}

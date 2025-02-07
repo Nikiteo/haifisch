@@ -40,20 +40,26 @@ export const onText = (): void => {
 						numberMatch != null
 							? parseInt(numberMatch[0], 10)
 							: null
-					const expenseItem = textArray[1].trim()
-					const description = textArray[2].trim()
+					const expenseItem = textArray[1].trim().toLowerCase()
+					const description = textArray[2].trim().toLowerCase()
 
 					const expenseItemNew = getExpenseItem(expenseItem)
 
 					if (expenseItemNew === undefined) {
 						return await ctx.reply(
-							`Прости, но я не могу распознать твою cтатью расходов - ${expenseItem}\nВведи трату в формате: трата {сумма}, {статья расходов}, {комментарий}`
+							`Прости, но я не могу распознать твою cтатью расходов - ${expenseItem}\nВведи трату в формате: трата {сумма}, {статья расходов}, {комментарий}`,
+							{
+								reply_to_message_id: ctx.message.message_id,
+							}
 						)
 					}
 
 					if (sum === null) {
 						return await ctx.reply(
-							`Прости, но я не могу распознать твою сумму расходов - ${sum}\nВведи трату в формате: трата {сумма}, {статья расходов}, {комментарий}`
+							`Прости, но я не могу распознать твою сумму расходов - ${sum}\nВведи трату в формате: трата {сумма}, {статья расходов}, {комментарий}`,
+							{
+								reply_to_message_id: ctx.message.message_id,
+							}
 						)
 					}
 
@@ -71,7 +77,11 @@ export const onText = (): void => {
 									newCashOut
 								)
 								await ctx.reply(
-									`Держи ссылку на созданный документ и проверь правильность - ${createdCashOut?.meta?.uuidHref}`
+									`Держи ссылку на созданный документ и проверь правильность - ${createdCashOut?.meta?.uuidHref}`,
+									{
+										reply_to_message_id:
+											ctx.message.message_id,
+									}
 								)
 								Logger.info(
 									`${username} создал расходный ордер: ${sum} - ${description} - ${expenseItem}`
@@ -85,7 +95,10 @@ export const onText = (): void => {
 						}
 					} else {
 						return await ctx.reply(
-							'Прости, но что-то пошло не так\nВведи трату в формате: трата {сумма}, {статья расходов}, {комментарий}'
+							'Прости, но что-то пошло не так\nВведи трату в формате: трата {сумма}, {статья расходов}, {комментарий}',
+							{
+								reply_to_message_id: ctx.message.message_id,
+							}
 						)
 					}
 				} else {
