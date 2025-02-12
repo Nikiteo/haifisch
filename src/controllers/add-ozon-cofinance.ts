@@ -46,6 +46,7 @@ export const addOzonCofinance = async (
 						old_price: cur.price.old_price.toString(),
 						min_price: (minPrice / 100).toString(),
 						min_price_for_auto_actions_enabled: true,
+						auto_action_enabled: 'ENABLED',
 					})
 					return acc
 				},
@@ -56,7 +57,8 @@ export const addOzonCofinance = async (
 			Logger.info(`[${store}]: Отправляю данные по ценам магазина...`)
 
 			if (pricesForSend != null && pricesForSend?.prices.length > 0) {
-				await sendPrices(pricesForSend)
+				const response = await sendPrices(pricesForSend)
+				Logger.info(JSON.stringify(response))
 			}
 
 			await sendMessage(`[${store}]: Магазин синхронизирован`)
