@@ -55,7 +55,7 @@ export const updateYandex = async (
 				.set('minute', 59)
 				.set('second', 59)
 				.set('milliseconds', 59)
-				.subtract(2, 'month')
+				.subtract(3, 'month')
 				.format('YYYY-MM-DD'),
 		}
 
