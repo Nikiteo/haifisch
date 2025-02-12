@@ -618,6 +618,24 @@ export interface ProductPricesRequest {
 	limit: number
 }
 
+export interface SendPricesRequest {
+	prices: SendPrices[]
+}
+
+export interface SendPrices {
+	auto_action_enabled?: string
+	currency_code?: string
+	min_price?: string
+	min_price_for_auto_actions_enabled?: boolean
+	offer_id?: string
+	old_price?: string
+	price?: string
+	price_strategy_enabled?: string
+	product_id?: number
+	quant_size?: number
+	vat?: string
+}
+
 export interface TransactionsRequest {
 	filter: TransactionsFilter
 	page?: number

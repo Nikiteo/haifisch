@@ -1,5 +1,6 @@
 import { bot } from '../bot'
 import { addCofinance } from '../controllers/add-cofinance'
+import { addOzonCofinance } from '../controllers/add-ozon-cofinance'
 import Logger from './logger'
 
 export const addYandexCofinance = (): void => {
@@ -20,6 +21,7 @@ export const addYandexCofinance = (): void => {
 			await ctx.reply('Начал обновление...')
 			await addCofinance('Haifisch', sendMessage, sendReply)
 			await addCofinance('Top', sendMessage, sendReply)
+			await addOzonCofinance('Ozon', sendMessage, sendReply)
 		} else {
 			return await ctx.reply('Прости, но ты не можешь использовать меня')
 		}
