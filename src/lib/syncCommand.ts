@@ -1,6 +1,5 @@
 import { bot } from '../bot'
 import { updateOzon } from '../controllers/update-ozon'
-import { updateSber } from '../controllers/update-sber'
 import { updateYandex } from '../controllers/update-yandex'
 import { checkUser } from './check-user'
 import Logger from './logger'
@@ -18,8 +17,7 @@ export const syncCommand = (): void => {
 				await ctx.telegram.sendMessage(chatId, text)
 			}
 			await ctx.reply('Начал обновление...')
-			// await updateOzon('Ozon', sendMessage)
-			// await updateSber('Sber', sendMessage)
+			await updateOzon('Ozon', sendMessage)
 			await updateYandex('Haifisch', sendMessage)
 			await updateYandex('Top', sendMessage)
 		} else {
