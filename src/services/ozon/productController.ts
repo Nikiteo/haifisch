@@ -4,7 +4,7 @@ import {
 	type ErrorResponse,
 	type ProductPrice,
 	type SendPricesRequest,
-	type SendOzonStock,
+	type SendOzonStocks,
 } from '../../types/ozonTypes'
 import { apiService } from './service'
 import Logger from '../../lib/logger'
@@ -34,9 +34,9 @@ export const getProductPrices = async ({
 
 export const sendPrices = async ({
 	...props
-}: SendPricesRequest): Promise<SendOzonStock | undefined> => {
+}: SendPricesRequest): Promise<SendOzonStocks | undefined> => {
 	try {
-		const response = await apiService.post<SendOzonStock>(
+		const response = await apiService.post<SendOzonStocks>(
 			'v1/product/import/prices',
 			{ ...props }
 		)

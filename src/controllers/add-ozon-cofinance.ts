@@ -58,7 +58,21 @@ export const addOzonCofinance = async (
 
 			if (pricesForSend != null && pricesForSend?.prices.length > 0) {
 				const response = await sendPrices(pricesForSend)
-				Logger.info(JSON.stringify(response))
+
+				if (response?.result !== undefined) {
+					for (const item of response.result) {
+						if (item.errors.length > 0) {
+							for (const error of item.errors) {
+								const message = `ID: ${item.offer_id}\nКод ошибки: ${error.code}\nСообщение: ${error.message}`
+								await sendMessage(`[${store}]: ${message}`)
+							}
+						}
+					}
+				} else {
+					Logger.warn(
+						`[${store}]: Ответ от sendPrices пустой или не содержит result`
+					)
+				}
 			}
 
 			await sendMessage(`[${store}]: Магазин синхронизирован`)
