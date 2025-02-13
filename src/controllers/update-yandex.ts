@@ -48,7 +48,7 @@ export const updateYandex = async (
 				.set('minute', 0)
 				.set('second', 0)
 				.set('milliseconds', 0)
-				.subtract(5, 'month')
+				.subtract(4, 'month')
 				.format('YYYY-MM-DD'),
 			dateTo: dayjs()
 				.set('hour', 23)
