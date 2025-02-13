@@ -8,16 +8,26 @@ import {
 } from '../../types/msTypes'
 import Logger from '../../lib/logger'
 
-export const getCustomerOrders = async (dates: {
-	dateFrom: string
-	dateTo: string
-}): Promise<CustomerOrder[] | undefined> => {
+export const getCustomerOrders = async (
+	dates: {
+		dateFrom: string
+		dateTo: string
+	},
+	store: string
+): Promise<CustomerOrder[] | undefined> => {
 	try {
+		const ozonAgent =
+			'https://api.moysklad.ru/api/remap/1.2/entity/counterparty/50f00f03-9830-11ee-0a80-11fb0042a37d'
+		const yandexAgent =
+			'https://api.moysklad.ru/api/remap/1.2/entity/counterparty/2d059b74-92a6-11ee-0a80-145a0044e87e'
+
+		const agent = store === 'Ozon' ? ozonAgent : yandexAgent
+
 		const getCustomerOrder = async (
 			offset: number
 		): Promise<CustomerOrder[]> => {
 			const response = await apiService.get<ResponseMS<CustomerOrder>>(
-				`entity/customerorder?offset=${offset}&filter=moment>${dates.dateFrom};moment<${dates.dateTo}`
+				`entity/customerorder?offset=${offset}&filter=moment>${dates.dateFrom};moment<${dates.dateTo};agent=${agent}`
 			)
 
 			const orders = response.data.rows

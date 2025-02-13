@@ -65,7 +65,7 @@ export const updateYandex = async (
 
 		Logger.info(`[${store}]: Получены данные по продуктам из МС...`)
 
-		const customerOrders = await getCustomerOrders(dates)
+		const customerOrders = await getCustomerOrders(dates, store)
 
 		Logger.info(`[${store}]: Получены данные по заказам из МС...`)
 
