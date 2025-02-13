@@ -48,14 +48,14 @@ export const updateYandex = async (
 				.set('minute', 0)
 				.set('second', 0)
 				.set('milliseconds', 0)
-				.subtract(1, 'month')
+				.subtract(4, 'month')
 				.format('YYYY-MM-DD'),
 			dateTo: dayjs()
 				.set('hour', 23)
 				.set('minute', 59)
 				.set('second', 59)
 				.set('milliseconds', 59)
-				.subtract(1, 'month')
+				.add(0, 'month')
 				.format('YYYY-MM-DD'),
 		}
 
@@ -76,9 +76,9 @@ export const updateYandex = async (
 
 		if (campaignIds !== undefined && campaigns !== undefined) {
 			const fbsOrders = await getOrders(store, campaignIds.FBS, dates)
-			const fbyOrders = await getOrders(store, campaignIds.FBY, dates)
+			// const fbyOrders = await getOrders(store, campaignIds.FBY, dates)
 			const fbsNewOrders = await getNewOrders(store, campaignIds.FBS)
-			const fbyNewOrders = await getNewOrders(store, campaignIds.FBY)
+			// const fbyNewOrders = await getNewOrders(store, campaignIds.FBY)
 
 			Logger.info(`[${store}]: Получены данные по заказам магазина...`)
 
@@ -87,15 +87,15 @@ export const updateYandex = async (
 				filteredOrders: fbsFilteredOrders,
 			} = filterYandexOrders(fbsOrders, fbsNewOrders)
 
-			const {
-				ordersWithNewData: fbyOrdersWithNewData,
-				filteredOrders: fbyFilteredOrders,
-			} = filterYandexOrders(fbyOrders, fbyNewOrders)
+			// const {
+			// 	ordersWithNewData: fbyOrdersWithNewData,
+			// 	filteredOrders: fbyFilteredOrders,
+			// } = filterYandexOrders(fbyOrders, fbyNewOrders)
 
-			const fby = [
-				...fbyOrdersWithNewData,
-				...fbyFilteredOrders,
-			] as AddedOrder[]
+			// const fby = [
+			// 	...fbyOrdersWithNewData,
+			// 	...fbyFilteredOrders,
+			// ] as AddedOrder[]
 			const fbs = [
 				...fbsOrdersWithNewData,
 				...fbsFilteredOrders,
@@ -104,8 +104,8 @@ export const updateYandex = async (
 
 			const preparedCustomerOrders = prepareCustomerOrders(
 				products?.rows ?? [],
-				fby,
-				fbs,
+				[],
+				fbsOrders ?? [],
 				customerOrders ?? [],
 				domain
 			)
@@ -149,7 +149,7 @@ export const updateYandex = async (
 
 			const preparedPaymentins = preparePaymentin(
 				newDemands ?? [],
-				[...(fbyOrders ?? []), ...(fbsOrders ?? [])],
+				[...[], ...(fbsOrders ?? [])],
 				paymentins ?? []
 			)
 
@@ -177,7 +177,7 @@ export const updateYandex = async (
 
 			const preparedPaymentouts = preparePaymentout(
 				newSalesReturns ?? [],
-				[...(fbyOrders ?? []), ...(fbsOrders ?? [])],
+				[...[], ...(fbsOrders ?? [])],
 				paymentouts ?? []
 			)
 

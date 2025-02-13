@@ -9,7 +9,11 @@ import {
 	country,
 	salesChannels,
 } from '../../database'
-import { type AddedOrder, type Delivery } from '../../types/marketTypes'
+import {
+	type Order,
+	type AddedOrder,
+	type Delivery,
+} from '../../types/marketTypes'
 import { type Product, type CustomerOrder } from '../../types/msTypes'
 import { prepareCustomerOrdersAttributes } from './customerOrderAttributes'
 import { getProject } from './getProject'
@@ -30,7 +34,7 @@ const createMoment = (delivery: Delivery): string => {
 
 export const createCustomerOrder = (
 	domain: string,
-	order: AddedOrder,
+	order: Order,
 	boughtProducts: Product[],
 	type: string
 ): CustomerOrder => {
