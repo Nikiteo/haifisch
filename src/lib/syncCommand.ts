@@ -17,7 +17,7 @@ export const syncCommand = (): void => {
 				await ctx.telegram.sendMessage(chatId, text)
 			}
 			await ctx.reply('Начал обновление...')
-			// await updateOzon('Ozon', sendMessage)
+			await updateOzon('Ozon', sendMessage)
 			await updateYandex('Haifisch', sendMessage)
 			await updateYandex('Top', sendMessage)
 		} else {

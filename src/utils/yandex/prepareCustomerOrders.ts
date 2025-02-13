@@ -1,13 +1,13 @@
 import dayjs from 'dayjs'
 import Logger from '../../lib/logger'
-import { type Order, type AddedOrder } from '../../types/marketTypes'
+import { type AddedOrder } from '../../types/marketTypes'
 import { type Product, type CustomerOrder } from '../../types/msTypes'
 import { createCustomerOrder } from './createCustomerOrder'
 
 export const prepareCustomerOrders = (
 	products: Product[],
 	fby: AddedOrder[],
-	fbs: Order[],
+	fbs: AddedOrder[],
 	orders: CustomerOrder[],
 	domain: string
 ): CustomerOrder[] => {
