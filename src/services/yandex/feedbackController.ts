@@ -1,78 +1,64 @@
-import axios from 'axios'
 import {
-	type FeedbacksSendResp,
-	type Feedback,
-	type GetFeedbacksResponse,
-	type FeedbackSendReq,
-} from '../../types/marketTypes'
-import { type ErrorResponse } from '../../types/msTypes'
-import { apiServiceHf, apiServiceTop } from './service'
-import Logger from '../../lib/logger'
+	type GoodsFeedbackDTO,
+	type GetGoodsFeedbackResponse,
+	type UpdateGoodsFeedbackCommentRequest,
+	type UpdateGoodsFeedbackCommentResponse,
+	type GoodsFeedbackCommentDTO,
+} from '../../types/yandex/api'
+import { logError } from '../../utils/log-error'
+import { getService } from '../../utils/get-service'
 
 export const getFeedbacks = async (
 	store: string,
 	id: number
-): Promise<Feedback[] | undefined> => {
-	const service = store === 'Haifisch' ? apiServiceHf : apiServiceTop
+): Promise<GoodsFeedbackDTO[] | undefined> => {
+	const service = getService(store)
+
+	const fetchFeedbacks = async (
+		token: string
+	): Promise<GoodsFeedbackDTO[]> => {
+		const response = await service.post<GetGoodsFeedbackResponse>(
+			`businesses/${id}/goods-feedback?limit=50&page_token=${token}`
+		)
+
+		const offers = response.data.result
+
+		if (offers?.feedbacks == null) {
+			return []
+		}
+
+		const feedbacks = offers.feedbacks
+
+		if (feedbacks.length > 0 && offers.paging?.nextPageToken) {
+			const nextFeedbacks = await fetchFeedbacks(
+				offers.paging.nextPageToken
+			)
+			return feedbacks.concat(nextFeedbacks)
+		}
+		return feedbacks
+	}
 
 	try {
-		const getFeedback = async (token: string): Promise<Feedback[]> => {
-			const response = await service.post<GetFeedbacksResponse>(
-				`businesses/${id}/goods-feedback?limit=50&page_token=${token}`
-			)
-
-			const offers = response.data.result
-			if (
-				offers.feedbacks.length > 0 &&
-				Object.keys(offers.paging).length > 0
-			) {
-				return offers.feedbacks.concat(
-					await getFeedback(offers.paging.nextPageToken)
-				)
-			} else {
-				return offers.feedbacks
-			}
-		}
-		return await getFeedback('')
-	} catch (error: unknown) {
-		Logger.warn(error)
-		const err = error as ErrorResponse
-		if (axios.isAxiosError(err)) {
-			if (err?.response == null || err.code === null) {
-				Logger.error('No response')
-			} else {
-				Logger.error(err.response.data)
-			}
-		} else {
-			Logger.error('different error than axios')
-		}
+		return await fetchFeedbacks('')
+	} catch (error) {
+		logError(error)
 	}
 }
-// FeedbacksSendResp
+
 export const addFeedback = async (
 	store: string,
 	id: number,
-	data?: FeedbackSendReq
-): Promise<FeedbacksSendResp | undefined> => {
-	const service = store === 'Haifisch' ? apiServiceHf : apiServiceTop
+	data?: UpdateGoodsFeedbackCommentRequest
+): Promise<GoodsFeedbackCommentDTO | undefined> => {
+	const service = getService(store)
 
 	try {
-		const response = await service.post<FeedbacksSendResp>(
+		const response = await service.post<UpdateGoodsFeedbackCommentResponse>(
 			`businesses/${id}/goods-feedback/comments/update`,
 			data
 		)
-		return response.data
-	} catch (error: unknown) {
-		Logger.warn(error)
-		const err = error as ErrorResponse
-		if (axios.isAxiosError(err)) {
-			if (err?.response == null || err.code === null) {
-				Logger.error('No response')
-			} else {
-				Logger.error(err.response.data)
-			}
-		} else {
-			Logger.error('different error than axios')
-		}
+		return response.data.result
+	} catch (error) {
+		logError(error)
 	}
 }

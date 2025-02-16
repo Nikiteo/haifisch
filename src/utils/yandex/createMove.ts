@@ -10,18 +10,19 @@ import {
 	organization,
 	returnPicked,
 } from '../../database'
-import { type ReturnItem, type Return } from '../../types/marketTypes'
 import {
 	type Product,
 	type Move,
 	type CreatePosition,
 } from '../../types/msTypes'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
+import { type ReturnItemDTO, type ReturnDTO } from '../../types/yandex/api'
+
 dayjs.extend(customParseFormat)
 
 export const preparePositions = (
 	products: Product[],
-	items?: ReturnItem[]
+	items?: ReturnItemDTO[]
 ): CreatePosition[] => {
 	return products.reduce<CreatePosition[]>((acc, cur) => {
 		items?.forEach(item => {
@@ -40,9 +41,19 @@ export const preparePositions = (
 	}, [])
 }
 
+const getReturnDescription = (ret: ReturnDTO): string => {
+	const returnTypeDescription =
+		ret.returnType === 'UNREDEEMED' ? 'Невыкуп\n' : 'Возврат\n'
+	const decisionsComments = ret.items
+		.flatMap(item => item.decisions?.map(d => d.comment) || [])
+		.join('')
+
+	return `${returnTypeDescription}${decisionsComments}`
+}
+
 export const createMove = (
 	domain: string,
-	ret: Return,
+	ret: ReturnDTO,
 	boughtProducts: Product[]
 ): Move => {
 	return {
@@ -73,15 +84,6 @@ export const createMove = (
 		sourceStore: domain === 'Haifisch' ? fbsHfRefund : fbsTopRefund,
 		positions: preparePositions(boughtProducts, ret.items),
 		project: domain === 'Haifisch' ? fbsHfProject : fbsTopProject,
-		description: `${
-			ret.returnType === 'UNREDEEMED' ? 'Невыкуп\n' : 'Возврат\n'
-		}${
-			ret.returnType === 'RETURN'
-				? ret.items
-						.map(item => item.decisions.map(d => d.comment))
-						.join('')
-				: ''
-		}
-		`,
+		description: getReturnDescription(ret),
 	}
 }

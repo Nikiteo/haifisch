@@ -1,34 +1,45 @@
-import { type OrderStatusEnum, type Item } from '../../types/marketTypes'
 import { type CreatePosition, type Product } from '../../types/msTypes'
+import {
+	type OrderStatsStatusType,
+	type OrdersStatsItemDTO,
+} from '../../types/yandex/api'
 
 export const preparePositions = (
 	products: Product[],
-	items?: Item[],
-	status?: OrderStatusEnum
+	items?: OrdersStatsItemDTO[],
+	status?: OrderStatsStatusType
 ): CreatePosition[] => {
-	return products.reduce<CreatePosition[]>((acc, cur) => {
-		items?.forEach(item => {
-			if (item.shopSku === cur.article) {
-				acc.push({
-					quantity: item.count,
-					price:
-						item.prices.reduce((a, b) => a + +b.costPerItem, 0) *
-						100,
-					discount: 0,
-					vat: 0,
-					assortment: {
-						meta: cur.meta,
-					},
-					reserve:
-						status === 'PROCESSING' ||
-						status === 'RESERVED' ||
-						status === 'PENDING' ||
-						status === 'UNPAID'
-							? item.count
-							: 0,
-				})
-			}
-		})
-		return acc
-	}, [])
+	const validStatuses = new Set([
+		'PROCESSING',
+		'RESERVED',
+		'PENDING',
+		'UNPAID',
+	])
+
+	return products.flatMap(
+		product =>
+			items
+				?.filter(item => item.shopSku === product.article)
+				.map(item => {
+					const totalPrice =
+						item.prices?.reduce((total, price) => {
+							const cost = price.costPerItem ?? 0
+							return total + +cost
+						}, 0) ?? 0
+
+					return {
+						quantity: item.count,
+						price: totalPrice * 100,
+						discount: 0,
+						vat: 0,
+						assortment: {
+							meta: product.meta,
+						},
+						reserve:
+							status && validStatuses.has(status)
+								? item.count
+								: 0,
+					}
+				}) || []
+	)
 }

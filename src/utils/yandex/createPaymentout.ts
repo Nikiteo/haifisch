@@ -1,28 +1,31 @@
 import dayjs from 'dayjs'
 import { paymentoutState } from '../../database'
-import { type Payment } from '../../types/marketTypes'
 import {
 	type SalesReturn,
 	type Paymentout,
 	type State,
 } from '../../types/msTypes'
+import {
+	type OrdersStatsPaymentDTO,
+	type OrdersStatsPaymentSourceType,
+} from '../../types/yandex/api'
 
-const createStatusPaymentout = (source?: string): State | undefined => {
-	switch (source) {
-		case 'BUYER':
-			return paymentoutState.BUYER
-		case 'CASHBACK':
-			return paymentoutState.CASHBACK
-		case 'MARKETPLACE':
-			return paymentoutState.MARKETPLACE
-		case 'SPASIBO':
-			return paymentoutState.SPASIBO
-	}
+const statusMapping: Record<OrdersStatsPaymentSourceType, State> = {
+	BUYER: paymentoutState.BUYER,
+	CASHBACK: paymentoutState.CASHBACK,
+	MARKETPLACE: paymentoutState.MARKETPLACE,
+	SPLIT: paymentoutState.SPLIT,
+}
+
+const createStatusPaymentout = (
+	source?: OrdersStatsPaymentSourceType
+): State | undefined => {
+	return source ? statusMapping[source] : undefined
 }
 
 export const createPaymentout = (
 	ret: SalesReturn,
-	payment: Payment
+	payment: OrdersStatsPaymentDTO
 ): Paymentout => {
 	const {
 		salesChannel,
@@ -34,6 +37,10 @@ export const createPaymentout = (
 		group,
 	} = ret
 
+	const total = payment.total ?? 0
+
+	const formattedDate = dayjs(payment.date).format('YYYY-MM-DD HH:mm:ss.SSS')
+
 	return {
 		group,
 		vatSum,
@@ -42,13 +49,13 @@ export const createPaymentout = (
 		organization,
 		agent,
 		project,
-		sum: parseFloat((payment.total * 100).toFixed(2)),
+		sum: parseFloat((total * 100).toFixed(2)),
 		name: payment.id,
-		moment: dayjs(payment.date).format('YYYY-MM-DD HH:mm:ss.SSS'),
+		moment: formattedDate,
 		operations: [
 			{
 				meta: ret.meta,
-				linkedSum: parseFloat((payment.total * 100).toFixed(2)),
+				linkedSum: parseFloat((total * 100).toFixed(2)),
 			},
 		],
 		paymentPurpose: payment.source,

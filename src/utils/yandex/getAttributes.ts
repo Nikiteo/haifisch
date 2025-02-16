@@ -1,11 +1,11 @@
 import dayjs from 'dayjs'
-import { type OfferMapping } from '../../types/marketTypes'
 import { type Attribute } from '../../types/msTypes'
+import { type GetOfferMappingDTO } from '../../types/yandex/api'
 dayjs().format()
 
 export const getAttributes = (
 	domain: string,
-	offer: OfferMapping
+	offer: GetOfferMappingDTO
 ): Attribute[] => {
 	if (domain === 'Haifisch') {
 		return [
@@ -16,7 +16,7 @@ export const getAttributes = (
 					mediaType: 'application/json',
 				},
 				name: 'Название ХФ',
-				value: offer.offer.name,
+				value: offer?.offer?.name,
 			},
 			{
 				meta: {
@@ -36,7 +36,7 @@ export const getAttributes = (
 					mediaType: 'application/json',
 				},
 				name: 'Категория',
-				value: offer.mapping.marketCategoryName,
+				value: offer?.mapping?.marketCategoryName,
 			},
 			{
 				meta: {
@@ -69,7 +69,7 @@ export const getAttributes = (
 					mediaType: 'application/json',
 				},
 				name: 'Цена софинансирования от Маркета',
-				value: offer.offer.cofinancePrice?.value.toString() ?? '0',
+				value: offer?.offer?.cofinancePrice?.value.toString() ?? '0',
 			},
 		]
 	}
@@ -81,7 +81,7 @@ export const getAttributes = (
 				mediaType: 'application/json',
 			},
 			name: 'Название Тор',
-			value: offer.offer.name,
+			value: offer?.offer?.name,
 		},
 		{
 			meta: {

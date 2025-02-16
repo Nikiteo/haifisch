@@ -194,6 +194,9 @@ export interface CustomerOrder {
 	salesChannel?: SalesChannel
 	description?: string
 	demands?: Meta[]
+	moves?: Array<{
+		meta?: Meta
+	}>
 }
 
 export interface Store {

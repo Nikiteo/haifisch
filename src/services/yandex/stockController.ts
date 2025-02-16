@@ -1,90 +1,75 @@
-import axios, { type AxiosResponse } from 'axios'
+import { type AxiosResponse } from 'axios'
+
+import { getService } from '../../utils/get-service'
+import { logError } from '../../utils/log-error'
 import {
-	type ErrorResponse,
-	type Stores,
-	type OfferStores,
-	type StocksSendRequest,
-} from '../../types/marketTypes'
-import { apiServiceHf, apiServiceTop } from './service'
-import Logger from '../../lib/logger'
+	type GetWarehouseStocksResponse,
+	type WarehouseOfferDTO,
+	type GetWarehouseStocksRequest,
+	type UpdateStocksRequest,
+} from '../../types/yandex/api'
+
+const fetchStocks = async (
+	service: ReturnType<typeof getService>,
+	id: number,
+	data: GetWarehouseStocksRequest,
+	token: string
+): Promise<WarehouseOfferDTO[]> => {
+	const response = await service.post<GetWarehouseStocksResponse>(
+		`campaigns/${id}/offers/stocks?page_token=${token}`,
+		data
+	)
+	const stocks = response.data.result
+
+	if (stocks && stocks.warehouses.length > 0) {
+		const offers = stocks.warehouses[0].offers || []
+		const nextPageToken = stocks.paging?.nextPageToken
+
+		if (offers.length > 0 && nextPageToken) {
+			const nextOffers = await fetchStocks(
+				service,
+				id,
+				data,
+				nextPageToken
+			)
+			return offers.concat(nextOffers)
+		}
+
+		return offers
+	}
+
+	return []
+}
 
 export const getStocks = async (
 	store: string,
 	id: number,
-	data: {
-		offerIds: string[]
-	}
-): Promise<OfferStores[] | undefined> => {
-	const service = store === 'Haifisch' ? apiServiceHf : apiServiceTop
+	data: GetWarehouseStocksRequest
+): Promise<WarehouseOfferDTO[] | undefined> => {
+	const service = getService(store)
 
 	try {
-		const getStock = async (token: string): Promise<OfferStores[]> => {
-			const response = await service.post<Stores>(
-				`campaigns/${id}/offers/stocks?page_token=${token}`,
-				data
-			)
-			const stocks = response.data.result
-
-			if (
-				stocks.warehouses[0].offers.length > 0 &&
-				Object.keys(stocks.paging).length > 0
-			) {
-				return stocks.warehouses[0].offers.concat(
-					await getStock(stocks.paging.nextPageToken)
-				)
-			} else {
-				return stocks.warehouses[0].offers
-			}
-		}
-		return await getStock('')
+		return await fetchStocks(service, id, data, '')
 	} catch (error: unknown) {
-		const err = error as ErrorResponse
-		if (axios.isAxiosError(err)) {
-			if (err?.response == null || err.code === null) {
-				Logger.error('No response')
-			} else {
-				Logger.error(err.response.data)
-			}
-		} else {
-			Logger.error('different error than axios')
-		}
+		logError(error)
+		return undefined
 	}
 }
 
 export const sendStocks = async (
 	store: string,
 	id: number,
-	data: {
-		skus: StocksSendRequest[]
-	}
-): Promise<
-	| AxiosResponse<
-			{
-				status: string
-			},
-			any
-			// eslint-disable-next-line no-mixed-spaces-and-tabs
-	  >
-	| undefined
-> => {
-	const service = store === 'Haifisch' ? apiServiceHf : apiServiceTop
+	data: UpdateStocksRequest
+): Promise<AxiosResponse<{ status: string }, any> | undefined> => {
+	const service = getService(store)
 
 	try {
-		const response = await service.put<{
-			status: string
-		}>(`campaigns/${id}/offers/stocks`, data)
-
+		const response = await service.put<{ status: string }>(
+			`campaigns/${id}/offers/stocks`,
+			data
+		)
 		return response
 	} catch (error: unknown) {
-		const err = error as ErrorResponse
-		if (axios.isAxiosError(err)) {
-			if (err?.response == null || err.code === null) {
-				Logger.error('No response')
-			} else {
-				Logger.error(err.response.data)
-			}
-		} else {
-			Logger.error('different error than axios')
-		}
+		logError(error)
 	}
 }

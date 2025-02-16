@@ -1,28 +1,16 @@
-import axios from 'axios'
-import {
-	type ErrorResponse,
-	type CampaignResponse,
-} from '../../types/marketTypes'
-import { apiServiceHf, apiServiceTop } from './service'
-import Logger from '../../lib/logger'
+import { type GetCampaignsResponse } from '../../types/yandex/api'
+import { logError } from '../../utils/log-error'
+import { getService } from '../../utils/get-service'
 
 export const getCampaigns = async (
 	store: string
-): Promise<CampaignResponse | undefined> => {
-	const service = store === 'Haifisch' ? apiServiceHf : apiServiceTop
+): Promise<GetCampaignsResponse | undefined> => {
+	const service = getService(store)
+
 	try {
-		const response = await service.get<CampaignResponse>('/campaigns')
+		const response = await service.get<GetCampaignsResponse>('/campaigns')
 		return response.data
 	} catch (error: unknown) {
-		const err = error as ErrorResponse
-		if (axios.isAxiosError(err)) {
-			if (err?.response == null || err.code === null) {
-				Logger.error('No response')
-			} else {
-				Logger.error(err.response.data)
-			}
-		} else {
-			Logger.error('different error than axios')
-		}
+		logError(error)
 	}
 }

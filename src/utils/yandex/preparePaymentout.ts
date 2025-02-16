@@ -1,115 +1,107 @@
 import Logger from '../../lib/logger'
-import { type Order } from '../../types/marketTypes'
 import { type SalesReturn, type Paymentout } from '../../types/msTypes'
+import {
+	type OrdersStatsOrderDTO,
+	type EnrichedOrdersStatsOrderDTO,
+	type OrdersStatsPaymentSourceType,
+	type OrdersStatsPaymentDTO,
+} from '../../types/yandex/api'
 import { createPaymentout } from './createPaymentout'
+import dayjs from 'dayjs'
 
-export const preparePaymentout = (
+const processReturns = (
 	returns: SalesReturn[],
-	orders: Order[],
-	paymentouts: Paymentout[]
+	orders: Array<EnrichedOrdersStatsOrderDTO | OrdersStatsOrderDTO>,
+	paymentouts: Paymentout[],
+	isPaid: boolean
 ): Paymentout[] => {
-	try {
-		if (returns.length === 0) {
-			return []
+	const relevantReturns = returns.filter(ret =>
+		isPaid ? ret.payments !== undefined : ret.payments === undefined
+	)
+	const paymentoutMap = new Map<string, Paymentout>()
+
+	orders.forEach(order => {
+		if (
+			order.status === 'CANCELLED_BEFORE_PROCESSING' ||
+			!order.payments?.length
+		) {
+			return
 		}
 
-		if (orders.length === 0) {
-			return []
-		}
+		relevantReturns.forEach(ret => {
+			if (ret.name === order.id?.toString()) {
+				order.payments.forEach(pay => {
+					if (pay.type === 'REFUND') {
+						const paymentout = createPaymentout(ret, pay)
+						if (paymentout.name) {
+							const existingPaymentout = paymentouts.find(
+								p => p.name === paymentout.name
+							)
+							paymentoutMap.set(paymentout.name, {
+								...paymentout,
+								...existingPaymentout,
+							})
+						}
+					}
+				})
 
-		const unPaymentedReturns = returns.filter(
-			ret => ret.payments === undefined
-		)
-		const paymentedReturns = returns.filter(
-			ret => ret.payments !== undefined
-		)
-
-		const updatedPaymentout = orders
-			.filter(order => order.status !== 'CANCELLED_BEFORE_PROCESSING')
-			.reduce<Paymentout[]>((acc, cur) => {
-				if (cur.payments !== undefined && cur.payments.length > 0) {
-					paymentedReturns.forEach(ret => {
-						if (ret.name === cur.id?.toString()) {
-							if (ret.payments?.length === cur.payments?.length) {
-								cur.payments?.forEach(pay => {
-									paymentouts.forEach(payment => {
-										if (payment.name === pay.id) {
-											if (pay.type === 'REFUND') {
-												const createdPayment =
-													createPaymentout(ret, pay)
-												acc.push({
-													...payment,
-													...createdPayment,
-												})
-											}
-										}
-									})
-								})
-							} else {
-								const findPaymentouts = paymentouts.filter(
-									payment =>
-										cur.payments?.some(
-											pay => pay.id === payment.name
-										)
+				if (order.subsidies && order.subsidies.length > 0) {
+					order.subsidies.forEach((subsidy, index) => {
+						if (subsidy.operationType === 'DEDUCTION') {
+							const paymentDTO: OrdersStatsPaymentDTO = {
+								id: `${subsidy.type}_${order.id}_${index}`,
+								total: subsidy.amount,
+								source: subsidy.type as OrdersStatsPaymentSourceType,
+								date: dayjs(order.statusUpdateDate).format(
+									'YYYY-MM-DD HH:mm:ss.SSS'
+								),
+							}
+							const paymentout = createPaymentout(ret, paymentDTO)
+							if (paymentout.name) {
+								const existingPaymentout = paymentouts.find(
+									p => p.name === paymentout.name
 								)
-								const newPayments = cur.payments?.filter(pay =>
-									findPaymentouts.every(
-										payment => pay.id !== payment.name
-									)
-								)
-								newPayments?.forEach(payment => {
-									if (payment.type === 'REFUND') {
-										acc.push(createPaymentout(ret, payment))
-									}
+								paymentoutMap.set(paymentout.name, {
+									...paymentout,
+									...existingPaymentout,
 								})
 							}
 						}
 					})
 				}
-				return acc
-			}, [])
-
-		const newPaymentouts = orders
-			.filter(order => order.status !== 'CANCELLED_BEFORE_PROCESSING')
-			.reduce<Paymentout[]>((acc, cur) => {
-				if (cur.payments !== undefined && cur.payments.length > 0) {
-					unPaymentedReturns.forEach(ret => {
-						if (ret.name === cur.id?.toString()) {
-							cur.payments?.forEach(pay => {
-								if (pay.type === 'REFUND') {
-									acc.push(createPaymentout(ret, pay))
-								}
-							})
-						}
-					})
-				}
-
-				return acc
-			}, [])
-
-		const allPaymentouts = [...updatedPaymentout, ...newPaymentouts]
-
-		const uniqPaymentouts = allPaymentouts.reduce(
-			(acc, payment) => {
-				if (payment.name !== undefined) {
-					if (acc.forEach[payment.name]) return acc
-
-					acc.forEach[payment.name] = true
-					acc.uniqPaymentouts.push(payment)
-				}
-
-				return acc
-			},
-			{
-				forEach: {} as unknown as Record<string, boolean>,
-				uniqPaymentouts: [] as Paymentout[],
 			}
-		).uniqPaymentouts
+		})
+	})
 
-		return uniqPaymentouts
+	return Array.from(paymentoutMap.values())
+}
+
+export const preparePaymentout = (
+	returns: SalesReturn[],
+	orders: EnrichedOrdersStatsOrderDTO[] | OrdersStatsOrderDTO[],
+	paymentouts: Paymentout[]
+): Paymentout[] => {
+	try {
+		if (!returns.length || !orders.length) {
+			return []
+		}
+
+		const updatedPaymentout = processReturns(
+			returns,
+			orders,
+			paymentouts,
+			true
+		)
+		const newPaymentouts = processReturns(
+			returns,
+			orders,
+			paymentouts,
+			false
+		)
+
+		return [...updatedPaymentout, ...newPaymentouts]
 	} catch (err) {
 		Logger.error(err)
+		return []
 	}
-
-	return []
 }

@@ -1,241 +1,89 @@
 import dayjs from 'dayjs'
 import Logger from '../../lib/logger'
-import { type AddedOrder } from '../../types/marketTypes'
 import { type Product, type CustomerOrder } from '../../types/msTypes'
 import { createCustomerOrder } from './createCustomerOrder'
+import {
+	type EnrichedOrdersStatsOrderDTO,
+	type OrdersStatsOrderDTO,
+} from '../../types/yandex/api'
+
+const filterAndCreateOrders = (
+	orders: Array<EnrichedOrdersStatsOrderDTO | OrdersStatsOrderDTO>,
+	products: Product[],
+	domain: string,
+	type: string,
+	existingOrders: CustomerOrder[]
+): CustomerOrder[] => {
+	return orders
+		.filter(order => order.status !== 'CANCELLED_BEFORE_PROCESSING')
+		.reduce<CustomerOrder[]>((acc, cur) => {
+			const { items } = cur
+			const boughtProducts = products.filter(product =>
+				items?.some(item => item.shopSku === product.article)
+			)
+
+			if (boughtProducts.length > 0) {
+				const newOrder = createCustomerOrder(
+					domain,
+					cur,
+					boughtProducts,
+					type
+				)
+				const existingOrder = existingOrders.find(
+					order => order.name === cur.id?.toString()
+				)
+
+				if (existingOrder) {
+					const timeDiff = dayjs()
+						.add(3, 'hour')
+						.diff(
+							dayjs(existingOrder.deliveryPlannedMoment),
+							'month'
+						)
+					if (timeDiff <= 1) {
+						acc.push({ ...existingOrder, ...newOrder })
+					}
+				} else {
+					acc.push(newOrder)
+				}
+			}
+			return acc
+		}, [])
+}
 
 export const prepareCustomerOrders = (
 	products: Product[],
-	fby: AddedOrder[],
-	fbs: AddedOrder[],
+	fbs: EnrichedOrdersStatsOrderDTO[] | OrdersStatsOrderDTO[],
+	fby: EnrichedOrdersStatsOrderDTO[] | OrdersStatsOrderDTO[],
 	orders: CustomerOrder[],
 	domain: string
 ): CustomerOrder[] => {
 	try {
-		if (fby.length === 0 && fbs.length === 0) {
+		if ((fbs.length === 0 && fby.length === 0) || products.length === 0) {
 			return []
 		}
 
-		if (products.length === 0) {
-			return []
-		}
+		const allOrders: CustomerOrder[] = []
 
 		if (orders.length === 0) {
-			const allOrders = [] as CustomerOrder[]
-
-			if (fby.length !== 0) {
-				const fbyOrders = fby
-					.filter(
-						order => order.status !== 'CANCELLED_BEFORE_PROCESSING'
-					)
-					.reduce<CustomerOrder[]>((acc, cur) => {
-						const { items } = cur
-						const boughtProducts = products.filter(product =>
-							items?.some(
-								item => item.shopSku === product.article
-							)
-						)
-						if (boughtProducts.length > 0) {
-							acc.push(
-								createCustomerOrder(
-									domain,
-									cur,
-									boughtProducts,
-									'FBY'
-								)
-							)
-						}
-						return acc
-					}, [])
-				allOrders.push(...fbyOrders)
-			}
-
-			if (fbs.length !== 0) {
-				const fbsOrders = fbs
-					.filter(
-						order => order.status !== 'CANCELLED_BEFORE_PROCESSING'
-					)
-					.reduce<CustomerOrder[]>((acc, cur) => {
-						const { items } = cur
-						const boughtProducts = products.filter(product =>
-							items?.some(
-								item => item.shopSku === product.article
-							)
-						)
-						if (boughtProducts.length > 0) {
-							acc.push(
-								createCustomerOrder(
-									domain,
-									cur,
-									boughtProducts,
-									'FBS'
-								)
-							)
-						}
-						return acc
-					}, [])
-				allOrders.push(...fbsOrders)
-			}
-
-			return allOrders
+			allOrders.push(
+				...filterAndCreateOrders(fby, products, domain, 'FBY', [])
+			)
+			allOrders.push(
+				...filterAndCreateOrders(fbs, products, domain, 'FBS', [])
+			)
+		} else {
+			allOrders.push(
+				...filterAndCreateOrders(fby, products, domain, 'FBY', orders)
+			)
+			allOrders.push(
+				...filterAndCreateOrders(fbs, products, domain, 'FBS', orders)
+			)
 		}
 
-		if (orders.length !== 0) {
-			const allOrders = [] as CustomerOrder[]
-
-			if (fby.length !== 0) {
-				const fbyOrders = fby
-					.filter(
-						order => order.status !== 'CANCELLED_BEFORE_PROCESSING'
-					)
-					.reduce<CustomerOrder[]>((acc, cur) => {
-						orders.forEach(order => {
-							if (
-								order.name === cur.id?.toString() &&
-								dayjs()
-									.add(3, 'hour')
-									.diff(
-										dayjs(order.deliveryPlannedMoment),
-										'month'
-									) <= 1
-							) {
-								const { items } = cur
-								const boughtProducts = products.filter(
-									product =>
-										items?.some(
-											item =>
-												item.shopSku === product.article
-										)
-								)
-								if (boughtProducts.length > 0) {
-									const updatedOrders = createCustomerOrder(
-										domain,
-										cur,
-										boughtProducts,
-										'FBY'
-									)
-									acc.push({
-										...order,
-										...updatedOrders,
-									})
-								}
-							}
-						})
-						return acc
-					}, [])
-				const findNewOrders = fby
-					.filter(
-						order => order.status !== 'CANCELLED_BEFORE_PROCESSING'
-					)
-					.filter(order =>
-						orders.every(item => item.name !== order.id?.toString())
-					)
-
-				const newCustomerOrders = findNewOrders.reduce<CustomerOrder[]>(
-					(acc, cur) => {
-						const { items } = cur
-						const boughtProducts = products.filter(product =>
-							items?.some(
-								item => item.shopSku === product.article
-							)
-						)
-						if (boughtProducts.length > 0) {
-							acc.push(
-								createCustomerOrder(
-									domain,
-									cur,
-									boughtProducts,
-									'FBY'
-								)
-							)
-						}
-						return acc
-					},
-					[]
-				)
-				allOrders.push(...fbyOrders, ...newCustomerOrders)
-			}
-
-			if (fbs.length !== 0) {
-				const fbsOrders = fbs
-					.filter(
-						order => order.status !== 'CANCELLED_BEFORE_PROCESSING'
-					)
-					.reduce<CustomerOrder[]>((acc, cur) => {
-						orders.forEach(order => {
-							if (
-								order.name === cur.id?.toString() &&
-								dayjs()
-									.add(3, 'hour')
-									.diff(
-										dayjs(order.deliveryPlannedMoment),
-										'month'
-									) <= 1
-							) {
-								const { items } = cur
-								const boughtProducts = products.filter(
-									product =>
-										items?.some(
-											item =>
-												item.shopSku === product.article
-										)
-								)
-								if (boughtProducts.length > 0) {
-									const updatedOrders = createCustomerOrder(
-										domain,
-										cur,
-										boughtProducts,
-										'FBS'
-									)
-									acc.push({
-										...order,
-										...updatedOrders,
-									})
-								}
-							}
-						})
-						return acc
-					}, [])
-				const findNewOrders = fbs
-					.filter(
-						order => order.status !== 'CANCELLED_BEFORE_PROCESSING'
-					)
-					.filter(order =>
-						orders.every(item => item.name !== order.id?.toString())
-					)
-
-				const newCustomerOrders = findNewOrders.reduce<CustomerOrder[]>(
-					(acc, cur) => {
-						const { items } = cur
-						const boughtProducts = products.filter(product =>
-							items?.some(
-								item => item.shopSku === product.article
-							)
-						)
-						if (boughtProducts.length > 0) {
-							acc.push(
-								createCustomerOrder(
-									domain,
-									cur,
-									boughtProducts,
-									'FBS'
-								)
-							)
-						}
-						return acc
-					},
-					[]
-				)
-				allOrders.push(...fbsOrders, ...newCustomerOrders)
-			}
-
-			return allOrders
-		}
-
-		return []
+		return allOrders
 	} catch (err) {
 		Logger.error(err)
+		return []
 	}
-
-	return []
 }

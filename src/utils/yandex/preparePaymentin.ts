@@ -1,114 +1,104 @@
 import Logger from '../../lib/logger'
-import { type Order } from '../../types/marketTypes'
 import { type Demand, type Paymentin } from '../../types/msTypes'
+import {
+	type OrdersStatsOrderDTO,
+	type EnrichedOrdersStatsOrderDTO,
+	type OrdersStatsPaymentDTO,
+	type OrdersStatsPaymentSourceType,
+} from '../../types/yandex/api'
 import { createPaymentin } from './createPaymentin'
+import dayjs from 'dayjs'
 
-export const preparePaymentin = (
+const processDemands = (
 	demands: Demand[],
-	orders: Order[],
-	paymentins: Paymentin[]
+	orders: Array<EnrichedOrdersStatsOrderDTO | OrdersStatsOrderDTO>,
+	paymentins: Paymentin[],
+	isPaymented: boolean
 ): Paymentin[] => {
-	try {
-		if (demands.length === 0) {
-			return []
-		}
+	const relevantDemands = demands.filter(demand =>
+		isPaymented
+			? demand.payments !== undefined
+			: demand.payments === undefined
+	)
 
-		if (orders.length === 0) {
-			return []
-		}
-
-		const unPaymentedDemands = demands.filter(
-			demand => demand.payments === undefined
-		)
-		const paymentedDemands = demands.filter(
-			demand => demand.payments !== undefined
-		)
-
-		const updatedPaymentin = orders
-			.filter(order => order.status !== 'CANCELLED_BEFORE_PROCESSING')
-			.reduce<Paymentin[]>((acc, cur) => {
-				if (cur.payments !== undefined && cur.payments.length > 0) {
-					paymentedDemands.forEach(demand => {
-						if (demand.name === cur.id?.toString()) {
-							if (
-								demand.payments?.length === cur.payments?.length
-							) {
-								cur.payments?.forEach(pay => {
-									paymentins.forEach(payment => {
-										if (payment.name === pay.id) {
-											if (pay.type === 'PAYMENT') {
-												const createdPayment =
-													createPaymentin(demand, pay)
-												acc.push({
-													...payment,
-													...createdPayment,
-												})
-											}
-										}
+	return orders
+		.filter(order => order.status !== 'CANCELLED_BEFORE_PROCESSING')
+		.reduce<Paymentin[]>((acc, cur) => {
+			if (cur.payments && cur.payments.length > 0) {
+				relevantDemands.forEach(demand => {
+					if (demand.name === cur.id?.toString()) {
+						cur.payments.forEach(pay => {
+							if (pay.type === 'PAYMENT') {
+								const existingPayment = paymentins.find(
+									payment => payment.name === pay.id
+								)
+								if (existingPayment) {
+									acc.push({
+										...existingPayment,
+										...createPaymentin(demand, pay),
 									})
-								})
-							} else {
-								const findPaymentins = paymentins.filter(
-									payment =>
-										cur.payments?.some(
-											pay => pay.id === payment.name
-										)
-								)
-								const newPayments = cur.payments?.filter(pay =>
-									findPaymentins.every(
-										payment => pay.id !== payment.name
-									)
-								)
-								newPayments?.forEach(payment => {
-									if (payment.type === 'PAYMENT') {
-										acc.push(
-											createPaymentin(demand, payment)
-										)
-									}
-								})
-							}
-						}
-					})
-				}
-				return acc
-			}, [])
-
-		const newPaymentins = orders
-			.filter(order => order.status !== 'CANCELLED_BEFORE_PROCESSING')
-			.reduce<Paymentin[]>((acc, cur) => {
-				if (cur.payments !== undefined && cur.payments.length > 0) {
-					unPaymentedDemands.forEach(demand => {
-						if (demand.name === cur.id?.toString()) {
-							cur.payments?.forEach(pay => {
-								if (pay.type === 'PAYMENT') {
+								} else {
 									acc.push(createPaymentin(demand, pay))
+								}
+							}
+						})
+					}
+				})
+			}
+
+			if (cur.subsidies && cur.subsidies.length > 0) {
+				relevantDemands.forEach(demand => {
+					if (demand.name === cur.id?.toString()) {
+						if (cur.subsidies && cur.subsidies.length > 0) {
+							cur.subsidies.forEach((subsidy, index) => {
+								if (subsidy.operationType === 'ACCRUAL') {
+									const paymentDTO: OrdersStatsPaymentDTO = {
+										id: `${subsidy.type}_${cur.id}_${index}`,
+										total: subsidy.amount,
+										source: subsidy.type as OrdersStatsPaymentSourceType,
+										date: dayjs(
+											cur.statusUpdateDate
+										).format('YYYY-MM-DD HH:mm:ss.SSS'),
+									}
+									acc.push(
+										createPaymentin(demand, paymentDTO)
+									)
 								}
 							})
 						}
-					})
-				}
+					}
+				})
+			}
 
-				return acc
-			}, [])
+			return acc
+		}, [])
+}
+
+export const preparePaymentin = (
+	demands: Demand[],
+	orders: EnrichedOrdersStatsOrderDTO[] | OrdersStatsOrderDTO[],
+	paymentins: Paymentin[]
+): Paymentin[] => {
+	try {
+		if (demands.length === 0 || orders.length === 0) {
+			return []
+		}
+
+		const updatedPaymentin = processDemands(
+			demands,
+			orders,
+			paymentins,
+			true
+		)
+		const newPaymentins = processDemands(demands, orders, paymentins, false)
 
 		const allPaymentins = [...updatedPaymentin, ...newPaymentins]
 
-		const uniqPaymentins = allPaymentins.reduce(
-			(acc, payment) => {
-				if (payment.name !== undefined) {
-					if (acc.forEach[payment.name]) return acc
-
-					acc.forEach[payment.name] = true
-					acc.uniqPaymentins.push(payment)
-				}
-
-				return acc
-			},
-			{
-				forEach: {} as unknown as Record<string, boolean>,
-				uniqPaymentins: [] as Paymentin[],
-			}
-		).uniqPaymentins
+		const uniqPaymentins = Array.from(
+			new Set(allPaymentins.map(payment => payment.name))
+		)
+			.map(name => allPaymentins.find(payment => payment.name === name))
+			.filter((payment): payment is Paymentin => payment !== undefined)
 
 		return uniqPaymentins
 	} catch (err) {

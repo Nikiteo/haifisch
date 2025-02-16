@@ -787,9 +787,39 @@ export const paymentoutState = {
 		stateType: 'Regular',
 		entityType: 'paymentout',
 	},
+	SPLIT: {
+		meta: {
+			href: 'https://api.moysklad.ru/api/remap/1.2/entity/paymentout/metadata/states/e3067393-ead5-11ef-0a80-0f4c000f5078',
+			metadataHref:
+				'https://api.moysklad.ru/api/remap/1.2/entity/paymentout/metadata',
+			type: 'state',
+			mediaType: 'application/json',
+		},
+		id: 'e3067393-ead5-11ef-0a80-0f4c000f5078',
+		accountId: '4f45c052-f557-11ed-0a80-0cd400013e78',
+		name: 'Сплит',
+		color: 10066329,
+		stateType: 'Regular',
+		entityType: 'paymentout',
+	},
 }
 
 export const paymentinState = {
+	YANDEX: {
+		meta: {
+			href: 'https://api.moysklad.ru/api/remap/1.2/entity/paymentin/metadata/states/d94698b4-eb69-11ef-0a80-016f00157b41',
+			metadataHref:
+				'https://api.moysklad.ru/api/remap/1.2/entity/paymentin/metadata',
+			type: 'state',
+			mediaType: 'application/json',
+		},
+		id: 'd94698b4-eb69-11ef-0a80-016f00157b41',
+		accountId: '4f45c052-f557-11ed-0a80-0cd400013e78',
+		name: 'Баллы Яндекс',
+		color: 10066329,
+		stateType: 'Regular',
+		entityType: 'paymentin',
+	},
 	BUYER: {
 		meta: {
 			href: 'https://api.moysklad.ru/api/remap/1.2/entity/paymentin/metadata/states/94bffe8f-9747-11ee-0a80-107d00286a08',
@@ -846,6 +876,21 @@ export const paymentinState = {
 		id: '94c00028-9747-11ee-0a80-107d00286a0b',
 		accountId: '4f45c052-f557-11ed-0a80-0cd400013e78',
 		name: 'Бонусы СберСпасибо',
+		color: 10066329,
+		stateType: 'Regular',
+		entityType: 'paymentin',
+	},
+	SPLIT: {
+		meta: {
+			href: 'https://api.moysklad.ru/api/remap/1.2/entity/paymentin/metadata/states/6c1302ea-ead5-11ef-0a80-0edd000ec2d5',
+			metadataHref:
+				'https://api.moysklad.ru/api/remap/1.2/entity/paymentin/metadata',
+			type: 'state',
+			mediaType: 'application/json',
+		},
+		id: '6c1302ea-ead5-11ef-0a80-0edd000ec2d5',
+		accountId: '4f45c052-f557-11ed-0a80-0cd400013e78',
+		name: 'Сплит',
 		color: 10066329,
 		stateType: 'Regular',
 		entityType: 'paymentin',

@@ -38,25 +38,22 @@ export const updateOzonProducts = async (
 				`[${store}]: Получены данные по атрибутам товаров из магазина...`
 			)
 
-			const updatedOzonOffers = ozonOffers?.items.reduce(
-				(acc, cur) => {
-					ozonOffersAttributes?.result.forEach(att => {
-						if (att.offer_id === cur.offer_id) {
-							acc.push({
-								...cur,
-								height: att.height,
-								depth: att.depth,
-								width: att.width,
-								dimension_unit: att.dimension_unit,
-								weight: att.weight,
-								weight_unit: att.weight_unit,
-							})
-						}
-					})
-					return acc
-				},
-				[] as OfferOzonWithAttributes[]
-			)
+			const updatedOzonOffers = ozonOffers?.items.reduce((acc, cur) => {
+				ozonOffersAttributes?.result.forEach(att => {
+					if (att.offer_id === cur.offer_id) {
+						acc.push({
+							...cur,
+							height: att.height,
+							depth: att.depth,
+							width: att.width,
+							dimension_unit: att.dimension_unit,
+							weight: att.weight,
+							weight_unit: att.weight_unit,
+						})
+					}
+				})
+				return acc
+			}, [] as OfferOzonWithAttributes[])
 
 			const preparedOzonProducts = prepareOzonOffers(
 				products.rows ?? [],

@@ -19,11 +19,8 @@ import {
 	getSalesReturn,
 } from '../services/moysklad/salesreturnController'
 import { getCampaigns } from '../services/yandex/campaignController'
-import { getOrders } from '../services/yandex/orderController'
-import { getNewOrders } from '../services/yandex/orderNewController'
-import { type AddedOrder } from '../types/marketTypes'
+import { getOrders, getOrdersStats } from '../services/yandex/orderController'
 import { type CustomerOrder } from '../types/msTypes'
-import { filterYandexOrders } from '../utils/yandex/filterYandexOrders'
 import { getCampaignIds } from '../utils/yandex/getCampaignIds'
 import { prepareCustomerOrders } from '../utils/yandex/prepareCustomerOrders'
 import { prepareDemands } from '../utils/yandex/prepareDemands'
@@ -34,6 +31,13 @@ import utc from 'dayjs/plugin/utc'
 import { createMove, getMoves } from '../services/moysklad/moveController'
 import { getReturns } from '../services/yandex/returnsController'
 import { prepareMoves } from '../utils/yandex/prepareMoves'
+import {
+	type OrdersStatsOrderDTO,
+	type OrderDTO,
+	type EnrichedOrdersStatsOrderDTO,
+	type OrdersStatsSubsidyDTO,
+} from '../types/yandex/api'
+import { states } from '../database'
 
 dayjs.extend(utc)
 
@@ -74,38 +78,61 @@ export const updateYandex = async (
 
 		Logger.info(`[${store}]: Получены данные по кампаниям магазина...`)
 
-		if (campaignIds !== undefined && campaigns !== undefined) {
-			const fbsOrders = await getOrders(store, campaignIds.FBS, dates)
-			// const fbyOrders = await getOrders(store, campaignIds.FBY, dates)
-			const fbsNewOrders = await getNewOrders(store, campaignIds.FBS)
-			// const fbyNewOrders = await getNewOrders(store, campaignIds.FBY)
+		if (campaignIds?.FBS && campaignIds?.FBY && campaigns) {
+			const fbsOrdersStats = await getOrdersStats(
+				store,
+				campaignIds.FBS,
+				dates
+			)
+			const fbyOrdersStats = await getOrdersStats(
+				store,
+				campaignIds.FBY,
+				dates
+			)
+			const fbsNewOrders = (await getOrders(store, campaignIds.FBS)) || []
+			const fbyNewOrders = (await getOrders(store, campaignIds.FBY)) || []
 
-			Logger.info(`[${store}]: Получены данные по заказам магазина...`)
+			const ordersMap = new Map<number, OrderDTO>()
 
-			const {
-				ordersWithNewData: fbsOrdersWithNewData,
-				filteredOrders: fbsFilteredOrders,
-			} = filterYandexOrders(fbsOrders, fbsNewOrders)
+			fbsNewOrders.forEach(order => {
+				ordersMap.set(order.id, order)
+			})
+			fbyNewOrders.forEach(order => {
+				ordersMap.set(order.id, order)
+			})
 
-			// const {
-			// 	ordersWithNewData: fbyOrdersWithNewData,
-			// 	filteredOrders: fbyFilteredOrders,
-			// } = filterYandexOrders(fbyOrders, fbyNewOrders)
+			const enrichOrdersStats = (
+				ordersStats: OrdersStatsOrderDTO[]
+			): EnrichedOrdersStatsOrderDTO[] | OrdersStatsOrderDTO[] => {
+				return ordersStats.map(orderStat => {
+					const orderId = orderStat.id
+					if (orderId !== undefined) {
+						const correspondingOrder = ordersMap.get(orderId)
+						if (correspondingOrder) {
+							return {
+								...orderStat,
+								delivery: correspondingOrder.delivery,
+								substatus: correspondingOrder.substatus,
+								subsidies:
+									orderStat.subsidies?.length === 0
+										? (correspondingOrder.subsidies as OrdersStatsSubsidyDTO[])
+										: orderStat.subsidies,
+							}
+						}
+					}
+					return orderStat
+				})
+			}
 
-			// const fby = [
-			// 	...fbyOrdersWithNewData,
-			// 	...fbyFilteredOrders,
-			// ] as AddedOrder[]
-			const fbs = [
-				...fbsOrdersWithNewData,
-				...fbsFilteredOrders,
-			] as AddedOrder[]
-			const domain = campaigns.campaigns[0].domain
+			const enrichedFbsOrders = enrichOrdersStats(fbsOrdersStats || [])
+			const enrichedFbyOrders = enrichOrdersStats(fbyOrdersStats || [])
+
+			const domain = campaigns.campaigns[0].domain ?? ''
 
 			const preparedCustomerOrders = prepareCustomerOrders(
 				products?.rows ?? [],
-				[],
-				fbs ?? [],
+				enrichedFbsOrders,
+				enrichedFbyOrders,
 				customerOrders ?? [],
 				domain
 			)
@@ -149,7 +176,7 @@ export const updateYandex = async (
 
 			const preparedPaymentins = preparePaymentin(
 				newDemands ?? [],
-				[...[], ...(fbsOrders ?? [])],
+				[...enrichedFbyOrders, ...enrichedFbsOrders],
 				paymentins ?? []
 			)
 
@@ -177,7 +204,7 @@ export const updateYandex = async (
 
 			const preparedPaymentouts = preparePaymentout(
 				newSalesReturns ?? [],
-				[...[], ...(fbsOrders ?? [])],
+				[...enrichedFbyOrders, ...enrichedFbsOrders],
 				paymentouts ?? []
 			)
 
@@ -210,7 +237,31 @@ export const updateYandex = async (
 			)
 
 			if (preparedMoves.length > 0) {
-				await createMove(preparedMoves)
+				const createdMoves = await createMove(preparedMoves)
+				if (createdCustomerOrders && createdMoves) {
+					const modifiedCustomerOrders: CustomerOrder[] = []
+
+					createdCustomerOrders.forEach(customerOrder => {
+						createdMoves.forEach(move => {
+							if (move.name === customerOrder.name) {
+								if (!customerOrder.moves) {
+									customerOrder.moves = []
+								}
+
+								customerOrder.moves.push({
+									meta: move.meta,
+								})
+								customerOrder.state = states.PICKED_REFUND
+
+								modifiedCustomerOrders.push(customerOrder)
+							}
+						})
+					})
+
+					if (modifiedCustomerOrders.length > 0) {
+						await createCustomerOrder(modifiedCustomerOrders)
+					}
+				}
 			}
 
 			Logger.info(`[${store}]: Создаю документы перемещений...`)

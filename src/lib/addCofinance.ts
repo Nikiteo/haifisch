@@ -12,16 +12,13 @@ export const addYandexCofinance = (): void => {
 			`Бот пытался запустить: ${username} с текстом ${ctx.message.text}`
 		)
 		if (username === 'Nikiteo') {
-			const sendReply = async (text: string): Promise<void> => {
-				await ctx.reply(text, { parse_mode: 'Markdown' })
-			}
 			const sendMessage = async (text: string): Promise<void> => {
 				await ctx.telegram.sendMessage(chatId, text)
 			}
 			await ctx.reply('Начал обновление...')
-			await addCofinance('Haifisch', sendMessage, sendReply)
-			await addCofinance('Top', sendMessage, sendReply)
-			await addOzonCofinance('Ozon', sendMessage, sendReply)
+			await addCofinance('Haifisch', sendMessage)
+			await addCofinance('Top', sendMessage)
+			await addOzonCofinance('Ozon', sendMessage)
 		} else {
 			return await ctx.reply('Прости, но ты не можешь использовать меня')
 		}

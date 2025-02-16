@@ -1095,3 +1095,9 @@ export interface AdditionalInfo {
 	is_opened: boolean
 	is_super_econom: boolean
 }
+
+export interface ActCreateRequest {
+	containers_count: number
+	delivery_method_id: number
+	departure_date: string
+}

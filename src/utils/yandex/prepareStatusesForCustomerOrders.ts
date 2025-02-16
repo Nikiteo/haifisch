@@ -1,8 +1,11 @@
 import { states } from '../../database'
-import { OrderStatusEnum } from '../../types/marketTypes'
 import { type State } from '../../types/msTypes'
+import {
+	OrderStatsStatusType,
+	type OrderSubstatusType,
+} from '../../types/yandex/api'
 
-const prepareSubstatuses = (substatus?: string): State => {
+const prepareSubstatuses = (substatus?: OrderSubstatusType): State => {
 	if (substatus === 'READY_TO_SHIP') {
 		return states.READY_TO_SHIP
 	}
@@ -13,31 +16,31 @@ const prepareSubstatuses = (substatus?: string): State => {
 }
 
 export const prepareStatusesForCustomerOrders = (
-	status?: OrderStatusEnum,
-	substatus?: string
+	status?: OrderStatsStatusType,
+	substatus?: OrderSubstatusType
 ): State => {
 	switch (status) {
-		case OrderStatusEnum.CANCELLED_IN_PROCESSING:
+		case OrderStatsStatusType.CancelledBeforeProcessing:
+		case OrderStatsStatusType.CancelledInProcessing:
 			return states.CANCELLED
-		case OrderStatusEnum.CANCELLED_IN_DELIVERY:
-		case OrderStatusEnum.REJECTED:
+		case OrderStatsStatusType.CancelledInDelivery:
 			return states.CANCELLED_IN_DELIVERY
-		case OrderStatusEnum.DELIVERED:
+		case OrderStatsStatusType.Delivered:
 			return states.DELIVERED
-		case OrderStatusEnum.DELIVERY:
-		case OrderStatusEnum.PICKUP:
+		case OrderStatsStatusType.Delivery:
+		case OrderStatsStatusType.Pickup:
 			return states.DELIVERY
-		case OrderStatusEnum.RESERVED:
-		case OrderStatusEnum.PENDING:
-		case OrderStatusEnum.UNPAID:
+		case OrderStatsStatusType.Reserved:
+		case OrderStatsStatusType.Pending:
+		case OrderStatsStatusType.Unpaid:
 			return states.NEW
-		case OrderStatusEnum.PROCESSING:
+		case OrderStatsStatusType.Processing:
 			return prepareSubstatuses(substatus)
-		case OrderStatusEnum.PARTIALLY_RETURNED:
+		case OrderStatsStatusType.PartiallyReturned:
 			return states.PARTIALLY_RETURNED
-		case OrderStatusEnum.RETURNED:
+		case OrderStatsStatusType.Returned:
 			return states.RETURNED
-		case OrderStatusEnum.LOST:
+		case OrderStatsStatusType.Lost:
 			return states.LOST
 		default:
 			return states.UNKNOWN

@@ -1,10 +1,10 @@
-import { type Return } from '../../types/marketTypes'
 import { type Product, type Move } from '../../types/msTypes'
+import { type ReturnDTO } from '../../types/yandex/api'
 import { createMove } from './createMove'
 
 export const prepareMoves = (
 	domain: string,
-	returns: Return[],
+	returns: ReturnDTO[],
 	products: Product[]
 ): Move[] => {
 	if (returns.length === 0) {

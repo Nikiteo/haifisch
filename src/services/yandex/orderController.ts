@@ -1,54 +1,76 @@
-import axios from 'axios'
+import { getService } from '../../utils/get-service'
 import {
-	type ErrorResponse,
-	type Order,
-	type OrderResponse,
-} from '../../types/marketTypes'
-import { apiServiceHf, apiServiceTop } from './service'
-import Logger from '../../lib/logger'
+	type GetOrdersStatsResponse,
+	type OrdersStatsOrderDTO,
+	type GetOrdersResponse,
+	type OrderDTO,
+	type GetOrdersStatsRequest,
+} from '../../types/yandex/api'
+import { logError } from '../../utils/log-error'
+
+export const getOrdersStats = async (
+	store: string,
+	id: number,
+	data: GetOrdersStatsRequest
+): Promise<OrdersStatsOrderDTO[] | undefined> => {
+	const service = getService(store)
+
+	const fetchOrders = async (
+		token: string
+	): Promise<OrdersStatsOrderDTO[]> => {
+		const response = await service.post<GetOrdersStatsResponse>(
+			`campaigns/${id}/stats/orders?limit=200&page_token=${token}`,
+			data
+		)
+
+		const orders = response.data.result
+
+		if (orders?.orders && orders.orders.length > 0) {
+			const nextPageToken = orders.paging?.nextPageToken
+			if (nextPageToken !== token) {
+				const nextOrders = nextPageToken
+					? await fetchOrders(nextPageToken)
+					: []
+				return orders.orders.concat(nextOrders)
+			}
+		}
+		return []
+	}
+
+	try {
+		return await fetchOrders('')
+	} catch (error: unknown) {
+		logError(error)
+	}
+}
 
 export const getOrders = async (
 	store: string,
-	id: number,
-	data: {
-		dateFrom: string
-		dateTo: string
+	id: number
+): Promise<OrderDTO[] | undefined> => {
+	const service = getService(store)
+
+	const fetchOrders = async (token: string): Promise<OrderDTO[]> => {
+		const response = await service.get<GetOrdersResponse>(
+			`campaigns/${id}/orders?limit=200&page_token=${token}`
+		)
+		const orders = response.data
+
+		if (orders?.orders && orders.orders.length > 0) {
+			const nextPageToken = orders.paging?.nextPageToken
+			if (nextPageToken !== token) {
+				const nextOrders = nextPageToken
+					? await fetchOrders(nextPageToken)
+					: []
+				return orders.orders.concat(nextOrders)
+			}
+		}
+		return []
 	}
-): Promise<Order[] | undefined> => {
-	const service = store === 'Haifisch' ? apiServiceHf : apiServiceTop
 
 	try {
-		const getOrder = async (token: string): Promise<Order[]> => {
-			const response = await service.post<OrderResponse>(
-				`campaigns/${id}/stats/orders?limit=200&page_token=${token}`,
-				data
-			)
-
-			const orders = response.data.result
-
-			if (
-				orders.orders.length > 0 &&
-				Object.keys(orders.paging).length > 0
-			) {
-				return orders.orders.concat(
-					await getOrder(orders.paging.nextPageToken)
-				)
-			} else {
-				return orders.orders
-			}
-		}
-
-		return await getOrder('')
+		return await fetchOrders('')
 	} catch (error: unknown) {
-		const err = error as ErrorResponse
-		if (axios.isAxiosError(err)) {
-			if (err?.response == null || err.code === null) {
-				Logger.error('No response')
-			} else {
-				Logger.error(err.response.data)
-			}
-		} else {
-			Logger.error('different error than axios')
-		}
+		logError(error)
 	}
 }

@@ -123,11 +123,11 @@ export const createCustomerOrderFbs = (
 			},
 			{
 				meta: {
-					href: 'https://api.moysklad.ru/api/remap/1.2/entity/customerorder/metadata/attributes/c09d1b3e-90ff-11ef-0a80-0efd00046bc2',
+					href: 'https://api.moysklad.ru/api/remap/1.2/entity/customerorder/metadata/attributes/cd289eaa-eacf-11ef-0a80-016f000e54c2',
 					type: 'attributemetadata',
 					mediaType: 'application/json',
 				},
-				id: 'c09d1b3e-90ff-11ef-0a80-0efd00046bc2',
+				id: 'cd289eaa-eacf-11ef-0a80-016f000e54c2',
 				name: 'Дата получения возврата',
 				type: 'string',
 				value: dayjs(order.refundDate).format(

@@ -8,8 +8,7 @@ import { type SendPricesRequest } from '../types/ozonTypes'
 
 export const addOzonCofinance = async (
 	store: string,
-	sendMessage: (text: string) => Promise<void>,
-	sendReply: (text: string) => Promise<void>
+	sendMessage: (text: string) => Promise<void>
 ): Promise<void> => {
 	try {
 		const products = await getProducts()

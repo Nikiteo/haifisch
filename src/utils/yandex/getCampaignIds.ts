@@ -1,24 +1,20 @@
-import { type Campaign } from '../../types/marketTypes'
+import { type CampaignDTO } from '../../types/yandex/api'
 
-type CampaignObject = Record<string, Campaign['id']>
+type CampaignObject = Record<string, CampaignDTO['id']>
 
 export const getCampaignIds = (
-	campaigns?: Campaign[]
+	campaigns?: CampaignDTO[]
 ): CampaignObject | undefined => {
-	if (campaigns === undefined) {
+	if (!campaigns) {
 		return undefined
 	}
 
-	if (campaigns[0].domain === 'Haifisch') {
-		return campaigns.reduce<CampaignObject>((acc, cur) => {
-			acc[cur.placementType] = cur.id
-			return acc
-		}, {})
-	}
-	return campaigns
-		.filter(campaign => campaign.id !== 22880458)
-		.reduce<CampaignObject>((acc, cur) => {
-			acc[cur.placementType] = cur.id
-			return acc
-		}, {})
+	return campaigns.reduce<CampaignObject>((acc, cur) => {
+		if (cur.placementType !== undefined) {
+			if (cur.domain === 'Haifisch' || cur.id !== 22880458) {
+				acc[cur.placementType] = cur.id
+			}
+		}
+		return acc
+	}, {})
 }

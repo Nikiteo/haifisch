@@ -1,22 +1,25 @@
 import axios from 'axios'
-import {
-	type ErrorResponse,
-	type OffersAttributesOzonRequest,
-	type OfferAttributesResponse,
-} from '../../types/ozonTypes'
+
 import { apiService } from './service'
 import Logger from '../../lib/logger'
+import { type ErrorResponse } from '../../types/msTypes'
 
-export const getOzonAttributes = async ({
+export const actCreate = async ({
 	...props
-}: OffersAttributesOzonRequest): Promise<
-	OfferAttributesResponse | undefined
+}: {
+	carriage_id: 0
+	containers_count: 0
+}): Promise<
+	| {
+			status: number
+			// eslint-disable-next-line no-mixed-spaces-and-tabs
+	  }
+	| undefined
 > => {
 	try {
-		const response = await apiService.post<OfferAttributesResponse>(
-			'v4/product/info/attributes',
-			{ ...props }
-		)
+		const response = await apiService.post<{
+			status: number
+		}>('v1/carriage/approve', { ...props })
 		return response.data
 	} catch (error: unknown) {
 		const err = error as ErrorResponse

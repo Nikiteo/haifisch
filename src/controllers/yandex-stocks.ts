@@ -2,7 +2,11 @@ import Logger from '../lib/logger'
 import { getProducts } from '../services/moysklad/productController'
 import { getCampaigns } from '../services/yandex/campaignController'
 import { getStocks, sendStocks } from '../services/yandex/stockController'
-import { type StocksSendRequest, type OfferStores } from '../types/marketTypes'
+import {
+	type UpdateStockDTO,
+	type UpdateStocksRequest,
+	type WarehouseOfferDTO,
+} from '../types/yandex/api'
 import { getCampaignIds } from '../utils/yandex/getCampaignIds'
 
 export const updateYandexStocks = async (
@@ -14,7 +18,7 @@ export const updateYandexStocks = async (
 
 		Logger.info(`[${store}]: Получены данные по продуктам из МС...`)
 
-		if (products != null && products.rows.length > 0) {
+		if (products && products.rows.length > 0) {
 			const articlesFromMS = products.rows.map(row => row.article)
 
 			const campaigns = await getCampaigns(store)
@@ -22,23 +26,23 @@ export const updateYandexStocks = async (
 
 			Logger.info(`[${store}]: Получены данные по кампаниям магазина...`)
 
-			if (campaignIds !== undefined && campaigns !== undefined) {
+			if (campaignIds?.FBS && campaigns) {
 				const stocks = await getStocks(store, campaignIds.FBS, {
-					offerIds: articlesFromMS,
+					offerIds: new Set(articlesFromMS),
 				})
 
 				Logger.info(
 					`[${store}]: Получены данные по остаткам магазина...`
 				)
 
-				const stocksLessTen = stocks?.reduce<OfferStores[]>(
+				const stocksLessTen = stocks?.reduce<WarehouseOfferDTO[]>(
 					(acc, cur) => {
 						const available = cur.stocks.find(
 							item => item.type === 'AVAILABLE'
 						)
 						if (
-							available != null &&
-							available?.count < 10 &&
+							available &&
+							available.count < 10 &&
 							available.count !== 0
 						) {
 							acc.push(cur)
@@ -50,7 +54,7 @@ export const updateYandexStocks = async (
 
 				const stocksForSend = stocksLessTen?.reduce(
 					(acc, cur) => {
-						acc.skus.push({
+						acc.skus.add({
 							sku: cur.offerId,
 							items: [
 								{
@@ -62,11 +66,11 @@ export const updateYandexStocks = async (
 						return acc
 					},
 					{
-						skus: [] as unknown as StocksSendRequest[],
-					}
+						skus: new Set<UpdateStockDTO>(),
+					} as unknown as UpdateStocksRequest
 				)
 
-				if (stocksForSend != null && stocksForSend?.skus.length > 0) {
+				if (stocksForSend && stocksForSend.skus.size > 0) {
 					Logger.info(`[${store}]: Отправляю новые остатки...`)
 
 					const response = await sendStocks(

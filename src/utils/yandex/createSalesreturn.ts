@@ -18,24 +18,26 @@ import {
 	type Project,
 } from '../../types/msTypes'
 
-const prepareStore = (project?: Project): Project | undefined => {
-	switch (project?.meta.href) {
-		case fbyTopProject.meta.href:
-			return fbyTopRefund
-		case fbyHfProject.meta.href:
-			return fbyHfRefund
-		case fbsTopProject.meta.href:
-			return fbsTopRefund
-		case fbsHfProject.meta.href:
-			return fbsHfRefund
-		case fboOzonProject.meta.href:
-			return fboOzonRefund
-		case fbosOzonProject.meta.href:
-			return sourceStore
-	}
+const projectRefundMap: Record<string, any> = {
+	[fbyTopProject.meta.href]: fbyTopRefund,
+	[fbyHfProject.meta.href]: fbyHfRefund,
+	[fbsTopProject.meta.href]: fbsTopRefund,
+	[fbsHfProject.meta.href]: fbsHfRefund,
+	[fboOzonProject.meta.href]: fboOzonRefund,
+	[fbosOzonProject.meta.href]: sourceStore,
 }
 
-export const createSalesReturn = (demand: Demand): SalesReturn => {
+const prepareStore = (project?: Project): Project | undefined => {
+	if (!project?.meta?.href) {
+		return undefined
+	}
+	return projectRefundMap[project.meta.href]
+}
+
+export const createSalesReturn = (
+	demand: Demand,
+	place?: string
+): SalesReturn => {
 	const {
 		meta,
 		id,
@@ -58,6 +60,14 @@ export const createSalesReturn = (demand: Demand): SalesReturn => {
 		...rest
 	} = demand
 
+	const moment =
+		place === 'OZON'
+			? demand.attributes?.find(
+					attribute =>
+						attribute.id === 'cd289eaa-eacf-11ef-0a80-016f000e54c2'
+					// eslint-disable-next-line no-mixed-spaces-and-tabs
+			  )?.value ?? demand.moment
+			: demand.moment
 	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 	// @ts-expect-error
 	return {
@@ -66,12 +76,7 @@ export const createSalesReturn = (demand: Demand): SalesReturn => {
 			meta: demand.meta,
 		},
 		attributes: [],
-		moment: demand.moment,
-		// moment:
-		// 	demand.attributes?.find(
-		// 		attribute =>
-		// 			attribute.id === '807c3874-9100-11ef-0a80-0de10004c634'
-		// 	)?.value ?? demand.moment,
+		moment,
 		store: prepareStore(demand.project),
 	}
 }

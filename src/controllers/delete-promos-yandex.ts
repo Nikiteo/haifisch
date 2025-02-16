@@ -7,16 +7,16 @@ import {
 	getPromosOffers,
 } from '../services/yandex/promosController'
 import {
-	type PromoOffersById,
-	type PromoOffer,
-	type DeletePromosOffersRequest,
-} from '../types/marketTypes'
+	type DeletePromoOffersRequest,
+	type GetPromoOfferDTO,
+} from '../types/yandex/api'
 import { getCampaignIds } from '../utils/yandex/getCampaignIds'
+
+type GetPromoOfferDTOById = Record<string, GetPromoOfferDTO[] | undefined>
 
 export const deletePromosYandex = async (
 	store: string,
-	sendMessage: (text: string) => Promise<void>,
-	sendReply: (text: string) => Promise<void>
+	sendMessage: (text: string) => Promise<void>
 ): Promise<void> => {
 	try {
 		const products = await getProducts()
@@ -29,100 +29,109 @@ export const deletePromosYandex = async (
 			Logger.info(`[${store}]: Получены данные по кампаниям магазина...`)
 
 			if (campaignIds !== undefined && campaigns !== undefined) {
-				const businessId = campaigns.campaigns[0].business.id
+				const businessId = campaigns?.campaigns[0]?.business?.id
 
-				const promos = await getPromos(store, businessId)
+				if (businessId) {
+					const promos = await getPromos(store, businessId)
 
-				Logger.info(
-					`[${store}]: Получены данные по акциям из магазина...`
-				)
-
-				const promosIds = promos
-					?.filter(
-						item => item.mechanicsInfo.type !== 'MARKET_PROMOCODE'
+					Logger.info(
+						`[${store}]: Получены данные по акциям из магазина...`
 					)
-					.map(promo => promo.id)
 
-				const fetchOneOffer = async (
-					store: string,
-					id: string
-				): Promise<PromoOffer[] | undefined> => {
-					return await getPromosOffers(store, businessId, {
-						promoId: id,
-					})
-				}
+					const promosIds = promos
+						?.filter(
+							item =>
+								item.mechanicsInfo.type !== 'MARKET_PROMOCODE'
+						)
+						.map(promo => promo.id)
 
-				const fetchAllOffers = async (
-					store: string,
-					ids?: string[]
-				): Promise<PromoOffersById> => {
-					let offers: PromoOffersById = {}
-
-					if (ids !== null && ids !== undefined && ids.length > 0) {
-						const offersById: PromoOffersById = {}
-
-						for (const id of ids) {
-							const offer = await fetchOneOffer(store, id)
-							if (offer != null) {
-								offersById[id] = offer
-							}
-						}
-						offers = {
-							...offers,
-							...offersById,
-						}
+					const fetchOneOffer = async (
+						store: string,
+						id: string
+					): Promise<GetPromoOfferDTO[] | undefined> => {
+						return await getPromosOffers(store, businessId, {
+							promoId: id,
+						})
 					}
 
-					return offers
-				}
+					const fetchAllOffers = async (
+						store: string,
+						ids?: string[]
+					): Promise<GetPromoOfferDTOById> => {
+						let offers: GetPromoOfferDTOById = {}
 
-				const offersById = await fetchAllOffers(store, promosIds)
+						if (ids && ids.length > 0) {
+							const offersById: GetPromoOfferDTOById = {}
 
-				Logger.info(
-					`[${store}]: Получены данные по товарам для акций из магазина...`
-				)
-
-				for (const promoId in offersById) {
-					if (offersById[promoId]?.length != null) {
-						const promoForSend = offersById[promoId]?.reduce(
-							(acc, cur) => {
-								const product = products.rows.find(
-									item => item.article === cur.offerId
-								)
-								const promoPrice =
-									cur.params.discountParams.maxPromoPrice
-								const minPrice =
-									product?.salePrices?.find(
-										item =>
-											item.priceType.id ===
-											'b4b53c4e-7cd3-11ef-0a80-0f350015a3b8'
-									)?.value ?? 0
-
-								if (minPrice !== 0) {
-									if (promoPrice < minPrice / 100) {
-										acc.offerIds.push(cur.offerId)
-									}
+							for (const id of ids) {
+								const offer = await fetchOneOffer(store, id)
+								if (offer) {
+									offersById[id] = offer
 								}
-
-								return acc
-							},
-							{
-								promoId,
-								deleteAllOffers: false,
-								offerIds:
-									[] as unknown as DeletePromosOffersRequest['offerIds'],
 							}
-						)
+							offers = {
+								...offers,
+								...offersById,
+							}
+						}
 
-						await deletePromosOffers(
-							store,
-							businessId,
-							promoForSend
-						)
+						return offers
 					}
+
+					const offersById = await fetchAllOffers(store, promosIds)
+
+					Logger.info(
+						`[${store}]: Получены данные по товарам для акций из магазина...`
+					)
+
+					for (const promoId in offersById) {
+						if (offersById[promoId]?.length) {
+							const promoForSend = offersById[promoId]?.reduce(
+								(acc, cur) => {
+									const product = products.rows.find(
+										item => item.article === cur.offerId
+									)
+									const promoPrice =
+										cur?.params?.discountParams
+											?.maxPromoPrice
+									const minPrice =
+										product?.salePrices?.find(
+											item =>
+												item.priceType.id ===
+												'b4b53c4e-7cd3-11ef-0a80-0f350015a3b8'
+										)?.value ?? 0
+
+									if (minPrice !== 0) {
+										if (
+											promoPrice &&
+											promoPrice < minPrice / 100
+										) {
+											if (!acc.offerIds) {
+												acc.offerIds = new Set<string>()
+											}
+											acc.offerIds.add(cur.offerId)
+										}
+									}
+
+									return acc
+								},
+								{
+									promoId,
+									deleteAllOffers: false,
+									offerIds: new Set<string>(),
+								} as unknown as DeletePromoOffersRequest
+							)
+
+							await deletePromosOffers(
+								store,
+								businessId,
+								promoForSend
+							)
+						}
+					}
+					await sendMessage(`[${store}]: Магазин синхронизирован`)
+					Logger.info(`[${store}]: Магазин синхронизирован`)
 				}
-				await sendMessage(`[${store}]: Магазин синхронизирован`)
-				Logger.info(`[${store}]: Магазин синхронизирован`)
 			}
 		}
 	} catch (err) {

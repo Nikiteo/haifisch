@@ -1,24 +1,36 @@
 import dayjs from 'dayjs'
 import { paymentinState } from '../../database'
-import { type Payment } from '../../types/marketTypes'
 import { type State, type Demand, type Paymentin } from '../../types/msTypes'
+import {
+	type OrdersStatsPaymentSourceType,
+	type OrdersStatsPaymentDTO,
+	type OrdersStatsSubsidyType,
+} from '../../types/yandex/api'
 
-const createStatusPaymentin = (source?: string): State | undefined => {
-	switch (source) {
-		case 'BUYER':
-			return paymentinState.BUYER
-		case 'CASHBACK':
-			return paymentinState.CASHBACK
-		case 'MARKETPLACE':
-			return paymentinState.MARKETPLACE
-		case 'SPASIBO':
-			return paymentinState.SPASIBO
-	}
+type OrdersStatsType =
+	| (typeof OrdersStatsPaymentSourceType)[keyof typeof OrdersStatsPaymentSourceType]
+	| (typeof OrdersStatsSubsidyType)[keyof typeof OrdersStatsSubsidyType]
+
+const statusMapping: Record<OrdersStatsType, State> = {
+	BUYER: paymentinState.BUYER,
+	CASHBACK: paymentinState.CASHBACK,
+	MARKETPLACE: paymentinState.MARKETPLACE,
+	SPLIT: paymentinState.SPLIT,
+	YANDEX_CASHBACK: paymentinState.YANDEX,
+	SUBSIDY: paymentinState.YANDEX,
+	DELIVERY: paymentinState.YANDEX,
+}
+
+const createStatusPaymentin = (
+	source?: OrdersStatsPaymentSourceType
+): State | undefined => {
+	if (!source) return undefined
+	return statusMapping[source]
 }
 
 export const createPaymentin = (
 	demand: Demand,
-	payment: Payment
+	payment: OrdersStatsPaymentDTO
 ): Paymentin => {
 	const {
 		salesChannel,
@@ -30,6 +42,13 @@ export const createPaymentin = (
 		group,
 	} = demand
 
+	const total = payment.total ?? 0
+
+	const paymentOrder = payment.paymentOrder
+	const incomingDate = paymentOrder
+		? dayjs(paymentOrder.date).format('YYYY-MM-DD HH:mm:ss.SSS')
+		: undefined
+
 	return {
 		group,
 		vatSum,
@@ -38,27 +57,18 @@ export const createPaymentin = (
 		organization,
 		agent,
 		project,
-		sum: parseFloat((payment.total * 100).toFixed(2)),
+		sum: parseFloat((total * 100).toFixed(2)),
 		name: payment.id,
 		state: createStatusPaymentin(payment.source),
 		moment: dayjs(payment.date).format('YYYY-MM-DD HH:mm:ss.SSS'),
 		operations: [
 			{
 				meta: demand.meta,
-				linkedSum: parseFloat((payment.total * 100).toFixed(2)),
+				linkedSum: parseFloat((total * 100).toFixed(2)),
 			},
 		],
 		paymentPurpose: payment.source,
-		incomingNumber:
-			payment.paymentOrder !== undefined
-				? payment.paymentOrder.id
-				: undefined,
-		incomingDate:
-			payment.paymentOrder !== undefined
-				? dayjs(payment.paymentOrder.date).format(
-						'YYYY-MM-DD HH:mm:ss.SSS'
-						// eslint-disable-next-line no-mixed-spaces-and-tabs
-				  )
-				: undefined,
+		incomingNumber: paymentOrder?.id,
+		incomingDate,
 	}
 }
