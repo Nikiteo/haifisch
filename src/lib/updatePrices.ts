@@ -2,6 +2,7 @@ import Logger from './logger'
 import { bot } from '../bot'
 import { checkUser } from './check-user'
 import { updateYandexPrice } from '../controllers/update-yandex-price'
+import { updateOzonPrices } from '../controllers/update-ozon-prices'
 
 export const updatePrices = (): void => {
 	bot.command('prices', async ctx => {
@@ -16,6 +17,7 @@ export const updatePrices = (): void => {
 				await ctx.telegram.sendMessage(chatId, text)
 			}
 			await ctx.reply('Начал обновление...')
+			await updateOzonPrices('Ozon', sendMessage)
 			await updateYandexPrice('Haifisch', sendMessage)
 			await updateYandexPrice('Top', sendMessage)
 		} else {

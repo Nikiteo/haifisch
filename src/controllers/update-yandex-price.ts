@@ -40,7 +40,7 @@ export const updateYandexPrice = async (
 										product.salePrices?.find(
 											item =>
 												item.priceType.id ===
-												'5f713df2-9981-11ee-0a80-0b5a00058c80'
+												'4f9e295d-f557-11ed-0a80-11cd001da711'
 										)?.value ?? 0
 
 									acc.offers.push({
@@ -48,7 +48,7 @@ export const updateYandexPrice = async (
 										price: {
 											value: basicPrice / 100,
 											discountBase:
-												basicPrice / 100 + 300,
+												basicPrice / 100 + 500,
 											currencyId: 'RUR',
 										},
 									})

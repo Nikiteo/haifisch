@@ -35,7 +35,6 @@ import {
 	type OrdersStatsOrderDTO,
 	type OrderDTO,
 	type EnrichedOrdersStatsOrderDTO,
-	type OrdersStatsSubsidyDTO,
 } from '../types/yandex/api'
 import { states } from '../database'
 
@@ -113,10 +112,6 @@ export const updateYandex = async (
 								...orderStat,
 								delivery: correspondingOrder.delivery,
 								substatus: correspondingOrder.substatus,
-								subsidies:
-									orderStat.subsidies?.length === 0
-										? (correspondingOrder.subsidies as OrdersStatsSubsidyDTO[])
-										: orderStat.subsidies,
 							}
 						}
 					}
