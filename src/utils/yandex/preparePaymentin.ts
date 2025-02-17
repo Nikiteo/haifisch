@@ -50,10 +50,10 @@ const processDemands = (
 				relevantDemands.forEach(demand => {
 					if (demand.name === cur.id?.toString()) {
 						if (cur.subsidies && cur.subsidies.length > 0) {
-							cur.subsidies.forEach((subsidy, index) => {
+							cur.subsidies.forEach((subsidy,) => {
 								if (subsidy.operationType === 'ACCRUAL') {
 									const paymentDTO: OrdersStatsPaymentDTO = {
-										id: `${subsidy.type}_${cur.id}_${index}`,
+										id: `${subsidy.type}_${cur.id}_${subsidy.amount}`,
 										total: subsidy.amount,
 										source: subsidy.type as OrdersStatsPaymentSourceType,
 										date: dayjs(

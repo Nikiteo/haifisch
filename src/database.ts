@@ -727,6 +727,21 @@ export const carrier = {
 }
 
 export const paymentoutState = {
+	YANDEX: {
+		meta: {
+			href: 'https://api.moysklad.ru/api/remap/1.2/entity/paymentout/metadata/states/1f6df938-982b-11ee-0a80-1398003f69fc',
+			metadataHref:
+				'https://api.moysklad.ru/api/remap/1.2/entity/paymentout/metadata',
+			type: 'state',
+			mediaType: 'application/json',
+		},
+		id: '1f6df938-982b-11ee-0a80-1398003f69fc',
+		accountId: '4f45c052-f557-11ed-0a80-0cd400013e78',
+		name: 'Баллы кэшбэк',
+		color: 10066329,
+		stateType: 'Regular',
+		entityType: 'paymentout',
+	},
 	BUYER: {
 		meta: {
 			href: 'https://api.moysklad.ru/api/remap/1.2/entity/paymentout/metadata/states/1f6df7df-982b-11ee-0a80-1398003f69fb',

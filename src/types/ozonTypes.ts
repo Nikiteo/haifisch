@@ -1101,3 +1101,55 @@ export interface ActCreateRequest {
 	delivery_method_id: number
 	departure_date: string
 }
+
+export interface GetActsResponse {
+	result: GetActResponse[]
+}
+
+export interface GetActResponse {
+	carriage_id: number
+	carriage_postings_count: number
+	carriage_status: string
+	delivery_method_id: number
+	delivery_method_name: string
+	warehouse_id: number
+	warehouse_name: string
+	warehouse_city: string
+	has_entrusted_acceptance: boolean
+	tpl_provider_name: string
+	tpl_provider_icon_url: string
+	first_mile_type: string
+	errors: Error[]
+	cutoff_at: string
+	mandatory_postings_count: number
+	mandatory_packaged_count: number
+	warehouse_timezone: string
+	recommended_time_local: string
+	recommended_time_utc_offset_in_minutes: number
+	is_presort: boolean
+}
+
+export interface Error {
+	code: string
+	status: string
+}
+
+export interface CreateActRequest {
+	delivery_method_id: number
+}
+
+export interface CreateActResponse {
+	result: {
+		id: number
+	}
+}
+
+export interface GetQrRequest {
+	id: number
+}
+
+export interface GetQrResponse {
+	content_type: string
+	file_name: string
+	file_content: string
+}

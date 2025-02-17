@@ -6,15 +6,23 @@ import {
 	type State,
 } from '../../types/msTypes'
 import {
+	type OrdersStatsSubsidyType,
 	type OrdersStatsPaymentDTO,
 	type OrdersStatsPaymentSourceType,
 } from '../../types/yandex/api'
 
-const statusMapping: Record<OrdersStatsPaymentSourceType, State> = {
+type OrdersStatsType =
+	| (typeof OrdersStatsPaymentSourceType)[keyof typeof OrdersStatsPaymentSourceType]
+	| (typeof OrdersStatsSubsidyType)[keyof typeof OrdersStatsSubsidyType]
+
+const statusMapping: Record<OrdersStatsType, State> = {
 	BUYER: paymentoutState.BUYER,
 	CASHBACK: paymentoutState.CASHBACK,
 	MARKETPLACE: paymentoutState.MARKETPLACE,
 	SPLIT: paymentoutState.SPLIT,
+	YANDEX_CASHBACK: paymentoutState.YANDEX,
+	SUBSIDY: paymentoutState.YANDEX,
+	DELIVERY: paymentoutState.YANDEX,
 }
 
 const createStatusPaymentout = (

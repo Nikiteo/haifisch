@@ -46,10 +46,10 @@ const processReturns = (
 				})
 
 				if (order.subsidies && order.subsidies.length > 0) {
-					order.subsidies.forEach((subsidy, index) => {
+					order.subsidies.forEach((subsidy) => {
 						if (subsidy.operationType === 'DEDUCTION') {
 							const paymentDTO: OrdersStatsPaymentDTO = {
-								id: `${subsidy.type}_${order.id}_${index}`,
+								id: `${subsidy.type}_${order.id}_${subsidy.amount}`,
 								total: subsidy.amount,
 								source: subsidy.type as OrdersStatsPaymentSourceType,
 								date: dayjs(order.statusUpdateDate).format(
