@@ -7,7 +7,6 @@ import {
 	type GetOrdersStatsRequest,
 } from '../../types/yandex/api'
 import { logError } from '../../utils/log-error'
-import Logger from '../../lib/logger'
 
 export const getOrdersStats = async (
 	store: string,
@@ -25,8 +24,6 @@ export const getOrdersStats = async (
 		)
 
 		const orders = response.data.result
-
-		Logger.info(orders?.orders.length)
 
 		if (orders?.orders && orders.orders.length > 0) {
 			const nextPageToken = orders.paging?.nextPageToken

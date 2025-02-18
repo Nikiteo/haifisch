@@ -1153,3 +1153,18 @@ export interface GetQrResponse {
 	file_name: string
 	file_content: string
 }
+
+export interface GiveoutsResponse {
+	giveouts: Giveout[]
+}
+
+export interface Giveout {
+	approved_articles_count: number
+	created_at: string
+	giveout_id: number
+	giveout_status: string
+	total_articles_count: number
+	warehouse_address: string
+	warehouse_id: number
+	warehouse_name: string
+}

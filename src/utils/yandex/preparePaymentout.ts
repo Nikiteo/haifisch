@@ -46,10 +46,11 @@ const processReturns = (
 				})
 
 				if (order.subsidies && order.subsidies.length > 0) {
-					order.subsidies.forEach((subsidy) => {
+					order.subsidies.forEach(subsidy => {
 						if (subsidy.operationType === 'DEDUCTION') {
+							const uniqueId = `${order.id}_${subsidy.type}_${subsidy.amount}`
 							const paymentDTO: OrdersStatsPaymentDTO = {
-								id: `${subsidy.type}_${order.id}_${subsidy.amount}`,
+								id: uniqueId,
 								total: subsidy.amount,
 								source: subsidy.type as OrdersStatsPaymentSourceType,
 								date: dayjs(order.statusUpdateDate).format(
@@ -58,13 +59,15 @@ const processReturns = (
 							}
 							const paymentout = createPaymentout(ret, paymentDTO)
 							if (paymentout.name) {
-								const existingPaymentout = paymentouts.find(
-									p => p.name === paymentout.name
-								)
-								paymentoutMap.set(paymentout.name, {
-									...paymentout,
-									...existingPaymentout,
-								})
+								if (!paymentoutMap.has(paymentout.name)) {
+									const existingPaymentout = paymentouts.find(
+										p => p.name === paymentout.name
+									)
+									paymentoutMap.set(paymentout.name, {
+										...paymentout,
+										...existingPaymentout,
+									})
+								}
 							}
 						}
 					})

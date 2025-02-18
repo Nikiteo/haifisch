@@ -50,19 +50,29 @@ const processDemands = (
 				relevantDemands.forEach(demand => {
 					if (demand.name === cur.id?.toString()) {
 						if (cur.subsidies && cur.subsidies.length > 0) {
-							cur.subsidies.forEach((subsidy,) => {
+							cur.subsidies.forEach(subsidy => {
 								if (subsidy.operationType === 'ACCRUAL') {
-									const paymentDTO: OrdersStatsPaymentDTO = {
-										id: `${subsidy.type}_${cur.id}_${subsidy.amount}`,
-										total: subsidy.amount,
-										source: subsidy.type as OrdersStatsPaymentSourceType,
-										date: dayjs(
-											cur.statusUpdateDate
-										).format('YYYY-MM-DD HH:mm:ss.SSS'),
-									}
-									acc.push(
-										createPaymentin(demand, paymentDTO)
+									const uniqueId = `${cur.id}_${subsidy.type}_${subsidy.amount}`
+									const existingPayment = paymentins.find(
+										payment => payment.name === uniqueId
 									)
+
+									if (!existingPayment) {
+										const paymentDTO: OrdersStatsPaymentDTO =
+											{
+												id: uniqueId,
+												total: subsidy.amount,
+												source: subsidy.type as OrdersStatsPaymentSourceType,
+												date: dayjs(
+													cur.statusUpdateDate
+												).format(
+													'YYYY-MM-DD HH:mm:ss.SSS'
+												),
+											}
+										acc.push(
+											createPaymentin(demand, paymentDTO)
+										)
+									}
 								}
 							})
 						}

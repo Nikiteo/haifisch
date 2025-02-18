@@ -4,6 +4,8 @@ import {
 	type ErrorResponse,
 	type OzonReturns,
 	type ResponseOzonReturns,
+	type GiveoutsResponse,
+	type Giveout,
 } from '../../types/ozonTypes'
 import { apiService } from './service'
 import Logger from '../../lib/logger'
@@ -19,6 +21,29 @@ export const getOzonReturns = async ({
 			}
 		)
 		return response.data.returns
+	} catch (error: unknown) {
+		const err = error as ErrorResponse
+		if (axios.isAxiosError(err)) {
+			if (err?.response == null || err.code === null) {
+				Logger.error('No response')
+			} else {
+				Logger.error(err.response.data)
+			}
+		} else {
+			Logger.error('different error than axios')
+		}
+	}
+}
+
+export const getGiveoutsOzon = async (): Promise<Giveout[] | undefined> => {
+	try {
+		const response = await apiService.post<GiveoutsResponse>(
+			'v1/return/giveout/list',
+			{
+				limit: 500,
+			}
+		)
+		return response.data.giveouts
 	} catch (error: unknown) {
 		const err = error as ErrorResponse
 		if (axios.isAxiosError(err)) {
