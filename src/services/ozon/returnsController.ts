@@ -57,3 +57,29 @@ export const getGiveoutsOzon = async (): Promise<Giveout[] | undefined> => {
 		}
 	}
 }
+
+export const getReturnPng = async (): Promise<
+	| {
+			png: string
+			// eslint-disable-next-line no-mixed-spaces-and-tabs
+	  }
+	| undefined
+> => {
+	try {
+		const response = await apiService.post<{ png: string }>(
+			'v1/return/giveout/barcode-reset'
+		)
+		return response.data
+	} catch (error: unknown) {
+		const err = error as ErrorResponse
+		if (axios.isAxiosError(err)) {
+			if (err?.response == null || err.code === null) {
+				Logger.error('No response')
+			} else {
+				Logger.error(err.response.data)
+			}
+		} else {
+			Logger.error('different error than axios')
+		}
+	}
+}
