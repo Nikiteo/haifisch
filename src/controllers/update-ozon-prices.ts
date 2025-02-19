@@ -39,10 +39,15 @@ export const updateOzonPrices = async (
 								'5f713df2-9981-11ee-0a80-0b5a00058c80'
 						)?.value ?? 0
 
+					const oldPrice = basicPrice / 100 + 500
+					const price = basicPrice / 100
+					const minPrice = Math.floor(price - price * 0.4)
+
 					acc.prices.push({
 						...cur,
-						price: (basicPrice / 100).toString(),
-						old_price: (basicPrice / 100 + 500).toString(),
+						min_price: minPrice.toString(),
+						price: price.toString(),
+						old_price: oldPrice.toString(),
 					})
 					return acc
 				},

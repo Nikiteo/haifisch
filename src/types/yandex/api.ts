@@ -2186,10 +2186,10 @@ export interface DeletePromoOffersRequest {
 	deleteAllOffers?: boolean
 	/**
 	 * Товары, которые нужно убрать из акции.
-	 * @type {Set<string>}
+	 * @type {Array<string>}
 	 * @memberof DeletePromoOffersRequest
 	 */
-	offerIds?: Set<string> | null
+	offerIds?: string[] | null
 }
 /**
  * Результат удаления товаров из акции.

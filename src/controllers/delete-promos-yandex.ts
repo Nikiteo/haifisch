@@ -107,9 +107,9 @@ export const deletePromosYandex = async (
 											promoPrice < minPrice / 100
 										) {
 											if (!acc.offerIds) {
-												acc.offerIds = new Set<string>()
+												acc.offerIds = []
 											}
-											acc.offerIds.add(cur.offerId)
+											acc.offerIds.push(cur.offerId)
 										}
 									}
 
@@ -118,15 +118,20 @@ export const deletePromosYandex = async (
 								{
 									promoId,
 									deleteAllOffers: false,
-									offerIds: new Set<string>(),
+									offerIds: [],
 								} as unknown as DeletePromoOffersRequest
 							)
 
-							await deletePromosOffers(
-								store,
-								businessId,
-								promoForSend
-							)
+							if (
+								promoForSend?.offerIds &&
+								promoForSend?.offerIds?.length > 0
+							) {
+								await deletePromosOffers(
+									store,
+									businessId,
+									promoForSend
+								)
+							}
 						}
 					}
 					await sendMessage(`[${store}]: Магазин синхронизирован`)

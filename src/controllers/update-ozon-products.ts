@@ -61,8 +61,17 @@ export const updateOzonProducts = async (
 			)
 
 			if (preparedOzonProducts.length > 0) {
-				await createProducts(preparedOzonProducts)
+				const midIndex = Math.ceil(preparedOzonProducts.length / 2)
+				const firstBatch = preparedOzonProducts.slice(0, midIndex)
+				const secondBatch = preparedOzonProducts.slice(midIndex)
+
+				await createProducts(firstBatch)
+				Logger.info(`[${store}]: Первая партия товаров создана...`)
+
+				await createProducts(secondBatch)
+				Logger.info(`[${store}]: Вторая партия товаров создана...`)
 			}
+
 			const notSellingProducts = products.rows.filter(
 				item =>
 					item.salePrices.find(
@@ -82,7 +91,6 @@ export const updateOzonProducts = async (
 				)}`
 			)
 
-			Logger.info(`[${store}]: Создаю товары...`)
 			await sendMessage(`[${store}]: Магазин синхронизирован`)
 			Logger.info(`[${store}]: Магазин синхронизирован`)
 		}

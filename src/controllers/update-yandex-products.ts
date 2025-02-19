@@ -70,7 +70,15 @@ export const updateYandexProducts = async (
 		)
 
 		if (preparedProducts.length > 0) {
-			await createProducts(preparedProducts)
+			const midIndex = Math.ceil(preparedProducts.length / 2)
+			const firstBatch = preparedProducts.slice(0, midIndex)
+			const secondBatch = preparedProducts.slice(midIndex)
+
+			await createProducts(firstBatch)
+			Logger.info(`[${store}]: Первая партия товаров создана...`)
+
+			await createProducts(secondBatch)
+			Logger.info(`[${store}]: Вторая партия товаров создана...`)
 		}
 
 		const notSellingProducts = getNotSellingProducts(products.rows, store)
@@ -82,7 +90,6 @@ export const updateYandexProducts = async (
 			)
 		}
 
-		Logger.info(`[${store}]: Создаю товары...`)
 		await sendMessage(`[${store}]: Магазин синхронизирован`)
 		Logger.info(`[${store}]: Магазин синхронизирован`)
 	} catch (err) {

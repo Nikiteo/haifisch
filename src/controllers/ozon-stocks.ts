@@ -48,8 +48,6 @@ export const updateOzonStocks = async (
 				{ stocks: [] as unknown as StockRequest[] }
 			)
 
-			Logger.info(JSON.stringify(offersForSend))
-
 			if (
 				offersForSend !== undefined &&
 				offersForSend.stocks.length > 0
