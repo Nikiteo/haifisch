@@ -1002,123 +1002,125 @@ export interface GetProductPricesRequest {
     limit?: number
 }
 
+export interface GetProductPrice {
+    /** @example 0 */
+    acquiring?: number
+    commissions?: {
+        /** @example 14.75 */
+        fbo_deliv_to_customer_amount?: number
+        /** @example 46.5 */
+        fbo_direct_flow_trans_max_amount?: number
+        /** @example 31 */
+        fbo_direct_flow_trans_min_amount?: number
+        /** @example 50 */
+        fbo_return_flow_amount?: number
+        /** @example 60 */
+        fbs_deliv_to_customer_amount?: number
+        /** @example 61.5 */
+        fbs_direct_flow_trans_max_amount?: number
+        /** @example 41 */
+        fbs_direct_flow_trans_min_amount?: number
+        /** @example 25 */
+        fbs_first_mile_max_amount?: number
+        /** @example 0 */
+        fbs_first_mile_min_amount?: number
+        /** @example 40 */
+        fbs_return_flow_amount?: number
+        /** @example 15 */
+        sales_percent_fbo?: number
+        /** @example 0 */
+        sales_percent_fbs?: number
+    }
+    marketing_actions?: {
+        actions?: {
+            /**
+             * @format date-time
+             * @example "2024-12-13T06:49:37.591Z"
+             */
+            date_from?: string
+            /**
+             * @format date-time
+             * @example "2024-12-13T06:49:37.591Z"
+             */
+            date_to?: string
+            /** @example "string" */
+            title?: string
+            /** @example 0 */
+            value?: number
+        }[]
+        /**
+         * @format date-time
+         * @example "2024-12-13T06:49:37.591Z"
+         */
+        current_period_from?: string
+        /**
+         * @format date-time
+         * @example "2024-12-13T06:49:37.591Z"
+         */
+        current_period_to?: string
+        /** @example true */
+        ozon_actions_exist?: boolean
+    }
+    /** @example "356792" */
+    offer_id?: string
+    price?: {
+        /** @example true */
+        auto_action_enabled?: boolean
+        /** @example "RUB" */
+        currency_code?: string
+        /** @example 0 */
+        marketing_price?: number
+        /** @example 0 */
+        marketing_seller_price?: number
+        /** @example 0 */
+        min_price?: number
+        /** @example 579 */
+        old_price?: number
+        /** @example 499 */
+        price?: number
+        /** @example 0 */
+        retail_price?: number
+        /** @example 0.2 */
+        vat?: number
+    }
+    price_indexes?: {
+        /** @example "WITHOUT_INDEX" */
+        color_index?: string
+        external_index_data?: {
+            /** @example 0 */
+            min_price?: number
+            /** @example "string" */
+            min_price_currency?: string
+            /** @example 0 */
+            price_index_value?: number
+        }
+        ozon_index_data?: {
+            /** @example 0 */
+            min_price?: number
+            /** @example "string" */
+            min_price_currency?: string
+            /** @example 0 */
+            price_index_value?: number
+        }
+        self_marketplaces_index_data?: {
+            /** @example 0 */
+            min_price?: number
+            /** @example "string" */
+            min_price_currency?: string
+            /** @example 0 */
+            price_index_value?: number
+        }
+    }
+    /** @example 243686911 */
+    product_id?: number
+    /** @example 0 */
+    volume_weight?: number
+}
+
 export interface GetProductPricesResponse {
     /** @example "string" */
     cursor?: string
-    items?: {
-        /** @example 0 */
-        acquiring?: number
-        commissions?: {
-            /** @example 14.75 */
-            fbo_deliv_to_customer_amount?: number
-            /** @example 46.5 */
-            fbo_direct_flow_trans_max_amount?: number
-            /** @example 31 */
-            fbo_direct_flow_trans_min_amount?: number
-            /** @example 50 */
-            fbo_return_flow_amount?: number
-            /** @example 60 */
-            fbs_deliv_to_customer_amount?: number
-            /** @example 61.5 */
-            fbs_direct_flow_trans_max_amount?: number
-            /** @example 41 */
-            fbs_direct_flow_trans_min_amount?: number
-            /** @example 25 */
-            fbs_first_mile_max_amount?: number
-            /** @example 0 */
-            fbs_first_mile_min_amount?: number
-            /** @example 40 */
-            fbs_return_flow_amount?: number
-            /** @example 15 */
-            sales_percent_fbo?: number
-            /** @example 0 */
-            sales_percent_fbs?: number
-        }
-        marketing_actions?: {
-            actions?: {
-                /**
-                 * @format date-time
-                 * @example "2024-12-13T06:49:37.591Z"
-                 */
-                date_from?: string
-                /**
-                 * @format date-time
-                 * @example "2024-12-13T06:49:37.591Z"
-                 */
-                date_to?: string
-                /** @example "string" */
-                title?: string
-                /** @example 0 */
-                value?: number
-            }[]
-            /**
-             * @format date-time
-             * @example "2024-12-13T06:49:37.591Z"
-             */
-            current_period_from?: string
-            /**
-             * @format date-time
-             * @example "2024-12-13T06:49:37.591Z"
-             */
-            current_period_to?: string
-            /** @example true */
-            ozon_actions_exist?: boolean
-        }
-        /** @example "356792" */
-        offer_id?: string
-        price?: {
-            /** @example true */
-            auto_action_enabled?: boolean
-            /** @example "RUB" */
-            currency_code?: string
-            /** @example 0 */
-            marketing_price?: number
-            /** @example 0 */
-            marketing_seller_price?: number
-            /** @example 0 */
-            min_price?: number
-            /** @example 579 */
-            old_price?: number
-            /** @example 499 */
-            price?: number
-            /** @example 0 */
-            retail_price?: number
-            /** @example 0.2 */
-            vat?: number
-        }
-        price_indexes?: {
-            /** @example "WITHOUT_INDEX" */
-            color_index?: string
-            external_index_data?: {
-                /** @example 0 */
-                min_price?: number
-                /** @example "string" */
-                min_price_currency?: string
-                /** @example 0 */
-                price_index_value?: number
-            }
-            ozon_index_data?: {
-                /** @example 0 */
-                min_price?: number
-                /** @example "string" */
-                min_price_currency?: string
-                /** @example 0 */
-                price_index_value?: number
-            }
-            self_marketplaces_index_data?: {
-                /** @example 0 */
-                min_price?: number
-                /** @example "string" */
-                min_price_currency?: string
-                /** @example 0 */
-                price_index_value?: number
-            }
-        }
-        /** @example 243686911 */
-        product_id?: number
-        /** @example 0 */
-        volume_weight?: number
-    }[]
+    items?: GetProductPrice[]
     /** @example 0 */
     total?: number
 }
@@ -1159,7 +1161,10 @@ export interface ImportProductPricesResponse {
         /** @example true */
         updated?: boolean
         /** @example [] */
-        errors?: string[]
+        errors?: {
+            code?: string
+            message?: string
+        }[]
     }[]
 }
 
@@ -1629,24 +1634,26 @@ export interface GetActionCandidatesRequest {
     offset?: number
 }
 
+export interface ActionCandidatesProduct {
+    /** @example 226 */
+    id?: number
+    /** @example 250 */
+    price?: number
+    /** @example 0 */
+    action_price?: number
+    /** @example 175 */
+    max_action_price?: number
+    /** @example "NOT_SET" */
+    add_mode?: string
+    /** @example 0 */
+    stock?: number
+    /** @example 0 */
+    min_stock?: number
+}
+
 export interface GetActionCandidatesResponse {
     result?: {
-        products?: {
-            /** @example 226 */
-            id?: number
-            /** @example 250 */
-            price?: number
-            /** @example 0 */
-            action_price?: number
-            /** @example 175 */
-            max_action_price?: number
-            /** @example "NOT_SET" */
-            add_mode?: string
-            /** @example 0 */
-            stock?: number
-            /** @example 0 */
-            min_stock?: number
-        }[]
+        products?: ActionCandidatesProduct[]
         /** @example 2 */
         total?: number
     }
@@ -1700,7 +1707,9 @@ export interface ActivateActionProductsRequest {
 export interface ActivateActionProductsResponse {
     result?: {
         product_ids?: number[]
-        rejected?: object[]
+        rejected?: {
+            product_id?: string
+        }[]
     }
 }
 

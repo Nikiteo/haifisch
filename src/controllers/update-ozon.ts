@@ -38,7 +38,7 @@ import {
 	PostingFbo,
 	PostingFbs,
 } from '../types/ozon/ozon-types'
-import { OrderFbsOzonStatus, OrderStatusEnum } from '../types/ozonTypes'
+import { OrderFbsOzonStatus, OrderStatusEnum } from '../types/ozon/types'
 
 dayjs.extend(utc)
 

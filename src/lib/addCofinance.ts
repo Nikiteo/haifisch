@@ -16,9 +16,9 @@ export const addYandexCofinance = (): void => {
 				await ctx.telegram.sendMessage(chatId, text)
 			}
 			await ctx.reply('Начал обновление...')
+			await addOzonCofinance('Ozon', sendMessage)
 			await addCofinance('Haifisch', sendMessage)
 			await addCofinance('Top', sendMessage)
-			await addOzonCofinance('Ozon', sendMessage)
 		} else {
 			return await ctx.reply('Прости, но ты не можешь использовать меня')
 		}

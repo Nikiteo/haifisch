@@ -1,5 +1,5 @@
 import { type Attribute } from '../../types/msTypes'
-import { ProductInfoWithAttributes } from '../../types/ozonTypes'
+import { ProductInfoWithAttributes } from '../../types/ozon/types'
 
 const prepareVolume = (
 	depth?: number,

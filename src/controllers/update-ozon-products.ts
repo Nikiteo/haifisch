@@ -4,9 +4,26 @@ import {
 	getProducts,
 } from '../services/moysklad/productController'
 import { getOzonAttributes, getOzonOffers } from '../services/ozon/api'
-import { ProductInfoWithAttributes } from '../types/ozonTypes'
+import { Product } from '../types/msTypes'
+import { ProductInfoWithAttributes } from '../types/ozon/types'
 
 import { prepareOzonOffers } from '../utils/ozon/prepareOzonOffers'
+
+const getNotSellingProducts = (products: Product[]): Product[] => {
+	return products.filter(
+		item =>
+			item.salePrices.find(
+				sale =>
+					sale.priceType.id === '5f713df2-9981-11ee-0a80-0b5a00058c80'
+			)?.value === 0
+	)
+}
+
+const formatNotSellingProducts = (notSellingProducts: Product[]): string => {
+	return notSellingProducts
+		.map(row => `[${row.name}](${row?.meta?.uuidHref})`)
+		.join('\n')
+}
 
 export const updateOzonProducts = async (
 	store: string,
@@ -74,24 +91,15 @@ export const updateOzonProducts = async (
 				Logger.info(`[${store}]: Вторая партия товаров создана...`)
 			}
 
-			const notSellingProducts = products.rows.filter(
-				item =>
-					item.salePrices.find(
-						sale =>
-							sale.priceType.id ===
-							'5f713df2-9981-11ee-0a80-0b5a00058c80'
-					)?.value === 0
-			)
+			const notSellingProducts = getNotSellingProducts(products.rows)
 
-			const resp = notSellingProducts.map(row => {
-				return `[${row.name}](${row?.meta?.uuidHref})\n`
-			})
-
-			await sendReply(
-				`В магазине [${store}] не продаются следующие товары:\n\n${resp?.join(
-					'\n'
-				)}`
-			)
+			if (notSellingProducts.length > 0) {
+				const formattedProducts =
+					formatNotSellingProducts(notSellingProducts)
+				await sendReply(
+					`В магазине [${store}] не продаются следующие товары:\n\n${formattedProducts}`
+				)
+			}
 
 			await sendMessage(`[${store}]: Магазин синхронизирован`)
 			Logger.info(`[${store}]: Магазин синхронизирован`)

@@ -1,10 +1,31 @@
 import Logger from '../lib/logger'
 import { getProducts } from '../services/moysklad/productController'
+import { getProductPrices, sendPrices } from '../services/ozon/api'
+import { Product } from '../types/msTypes'
 import {
-	getProductPrices,
-	sendPrices,
-} from '../services/ozon/productController'
-import { type SendPricesRequest } from '../types/ozonTypes'
+	GetProductPrice,
+	GetProductPricesRequestVisibilityEnum,
+	ImportProductPricesRequest,
+	ImportProductPricesRequestAutoActionEnabledEnum,
+} from '../types/ozon/ozon-types'
+
+const createPriceEntry = (cur: GetProductPrice, product?: Product) => {
+	const minPrice =
+		product?.salePrices?.find(
+			item => item.priceType.id === 'b4b53c4e-7cd3-11ef-0a80-0f350015a3b8'
+		)?.value ?? 0
+
+	return {
+		offer_id: cur.offer_id,
+		currency_code: cur.price?.currency_code,
+		price: cur.price?.price?.toString(),
+		old_price: cur.price?.old_price?.toString(),
+		min_price: (minPrice / 100).toString(),
+		min_price_for_auto_actions_enabled: true,
+		auto_action_enabled:
+			'ENABLED' as ImportProductPricesRequestAutoActionEnabledEnum,
+	}
+}
 
 export const addOzonCofinance = async (
 	store: string,
@@ -12,55 +33,38 @@ export const addOzonCofinance = async (
 ): Promise<void> => {
 	try {
 		const products = await getProducts()
-
 		Logger.info(`[${store}]: Получены данные по продуктам из МС...`)
 
-		if (products != null && products.rows.length > 0) {
+		if (products && products?.rows.length > 0) {
 			const articlesFromMS = products.rows.map(row => row.article)
 			const prices = await getProductPrices({
 				filter: {
 					offer_id: articlesFromMS,
-					visibility: 'ALL',
+					visibility: 'ALL' as GetProductPricesRequestVisibilityEnum,
 				},
 				limit: 1000,
 			})
 			Logger.info(`[${store}]: Получены данные по ценам магазина...`)
 
-			const pricesForSend = prices?.items.reduce<SendPricesRequest>(
+			const pricesForSend = prices?.reduce<ImportProductPricesRequest>(
 				(acc, cur) => {
 					const product = products.rows.find(
 						item => item.article === cur.offer_id
 					)
-					const minPrice =
-						product?.salePrices?.find(
-							item =>
-								item.priceType.id ===
-								'b4b53c4e-7cd3-11ef-0a80-0f350015a3b8'
-						)?.value ?? 0
-
-					acc.prices.push({
-						offer_id: cur.offer_id,
-						currency_code: cur.price.currency_code,
-						price: cur.price.price.toString(),
-						old_price: cur.price.old_price.toString(),
-						min_price: (minPrice / 100).toString(),
-						min_price_for_auto_actions_enabled: true,
-						auto_action_enabled: 'ENABLED',
-					})
+					acc.prices?.push(createPriceEntry(cur, product))
 					return acc
 				},
-				{
-					prices: [],
-				}
+				{ prices: [] }
 			)
+
 			Logger.info(`[${store}]: Отправляю данные по ценам магазина...`)
 
-			if (pricesForSend != null && pricesForSend?.prices.length > 0) {
+			if (pricesForSend?.prices && pricesForSend.prices.length > 0) {
 				const response = await sendPrices(pricesForSend)
 
-				if (response?.result !== undefined) {
+				if (response?.result) {
 					for (const item of response.result) {
-						if (item.errors.length > 0) {
+						if (item.errors && item.errors?.length > 0) {
 							for (const error of item.errors) {
 								const message = `ID: ${item.offer_id}\nКод ошибки: ${error.code}\nСообщение: ${error.message}`
 								await sendMessage(`[${store}]: ${message}`)
@@ -78,6 +82,8 @@ export const addOzonCofinance = async (
 			Logger.info(`[${store}]: Магазин синхронизирован`)
 		}
 	} catch (err) {
-		Logger.error(`[${store}]: ${err as string}`)
+		Logger.error(
+			`[${store}]: Ошибка - ${err instanceof Error ? err.message : err}`
+		)
 	}
 }

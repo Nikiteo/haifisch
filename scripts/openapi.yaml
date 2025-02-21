@@ -1339,6 +1339,165 @@ components:
         limit:
           type: integer
           example: 100
+    GetProductPrice:
+      type: object
+      properties:
+        acquiring:
+          type: number
+          example: 0
+        commissions:
+          type: object
+          properties:
+            fbo_deliv_to_customer_amount:
+              type: number
+              example: 14.75
+            fbo_direct_flow_trans_max_amount:
+              type: number
+              example: 46.5
+            fbo_direct_flow_trans_min_amount:
+              type: number
+              example: 31
+            fbo_return_flow_amount:
+              type: number
+              example: 50
+            fbs_deliv_to_customer_amount:
+              type: number
+              example: 60
+            fbs_direct_flow_trans_max_amount:
+              type: number
+              example: 61.5
+            fbs_direct_flow_trans_min_amount:
+              type: number
+              example: 41
+            fbs_first_mile_max_amount:
+              type: number
+              example: 25
+            fbs_first_mile_min_amount:
+              type: number
+              example: 0
+            fbs_return_flow_amount:
+              type: number
+              example: 40
+            sales_percent_fbo:
+              type: number
+              example: 15
+            sales_percent_fbs:
+              type: number
+              example: 0
+        marketing_actions:
+          type: object
+          properties:
+            actions:
+              type: array
+              items:
+                type: object
+                properties:
+                  date_from:
+                    type: string
+                    format: date-time
+                    example: "2024-12-13T06:49:37.591Z"
+                  date_to:
+                    type: string
+                    format: date-time
+                    example: "2024-12-13T06:49:37.591Z"
+                  title:
+                    type: string
+                    example: "string"
+                  value:
+                    type: number
+                    example: 0
+            current_period_from:
+              type: string
+              format: date-time
+              example: "2024-12-13T06:49:37.591Z"
+            current_period_to:
+              type: string
+              format: date-time
+              example: "2024-12-13T06:49:37.591Z"
+            ozon_actions_exist:
+              type: boolean
+              example: true
+        offer_id:
+          type: string
+          example: "356792"
+        price:
+          type: object
+          properties:
+            auto_action_enabled:
+              type: boolean
+              example: true
+            currency_code:
+              type: string
+              example: "RUB"
+            marketing_price:
+              type: number
+              example: 0
+            marketing_seller_price:
+              type: number
+              example: 0
+            min_price:
+              type: number
+              example: 0
+            old_price:
+              type: number
+              example: 579
+            price:
+              type: number
+              example: 499
+            retail_price:
+              type: number
+              example: 0
+            vat:
+              type: number
+              example: 0.2
+        price_indexes:
+          type: object
+          properties:
+            color_index:
+              type: string
+              example: "WITHOUT_INDEX"
+            external_index_data:
+              type: object
+              properties:
+                min_price:
+                  type: number
+                  example: 0
+                min_price_currency:
+                  type: string
+                  example: "string"
+                price_index_value:
+                  type: number
+                  example: 0
+            ozon_index_data:
+              type: object
+              properties:
+                min_price:
+                  type: number
+                  example: 0
+                min_price_currency:
+                  type: string
+                  example: "string"
+                price_index_value:
+                  type: number
+                  example: 0
+            self_marketplaces_index_data:
+              type: object
+              properties:
+                min_price:
+                  type: number
+                  example: 0
+                min_price_currency:
+                  type: string
+                  example: "string"
+                price_index_value:
+                  type: number
+                  example: 0
+        product_id:
+          type: integer
+          example: 243686911
+        volume_weight:
+          type: number
+          example: 0
     GetProductPricesResponse:
       type: object
       properties:
@@ -1348,164 +1507,7 @@ components:
         items:
           type: array
           items:
-            type: object
-            properties:
-              acquiring:
-                type: number
-                example: 0
-              commissions:
-                type: object
-                properties:
-                  fbo_deliv_to_customer_amount:
-                    type: number
-                    example: 14.75
-                  fbo_direct_flow_trans_max_amount:
-                    type: number
-                    example: 46.5
-                  fbo_direct_flow_trans_min_amount:
-                    type: number
-                    example: 31
-                  fbo_return_flow_amount:
-                    type: number
-                    example: 50
-                  fbs_deliv_to_customer_amount:
-                    type: number
-                    example: 60
-                  fbs_direct_flow_trans_max_amount:
-                    type: number
-                    example: 61.5
-                  fbs_direct_flow_trans_min_amount:
-                    type: number
-                    example: 41
-                  fbs_first_mile_max_amount:
-                    type: number
-                    example: 25
-                  fbs_first_mile_min_amount:
-                    type: number
-                    example: 0
-                  fbs_return_flow_amount:
-                    type: number
-                    example: 40
-                  sales_percent_fbo:
-                    type: number
-                    example: 15
-                  sales_percent_fbs:
-                    type: number
-                    example: 0
-              marketing_actions:
-                type: object
-                properties:
-                  actions:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        date_from:
-                          type: string
-                          format: date-time
-                          example: "2024-12-13T06:49:37.591Z"
-                        date_to:
-                          type: string
-                          format: date-time
-                          example: "2024-12-13T06:49:37.591Z"
-                        title:
-                          type: string
-                          example: "string"
-                        value:
-                          type: number
-                          example: 0
-                  current_period_from:
-                    type: string
-                    format: date-time
-                    example: "2024-12-13T06:49:37.591Z"
-                  current_period_to:
-                    type: string
-                    format: date-time
-                    example: "2024-12-13T06:49:37.591Z"
-                  ozon_actions_exist:
-                    type: boolean
-                    example: true
-              offer_id:
-                type: string
-                example: "356792"
-              price:
-                type: object
-                properties:
-                  auto_action_enabled:
-                    type: boolean
-                    example: true
-                  currency_code:
-                    type: string
-                    example: "RUB"
-                  marketing_price:
-                    type: number
-                    example: 0
-                  marketing_seller_price:
-                    type: number
-                    example: 0
-                  min_price:
-                    type: number
-                    example: 0
-                  old_price:
-                    type: number
-                    example: 579
-                  price:
-                    type: number
-                    example: 499
-                  retail_price:
-                    type: number
-                    example: 0
-                  vat:
-                    type: number
-                    example: 0.2
-              price_indexes:
-                type: object
-                properties:
-                  color_index:
-                    type: string
-                    example: "WITHOUT_INDEX"
-                  external_index_data:
-                    type: object
-                    properties:
-                      min_price:
-                        type: number
-                        example: 0
-                      min_price_currency:
-                        type: string
-                        example: "string"
-                      price_index_value:
-                        type: number
-                        example: 0
-                  ozon_index_data:
-                    type: object
-                    properties:
-                      min_price:
-                        type: number
-                        example: 0
-                      min_price_currency:
-                        type: string
-                        example: "string"
-                      price_index_value:
-                        type: number
-                        example: 0
-                  self_marketplaces_index_data:
-                    type: object
-                    properties:
-                      min_price:
-                        type: number
-                        example: 0
-                      min_price_currency:
-                        type: string
-                        example: "string"
-                      price_index_value:
-                        type: number
-                        example: 0
-              product_id:
-                type: integer
-                example: 243686911
-              volume_weight:
-                type: number
-                example: 0
+            $ref: '#/components/schemas/GetProductPrice'
         total:
           type: integer
           example: 0
@@ -1572,7 +1574,12 @@ components:
               errors:
                 type: array
                 items:
-                  type: string
+                  type: object
+                  properties:
+                    code:
+                      type: string
+                    message:
+                      type: string
                 example: []
     ListFinanceTransactionsRequest:
       type: object
@@ -2215,6 +2222,30 @@ components:
         offset:
           type: integer
           example: 0
+    ActionCandidatesProduct:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 226
+        price:
+          type: integer
+          example: 250
+        action_price:
+          type: integer
+          example: 0
+        max_action_price:
+          type: integer
+          example: 175
+        add_mode:
+          type: string
+          example: "NOT_SET"
+        stock:
+          type: integer
+          example: 0
+        min_stock:
+          type: integer
+          example: 0
     GetActionCandidatesResponse:
       type: object
       properties:
@@ -2224,29 +2255,7 @@ components:
             products:
               type: array
               items:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                    example: 226
-                  price:
-                    type: integer
-                    example: 250
-                  action_price:
-                    type: integer
-                    example: 0
-                  max_action_price:
-                    type: integer
-                    example: 175
-                  add_mode:
-                    type: string
-                    example: "NOT_SET"
-                  stock:
-                    type: integer
-                    example: 0
-                  min_stock:
-                    type: integer
-                    example: 0
+                $ref: '#/components/schemas/ActionCandidatesProduct'
             total:
               type: integer
               example: 2
@@ -2332,7 +2341,9 @@ components:
               type: array
               items:
                 type: object
-                properties: {}
+                properties:
+                  product_id:
+                    type: string
     DeactivateActionProductsRequest:
       type: object
       properties:

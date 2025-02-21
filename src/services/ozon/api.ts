@@ -38,10 +38,12 @@ import {
 	type ActivateActionProductsResponse,
 	type DeactivateActionProductsRequest,
 	type DeactivateActionProductsResponse,
-	PostingFbo,
-	PostingFbs,
-	ProductInfo,
-	ProductAttribute,
+	type PostingFbo,
+	type PostingFbs,
+	type ProductInfo,
+	type ProductAttribute,
+	ActionCandidatesProduct,
+	GetProductPrice,
 } from '../../types/ozon/ozon-types'
 import { logOzonError } from '../../utils/log-ozon-error'
 
@@ -118,9 +120,7 @@ export const getOzonFbsOrders = async ({
 
 export const getProductPrices = async ({
 	...props
-}: GetProductPricesRequest): Promise<
-	GetProductPricesResponse['items'] | undefined
-> => {
+}: GetProductPricesRequest): Promise<GetProductPrice[] | undefined> => {
 	const response = await postRequest<
 		GetProductPricesRequest,
 		GetProductPricesResponse
@@ -131,13 +131,13 @@ export const getProductPrices = async ({
 export const sendPrices = async ({
 	...props
 }: ImportProductPricesRequest): Promise<
-	ImportProductPricesResponse['result'] | undefined
+	ImportProductPricesResponse | undefined
 > => {
 	const response = await postRequest<
 		ImportProductPricesRequest,
 		ImportProductPricesResponse
 	>('v1/product/import/prices', { ...props })
-	return response?.result
+	return response
 }
 
 const getTransactionPage = async (
@@ -256,7 +256,7 @@ export const getPromos = async (): Promise<
 export const getPromosOffers = async ({
 	...props
 }: GetActionCandidatesRequest): Promise<
-	GetActionCandidatesResponse['result'] | undefined
+	ActionCandidatesProduct[] | undefined
 > => {
 	const response = await postRequest<
 		GetActionCandidatesRequest,
@@ -264,7 +264,7 @@ export const getPromosOffers = async ({
 	>('v1/actions/candidates', {
 		...props,
 	})
-	return response?.result
+	return response?.result?.products
 }
 
 export const getPromosProducts = async ({

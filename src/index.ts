@@ -11,6 +11,7 @@ import { feedbacks } from './lib/feedbacks'
 import { deletePromos } from './lib/deletePromos'
 import { updatePrices } from './lib/updatePrices'
 import { actCreateOzon } from './lib/actCreateOzon'
+import { howMuchMoney } from './lib/how-much-money'
 
 void bot.telegram.setMyCommands([
 	{ command: '/sync', description: 'Синхронизировать' },
@@ -23,6 +24,7 @@ void bot.telegram.setMyCommands([
 	{ command: '/act', description: 'Подтвердить отгрузку' },
 	{ command: '/cofinance', description: 'Проставить цену софинансирования' },
 	{ command: '/feedbacks', description: 'Ответить на отзывы' },
+	{ command: '/money', description: 'Сколько денег у нас?' },
 ])
 
 Logger.info('Bot started!')
@@ -44,6 +46,7 @@ updatePrices()
 actCreateOzon()
 addYandexCofinance()
 feedbacks()
+howMuchMoney()
 onText()
 
 void bot.launch({

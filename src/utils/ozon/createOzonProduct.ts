@@ -8,7 +8,7 @@ import {
 	organization,
 } from '../../database'
 import { type Product } from '../../types/msTypes'
-import { type ProductInfoWithAttributes } from '../../types/ozonTypes'
+import { type ProductInfoWithAttributes } from '../../types/ozon/types'
 import { getAttributes } from './getOzonAttributes'
 
 export const createOzonProduct = (
@@ -46,7 +46,8 @@ export const createOzonProduct = (
 		},
 		barcodes: [
 			{
-				ean13: offer.barcodes ? offer.barcodes[0] : '',
+				//@ts-ignore
+				ean13: offer.barcodes[0],
 			},
 		],
 		supplier: organization,
@@ -55,7 +56,7 @@ export const createOzonProduct = (
 		discountProhibited: false,
 		country,
 		article: offer.offer_id || '',
-		weight: offer.weight || 0 / 1000,
+		weight: (offer.weight || 0) / 1000,
 		variantsCount: 0,
 		isSerialTrackable: false,
 		trackingType: 'NOT_TRACKED',

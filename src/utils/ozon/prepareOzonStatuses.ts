@@ -1,6 +1,6 @@
 import { states } from '../../database'
 import { type State } from '../../types/msTypes'
-import { OrderStatusEnum } from '../../types/ozonTypes'
+import { OrderStatusEnum } from '../../types/ozon/types'
 
 export const prepareOzonStatuses = (status?: string): State => {
 	switch (status) {

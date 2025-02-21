@@ -1,6 +1,6 @@
 import { states } from '../../database'
 import { type State } from '../../types/msTypes'
-import { OrderFbsOzonStatus } from '../../types/ozonTypes'
+import { OrderFbsOzonStatus } from '../../types/ozon/types'
 
 export const prepareOzonFbsStatuses = (status?: string): State => {
 	switch (status) {

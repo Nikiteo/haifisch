@@ -1,5 +1,5 @@
 import axios from 'axios'
-import {} from '../../types/ozonTypes'
+import {} from '../../types/ozon/types'
 import { apiService } from './service'
 import Logger from '../../lib/logger'
 import {

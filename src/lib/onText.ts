@@ -3,7 +3,7 @@ import { bot } from '../bot'
 import { checkUser } from './check-user'
 import { message } from 'telegraf/filters'
 import { createCashout } from '../services/moysklad/cashoutController'
-import { createCashoutObject, getExpenseItem } from '../utils/createCashout'
+import { createCashoutObject, getExpenseItem } from '../utils/create-cashout'
 
 export const onText = (): void => {
 	bot.on(message('text'), async ctx => {
@@ -49,7 +49,9 @@ export const onText = (): void => {
 						return await ctx.reply(
 							`Прости, но я не могу распознать твою cтатью расходов - ${expenseItem}\nВведи трату в формате: трата {сумма}, {статья расходов}, {комментарий}`,
 							{
-								reply_to_message_id: ctx.message.message_id,
+								reply_parameters: {
+									message_id: ctx.message.message_id,
+								},
 							}
 						)
 					}
@@ -58,7 +60,9 @@ export const onText = (): void => {
 						return await ctx.reply(
 							`Прости, но я не могу распознать твою сумму расходов - ${sum}\nВведи трату в формате: трата {сумма}, {статья расходов}, {комментарий}`,
 							{
-								reply_to_message_id: ctx.message.message_id,
+								reply_parameters: {
+									message_id: ctx.message.message_id,
+								},
 							}
 						)
 					}
@@ -73,14 +77,14 @@ export const onText = (): void => {
 							})
 
 							if (newCashOut !== undefined) {
-								const createdCashOut = await createCashout(
-									newCashOut
-								)
+								const createdCashOut =
+									await createCashout(newCashOut)
 								await ctx.reply(
 									`Держи ссылку на созданный документ и проверь правильность - ${createdCashOut?.meta?.uuidHref}`,
 									{
-										reply_to_message_id:
-											ctx.message.message_id,
+										reply_parameters: {
+											message_id: ctx.message.message_id,
+										},
 									}
 								)
 								Logger.info(
@@ -97,7 +101,9 @@ export const onText = (): void => {
 						return await ctx.reply(
 							'Прости, но что-то пошло не так\nВведи трату в формате: трата {сумма}, {статья расходов}, {комментарий}',
 							{
-								reply_to_message_id: ctx.message.message_id,
+								reply_parameters: {
+									message_id: ctx.message.message_id,
+								},
 							}
 						)
 					}
