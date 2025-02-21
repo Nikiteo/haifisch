@@ -49,9 +49,9 @@ export const onText = (): void => {
 						return await ctx.reply(
 							`Прости, но я не могу распознать твою cтатью расходов - ${expenseItem}\nВведи трату в формате: трата {сумма}, {статья расходов}, {комментарий}`,
 							{
-								reply_parameters: {
-									message_id: ctx.message.message_id,
-								},
+
+									reply_to_message_id: ctx.message.message_id,
+
 							}
 						)
 					}
@@ -60,9 +60,8 @@ export const onText = (): void => {
 						return await ctx.reply(
 							`Прости, но я не могу распознать твою сумму расходов - ${sum}\nВведи трату в формате: трата {сумма}, {статья расходов}, {комментарий}`,
 							{
-								reply_parameters: {
-									message_id: ctx.message.message_id,
-								},
+									reply_to_message_id: ctx.message.message_id,
+
 							}
 						)
 					}
@@ -82,9 +81,7 @@ export const onText = (): void => {
 								await ctx.reply(
 									`Держи ссылку на созданный документ и проверь правильность - ${createdCashOut?.meta?.uuidHref}`,
 									{
-										reply_parameters: {
-											message_id: ctx.message.message_id,
-										},
+									reply_to_message_id: ctx.message.message_id,
 									}
 								)
 								Logger.info(
@@ -101,9 +98,8 @@ export const onText = (): void => {
 						return await ctx.reply(
 							'Прости, но что-то пошло не так\nВведи трату в формате: трата {сумма}, {статья расходов}, {комментарий}',
 							{
-								reply_parameters: {
-									message_id: ctx.message.message_id,
-								},
+									reply_to_message_id: ctx.message.message_id,
+
 							}
 						)
 					}
