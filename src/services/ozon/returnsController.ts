@@ -35,15 +35,15 @@ export const getOzonReturns = async ({
 	}
 }
 
-export const getGiveoutsOzon = async (): Promise<Giveout[] | undefined> => {
+export const getGiveoutsOzon = async (): Promise<
+	{ enable: boolean } | undefined
+> => {
 	try {
-		const response = await apiService.post<GiveoutsResponse>(
-			'v1/return/giveout/list',
-			{
-				limit: 500,
-			}
+		const response = await apiService.post<{ enable: boolean }>(
+			'v1/return/giveout/is-enabled',
+			{}
 		)
-		return response.data.giveouts
+		return response.data
 	} catch (error: unknown) {
 		const err = error as ErrorResponse
 		if (axios.isAxiosError(err)) {

@@ -15,7 +15,7 @@ export const createActOzon = async (
 		const acts = await getActs()
 		const giveouts = await getGiveoutsOzon()
 
-		if (giveouts && giveouts.length > 0) {
+		if (giveouts?.enable) {
 			const returnPng = await getReturnPng()
 
 			if (returnPng?.png) {
