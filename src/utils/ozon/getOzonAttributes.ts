@@ -1,17 +1,22 @@
 import { type Attribute } from '../../types/msTypes'
-import { type OfferOzonWithAttributes } from '../../types/ozonTypes'
+import { ProductInfoWithAttributes } from '../../types/ozonTypes'
 
 const prepareVolume = (
-	depth: number,
-	width: number,
-	height: number
+	depth?: number,
+	width?: number,
+	height?: number
 ): string => {
-	return `${parseFloat((depth / 10).toFixed(2))}x${parseFloat(
-		(width / 10).toFixed(2)
-	)}x${parseFloat((height / 10).toFixed(2))}`
+	if (depth && width && height) {
+		return `${parseFloat((depth / 10).toFixed(2))}x${parseFloat(
+			(width / 10).toFixed(2)
+		)}x${parseFloat((height / 10).toFixed(2))}`
+	}
+	return ''
 }
 
-export const getAttributes = (offer: OfferOzonWithAttributes): Attribute[] => {
+export const getAttributes = (
+	offer: ProductInfoWithAttributes
+): Attribute[] => {
 	return [
 		{
 			meta: {
@@ -55,7 +60,7 @@ export const getAttributes = (offer: OfferOzonWithAttributes): Attribute[] => {
 			id: '8966aa35-8c49-11ef-0a80-0dcd0004b2ca',
 			name: 'ID Озон',
 			type: 'string',
-			value: offer.id.toString(),
+			value: offer?.id?.toString(),
 		},
 	]
 }

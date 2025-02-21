@@ -2,7 +2,7 @@ import { states } from '../../database'
 import { type State } from '../../types/msTypes'
 import { OrderFbsOzonStatus } from '../../types/ozonTypes'
 
-export const prepareOzonFbsStatuses = (status: OrderFbsOzonStatus): State => {
+export const prepareOzonFbsStatuses = (status?: string): State => {
 	switch (status) {
 		case OrderFbsOzonStatus.cancelled:
 		case OrderFbsOzonStatus.cancelled_from_split_pending:

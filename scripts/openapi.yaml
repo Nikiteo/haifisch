@@ -1,0 +1,3298 @@
+openapi: 3.0.0
+info:
+  title: Ozon API
+  version: 1.0.0
+  description: API для получения доступных способов доставки, создания актов FBS и получения информации о продуктах.
+servers:
+- url: https://api-seller.ozon.ru/
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 16
+        details:
+          type: array
+          items:
+            type: object
+            properties:
+              typeUrl:
+                type: string
+                example: "string"
+              value:
+                type: string
+                example: "string"
+        message:
+          type: string
+          example: "Client-Id and Api-Key headers are required"
+    GetCarriageAvailableListRequest:
+      type: object
+      properties:
+        delivery_method_id:
+          type: integer
+          example: 0
+        departure_date:
+          type: string
+          format: date-time
+          example: "2019-08-24T14:15:22Z"
+    GetCarriageAvailableListResponse:
+      type: object
+      properties:
+        result:
+          type: array
+          items:
+            type: object
+            properties:
+              carriage_id:
+                type: integer
+                example: 0
+              carriage_postings_count:
+                type: integer
+                example: 0
+              carriage_status:
+                type: string
+                example: "string"
+              cutoff_at:
+                type: string
+                format: date-time
+                example: "2019-08-24T14:15:22Z"
+              delivery_method_id:
+                type: integer
+                example: 0
+              delivery_method_name:
+                type: string
+                example: "string"
+              errors:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    code:
+                      type: string
+                      example: "string"
+                    status:
+                      type: string
+                      example: "string"
+              first_mile_type:
+                type: string
+                example: "string"
+              has_entrusted_acceptance:
+                type: boolean
+                example: true
+              mandatory_postings_count:
+                type: integer
+                example: 0
+              mandatory_packaged_count:
+                type: integer
+                example: 0
+              recommended_time_local:
+                type: string
+                example: "string"
+              recommended_time_utc_offset_in_minutes:
+                type: integer
+                example: 0
+              tpl_provider_icon_url:
+                type: string
+                example: "string"
+              tpl_provider_name:
+                type: string
+                example: "string"
+              warehouse_city:
+                type: string
+                example: "string"
+              warehouse_id:
+                type: integer
+                example: 0
+              warehouse_name:
+                type: string
+                example: "string"
+              warehouse_timezone:
+                type: string
+                example: "string"
+    CreateActRequest:
+      type: object
+      properties:
+        containers_count:
+          type: integer
+          example: 1
+        delivery_method_id:
+          type: integer
+          example: 230039077005
+        departure_date:
+          type: string
+          format: date-time
+          example: "2022-06-10T11:42:06.444Z"
+    CreateActResponse:
+      type: object
+      properties:
+        result:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 5819327210249
+    GetBarcodeRequest:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "295662811"
+    GetBarcodeResponse:
+      type: object
+      properties:
+        content_type:
+          type: string
+          example: "image/png"
+        file_name:
+          type: string
+          example: "20913984_barcode.png"
+        file_content:
+          type: string
+          format: byte
+          example: "iVBORw0KGgoAAAANSUhEUgAA..."
+    ProductAttributesRequest:
+      type: object
+      properties:
+        filter:
+          type: object
+          properties:
+            product_id:
+              type: array
+              items:
+                type: string
+              example: [ "213761435" ]
+            offer_id:
+              type: array
+              items:
+                type: string
+              example: [ "testtest5" ]
+            sku:
+              type: array
+              items:
+                type: string
+              example: [ "123495432" ]
+            visibility:
+              type: string
+              example: "ALL"
+        limit:
+          type: integer
+          example: 100
+        sort_dir:
+          type: string
+          example: "ASC"
+    ProductAttribute:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 213761435
+        barcode:
+          type: string
+          example: ""
+        name:
+          type: string
+          example: "Пленка защитная для Xiaomi Redmi Note 10 Pro 5G"
+        offer_id:
+          type: string
+          example: "21470"
+        type_id:
+          type: integer
+          example: 124572394
+        height:
+          type: integer
+          example: 10
+        depth:
+          type: integer
+          example: 210
+        width:
+          type: integer
+          example: 140
+        dimension_unit:
+          type: string
+          example: "mm"
+        weight:
+          type: integer
+          example: 50
+        weight_unit:
+          type: string
+          example: "g"
+        primary_image:
+          type: string
+          example: "https://cdn1.ozone.ru/s3/multimedia-4/6804736960.jpg"
+        model_info:
+          type: object
+          properties:
+            model_id:
+              type: integer
+              example: 43445453
+            count:
+              type: integer
+              example: 4
+        images:
+          type: array
+          items:
+            type: string
+            example: "https://cdn1.ozone.ru/s3/multimedia-4/6804736960.jpg"
+        pdf_list:
+          type: array
+          items:
+            type: string
+        attributes:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+                example: 5219
+              complex_id:
+                type: integer
+                example: 0
+              values:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    dictionary_value_id:
+                      type: integer
+                      example: 970718176
+                    value:
+                      type: string
+                      example: "универсальный"
+        complex_attributes:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+                example: 0
+              complex_id:
+                type: integer
+                example: 0
+              values:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    dictionary_value_id:
+                      type: integer
+                      example: 0
+                    value:
+                      type: string
+                      example: "string"
+        color_image:
+          type: string
+          example: ""
+        description_category_id:
+          type: integer
+          example: 71107562
+    ProductAttributesResponse:
+      type: object
+      properties:
+        result:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductAttribute'
+        total:
+          type: integer
+          example: 1
+        last_id:
+          type: string
+          example: "onVsfA=="
+    ProductInfoRequest:
+      type: object
+      properties:
+        offer_id:
+          type: array
+          items:
+            type: string
+          example: [ "offer123", "offer456" ]
+        product_id:
+          type: array
+          items:
+            type: string
+          example: [ "product123", "product456" ]
+        sku:
+          type: array
+          items:
+            type: string
+          example: [ "sku123", "sku456" ]
+    ProductInfo:
+      type: object
+      properties:
+        barcodes:
+          type: array
+          items:
+            type: string
+          example: [ "1234567890123" ]
+        color_image:
+          type: array
+          items:
+            type: string
+          example: [ "https://example.com/image.jpg" ]
+        commissions:
+          type: array
+          items:
+            type: object
+            properties:
+              delivery_amount:
+                type: number
+                format: float
+                example: 10.0
+              percent:
+                type: number
+                format: float
+                example: 5.0
+              return_amount:
+                type: number
+                format: float
+                example: 2.0
+              sale_schema:
+                type: string
+                example: "string"
+              value:
+                type: number
+                format: float
+                example: 100.0
+        created_at:
+          type: string
+          format: date-time
+          example: "2019-08-24T14:15:22Z"
+        currency_code:
+          type: string
+          example: "RUB"
+        description_category_id:
+          type: integer
+          example: 123
+        discounted_fbo_stocks:
+          type: integer
+          example: 0
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              attribute_id:
+                type: integer
+                example: 0
+              code:
+                type: string
+                example: "string"
+              field:
+                type: string
+                example: "string"
+              level:
+                type: string
+                example: "ERROR"
+              state:
+                type: string
+                example: "string"
+              texts:
+                type: object
+                properties:
+                  attribute_name:
+                    type: string
+                    example: "string"
+                  description:
+                    type: string
+                    example: "string"
+                  hint_code:
+                    type: string
+                    example: "string"
+                  message:
+                    type: string
+                    example: "string"
+                  params:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                          example: "string"
+                        value:
+                          type: string
+                          example: "string"
+                  short_description:
+                    type: string
+                    example: "string"
+        has_discounted_fbo_item:
+          type: boolean
+          example: true
+        id:
+          type: integer
+          example: 1
+        images:
+          type: array
+          items:
+            type: string
+          example: [ "https://example.com/image1.jpg", "https://example.com/image2.jpg" ]
+        images360:
+          type: array
+          items:
+            type: string
+          example: [ "https://example.com/image360.jpg" ]
+        is_archived:
+          type: boolean
+          example: false
+        is_autoarchived:
+          type: boolean
+          example: false
+        is_discounted:
+          type: boolean
+          example: true
+        is_kgt:
+          type: boolean
+          example: false
+        is_prepayment_allowed:
+          type: boolean
+          example: true
+        is_super:
+          type: boolean
+          example: true
+        marketing_price:
+          type: string
+          example: "1500.00"
+        min_price:
+          type: string
+          example: "1200.00"
+        model_info:
+          type: object
+          properties:
+            count:
+              type: integer
+              example: 1
+            model_id:
+              type: integer
+              example: 12345
+        name:
+          type: string
+          example: "Продукт"
+        offer_id:
+          type: string
+          example: "offer123"
+        old_price:
+          type: string
+          example: "1600.00"
+        price:
+          type: string
+          example: "1400.00"
+        price_indexes:
+          type: object
+          properties:
+            color_index:
+              type: string
+              example: "COLOR_INDEX_UNSPECIFIED"
+            external_index_data:
+              type: object
+              properties:
+                minimal_price:
+                  type: string
+                  example: "1300.00"
+                minimal_price_currency:
+                  type: string
+                  example: "RUB"
+                price_index_value:
+                  type: number
+                  format: float
+                  example: 1.0
+            ozon_index_data:
+              type: object
+              properties:
+                minimal_price:
+                  type: string
+                  example: "1250.00"
+                minimal_price_currency:
+                  type: string
+                  example: "RUB"
+                price_index_value:
+                  type: number
+                  format: float
+                  example: 1.0
+            self_marketplaces_index_data:
+              type: object
+              properties:
+                minimal_price:
+                  type: string
+                  example: "1350.00"
+                minimal_price_currency:
+                  type: string
+                  example: "RUB"
+                price_index_value:
+                  type: number
+                  format: float
+                  example: 1.0
+        primary_image:
+          type: array
+          items:
+            type: string
+          example: [ "https://example.com/primary_image.jpg" ]
+        sources:
+          type: array
+          items:
+            type: object
+            properties:
+              created_at:
+                type: string
+                format: date-time
+                example: "2019-08-24T14:15:22Z"
+              quant_code:
+                type: string
+                example: "string"
+              shipment_type:
+                type: string
+                example: "SHIPMENT_TYPE_UNSPECIFIED"
+              sku:
+                type: integer
+                example: 123456
+              source:
+                type: string
+                example: "string"
+        statuses:
+          type: object
+          properties:
+            is_created:
+              type: boolean
+              example: true
+            moderate_status:
+              type: string
+              example: "string"
+            status:
+              type: string
+              example: "string"
+            status_description:
+              type: string
+              example: "string"
+            status_failed:
+              type: string
+              example: "string"
+            status_name:
+              type: string
+              example: "string"
+            status_tooltip:
+              type: string
+              example: "string"
+            status_updated_at:
+              type: string
+              format: date-time
+              example: "2019-08-24T14:15:22Z"
+            validation_status:
+              type: string
+              example: "string"
+        stocks:
+          type: object
+          properties:
+            has_stock:
+              type: boolean
+              example: true
+            stocks:
+              type: array
+              items:
+                type: object
+                properties:
+                  present:
+                    type: integer
+                    example: 100
+                  reserved:
+                    type: integer
+                    example: 10
+                  sku:
+                    type: integer
+                    example: 123456
+                  source:
+                    type: string
+                    example: "string"
+        type_id:
+          type: integer
+          example: 1
+        updated_at:
+          type: string
+          format: date-time
+          example: "2019-08-24T14:15:22Z"
+        vat:
+          type: string
+          example: "20%"
+        visibility_details:
+          type: object
+          properties:
+            has_price:
+              type: boolean
+              example: true
+            has_stock:
+              type: boolean
+              example: true
+        volume_weight:
+          type: number
+          format: float
+          example: 0.5
+    ProductInfoResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductInfo'
+    ListPostingsFboRequest:
+      type: object
+      properties:
+        dir:
+          type: string
+          enum: [ ASC, DESC ]
+          example: "ASC"
+        filter:
+          type: object
+          properties:
+            since:
+              type: string
+              format: date-time
+              example: "2021-09-01T00:00:00.000Z"
+            status:
+              type: string
+              example: ""
+            to:
+              type: string
+              format: date-time
+              example: "2021-11-17T10:44:12.828Z"
+        limit:
+          type: integer
+          example: 5
+        offset:
+          type: integer
+          example: 0
+        translit:
+          type: boolean
+          example: true
+        with:
+          type: object
+          properties:
+            analytics_data:
+              type: boolean
+              example: true
+            financial_data:
+              type: boolean
+              example: true
+    PostingFbo:
+      type: object
+      properties:
+        order_id:
+          type: integer
+          example: 354680487
+        order_number:
+          type: string
+          example: "16965409-0014"
+        posting_number:
+          type: string
+          example: "16965409-0014-1"
+        status:
+          type: string
+          example: "delivered"
+        cancel_reason_id:
+          type: integer
+          example: 0
+        created_at:
+          type: string
+          format: date-time
+          example: "2021-09-01T00:23:45.607000Z"
+        in_process_at:
+          type: string
+          format: date-time
+          example: "2021-09-01T00:25:30.120000Z"
+        products:
+          type: array
+          items:
+            type: object
+            properties:
+              sku:
+                type: integer
+                example: 160249683
+              name:
+                type: string
+                example: "Так говорил Омар Хайям. Жизнеописание. Афоризмы и рубайят. Классика в словах и картинках"
+              quantity:
+                type: integer
+                example: 1
+              offer_id:
+                type: string
+                example: "978-5-906864-56-7"
+              price:
+                type: string
+                example: "81.00"
+              digital_codes:
+                type: array
+                items:
+                  type: string
+              currency_code:
+                type: string
+                example: "RUB"
+        analytics_data:
+          type: object
+          properties:
+            region:
+              type: string
+              example: ""
+            city:
+              type: string
+              example: ""
+            delivery_type:
+              type: string
+              example: "PVZ"
+            is_premium:
+              type: boolean
+              example: false
+            payment_type_group_name:
+              type: string
+              example: "Карты оплаты"
+            warehouse_id:
+              type: integer
+              example: 17717042026000
+            warehouse_name:
+              type: string
+              example: "РОСТОВ-НА-ДОНУ_РФЦ"
+            is_legal:
+              type: boolean
+              example: false
+        financial_data:
+          type: object
+          properties:
+            products:
+              type: array
+              items:
+                type: object
+                properties:
+                  commission_amount:
+                    type: number
+                    format: float
+                    example: 12.15
+                  commission_percent:
+                    type: integer
+                    example: 15
+                  payout:
+                    type: number
+                    format: float
+                    example: 68.85
+                  product_id:
+                    type: integer
+                    example: 160249683
+                  currency_code:
+                    type: string
+                    example: "RUB"
+                  old_price:
+                    type: number
+                    format: float
+                    example: 115
+                  price:
+                    type: number
+                    format: float
+                    example: 81
+                  total_discount_value:
+                    type: number
+                    format: float
+                    example: 34
+                  total_discount_percent:
+                    type: number
+                    format: float
+                    example: 29.57
+                  actions:
+                    type: array
+                    items:
+                      type: string
+                  picking:
+                    type: string
+                    nullable: true
+                  quantity:
+                    type: integer
+                    example: 0
+                  client_price:
+                    type: string
+                    example: ""
+                  item_services:
+                    type: object
+                    properties:
+                      marketplace_service_item_fulfillment:
+                        type: number
+                        format: float
+                        example: -31.5
+                      marketplace_service_item_pickup:
+                        type: number
+                        format: float
+                        example: 0
+                      marketplace_service_item_dropoff_pvz:
+                        type: number
+                        format: float
+                        example: 0
+                      marketplace_service_item_dropoff_sc:
+                        type: number
+                        format: float
+                        example: 0
+                      marketplace_service_item_dropoff_ff:
+                        type: number
+                        format: float
+                        example: 0
+                      marketplace_service_item_direct_flow_trans:
+                        type: number
+                        format: float
+                        example: -5
+                      marketplace_service_item_return_flow_trans:
+                        type: number
+                        format: float
+                        example: 0
+                      marketplace_service_item_deliv_to_customer:
+                        type: number
+                        format: float
+                        example: -20
+                      marketplace_service_item_return_not_deliv_to_customer:
+                        type: number
+                        format: float
+                        example: 0
+                      marketplace_service_item_return_part_goods_customer:
+                        type: number
+                        format: float
+                        example: 0
+                      marketplace_service_item_return_after_deliv_to_customer:
+                        type: number
+                        format: float
+                        example: 0
+        posting_services:
+          type: object
+          properties:
+            marketplace_service_item_fulfillment:
+              type: number
+              format: float
+              example: 0
+            marketplace_service_item_pickup:
+              type: number
+              format: float
+              example: 0
+            marketplace_service_item_dropoff_pvz:
+              type: number
+              format: float
+              example: 0
+            marketplace_service_item_dropoff_sc:
+              type: number
+              format: float
+              example: 0
+            marketplace_service_item_dropoff_ff:
+              type: number
+              format: float
+              example: 0
+            marketplace_service_item_direct_flow_trans:
+              type: number
+              format: float
+              example: 0
+            marketplace_service_item_return_flow_trans:
+              type: number
+              format: float
+              example: 0
+            marketplace_service_item_deliv_to_customer:
+              type: number
+              format: float
+              example: 0
+            marketplace_service_item_return_not_deliv_to_customer:
+              type: number
+              format: float
+              example: 0
+            marketplace_service_item_return_part_goods_customer:
+              type: number
+              format: float
+              example: 0
+            marketplace_service_item_return_after_deliv_to_customer:
+              type: number
+              format: float
+              example: 0
+        additional_data:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+    ListPostingsFboResponse:
+      type: object
+      properties:
+        result:
+          type: array
+          items:
+            type: object
+            $ref: "#/components/schemas/PostingFbo"
+    ListPostingsFbsRequest:
+      type: object
+      properties:
+        dir:
+          type: string
+          enum: [ ASC, DESC ]
+          example: "ASC"
+        filter:
+          type: object
+          properties:
+            delivery_method_id:
+              type: array
+              items:
+                type: string
+              example: [ "string" ]
+            is_quantum:
+              type: boolean
+              example: false
+            last_changed_status_date:
+              type: object
+              properties:
+                from:
+                  type: string
+                  format: date-time
+                  example: "2023-11-03T11:47:39.878Z"
+                to:
+                  type: string
+                  format: date-time
+                  example: "2023-11-03T11:47:39.878Z"
+            order_id:
+              type: integer
+              example: 0
+            provider_id:
+              type: array
+              items:
+                type: string
+              example: [ "string" ]
+            since:
+              type: string
+              format: date-time
+              example: "2023-11-03T11:47:39.878Z"
+            status:
+              type: string
+              example: "awaiting_packaging"
+            to:
+              type: string
+              format: date-time
+              example: "2023-11-03T11:47:39.878Z"
+            warehouse_id:
+              type: array
+              items:
+                type: string
+              example: [ "string" ]
+        limit:
+          type: integer
+          example: 0
+        offset:
+          type: integer
+          example: 0
+        with:
+          type: object
+          properties:
+            analytics_data:
+              type: boolean
+              example: true
+            barcodes:
+              type: boolean
+              example: true
+            financial_data:
+              type: boolean
+              example: true
+            translit:
+              type: boolean
+              example: true
+    PostingFbs:
+      type: object
+      properties:
+        posting_number:
+          type: string
+          example: "05708065-0029-1"
+        order_id:
+          type: integer
+          example: 680420041
+        order_number:
+          type: string
+          example: "05708065-0029"
+        pickup_code_verified_at:
+          type: string
+          format: date-time
+          example: "2025-01-17T10:59:26.614Z"
+        status:
+          type: string
+          example: "awaiting_deliver"
+        substatus:
+          type: string
+          example: "posting_awaiting_passport_data"
+        delivery_method:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 21321684811000
+            name:
+              type: string
+              example: "Ozon Логистика самостоятельно, Красногорск"
+            warehouse_id:
+              type: integer
+              example: 21321684811000
+            warehouse:
+              type: string
+              example: "Стим Тойс Нахабино"
+            tpl_provider_id:
+              type: integer
+              example: 24
+            tpl_provider:
+              type: string
+              example: "Ozon Логистика"
+        tracking_number:
+          type: string
+          example: ""
+        tpl_integration_type:
+          type: string
+          example: "ozon"
+        in_process_at:
+          type: string
+          format: date-time
+          example: "2022-05-13T07:07:32Z"
+        shipment_date:
+          type: string
+          format: date-time
+          example: "2022-05-13T10:00:00Z"
+        delivering_date:
+          type: string
+          format: date-time
+          nullable: true
+        cancellation:
+          type: object
+          properties:
+            cancel_reason_id:
+              type: integer
+              example: 0
+            cancel_reason:
+              type: string
+              example: ""
+            cancellation_type:
+              type: string
+              example: ""
+            cancelled_after_ship:
+              type: boolean
+              example: false
+            affect_cancellation_rating:
+              type: boolean
+              example: false
+            cancellation_initiator:
+              type: string
+              example: ""
+        customer:
+          type: object
+          nullable: true
+        products:
+          type: array
+          items:
+            type: object
+            properties:
+              price:
+                type: string
+                example: "1390.000000"
+              currency_code:
+                type: string
+                example: "RUB"
+              offer_id:
+                type: string
+                example: "205953"
+              name:
+                type: string
+                example: "Электронный конструктор PinLab Позитроник"
+              sku:
+                type: integer
+                example: 358924380
+              quantity:
+                type: integer
+                example: 1
+              mandatory_mark:
+                type: array
+                items:
+                  type: string
+                example: []
+        addressee:
+          type: object
+          nullable: true
+        barcodes:
+          type: array
+          items:
+            type: string
+          nullable: true
+        analytics_data:
+          type: object
+          properties:
+            region:
+              type: string
+              example: ""
+            city:
+              type: string
+              example: ""
+            delivery_type:
+              type: string
+              example: "PVZ"
+            is_premium:
+              type: boolean
+              example: false
+            payment_type_group_name:
+              type: string
+              example: "Карты оплаты"
+            warehouse_id:
+              type: integer
+              example: 17717042026000
+            warehouse_name:
+              type: string
+              example: "РОСТОВ-НА-ДОНУ_РФЦ"
+            is_legal:
+              type: boolean
+              example: false
+        financial_data:
+          type: object
+          properties:
+            products:
+              type: array
+              items:
+                type: object
+                properties:
+                  commission_amount:
+                    type: number
+                    format: float
+                    example: 12.15
+                  commission_percent:
+                    type: integer
+                    example: 15
+                  payout:
+                    type: number
+                    format: float
+                    example: 68.85
+                  product_id:
+                    type: integer
+                    example: 160249683
+                  currency_code:
+                    type: string
+                    example: "RUB"
+                  old_price:
+                    type: number
+                    format: float
+                    example: 115
+                  price:
+                    type: number
+                    format: float
+                    example: 81
+                  total_discount_value:
+                    type: number
+                    format: float
+                    example: 34
+                  total_discount_percent:
+                    type: number
+                    format: float
+                    example: 29.57
+                  actions:
+                    type: array
+                    items:
+                      type: string
+                  picking:
+                    type: string
+                    nullable: true
+                  quantity:
+                    type: integer
+                    example: 0
+                  client_price:
+                    type: string
+                    example: ""
+                  item_services:
+                    type: object
+                    properties:
+                      marketplace_service_item_fulfillment:
+                        type: number
+                        format: float
+                        example: -31.5
+                      marketplace_service_item_pickup:
+                        type: number
+                        format: float
+                        example: 0
+                      marketplace_service_item_dropoff_pvz:
+                        type: number
+                        format: float
+                        example: 0
+                      marketplace_service_item_dropoff_sc:
+                        type: number
+                        format: float
+                        example: 0
+                      marketplace_service_item_dropoff_ff:
+                        type: number
+                        format: float
+                        example: 0
+                      marketplace_service_item_direct_flow_trans:
+                        type: number
+                        format: float
+                        example: -5
+                      marketplace_service_item_return_flow_trans:
+                        type: number
+                        format: float
+                        example: 0
+                      marketplace_service_item_deliv_to_customer:
+                        type: number
+                        format: float
+                        example: -20
+                      marketplace_service_item_return_not_deliv_to_customer:
+                        type: number
+                        format: float
+                        example: 0
+                      marketplace_service_item_return_part_goods_customer:
+                        type: number
+                        format: float
+                        example: 0
+                      marketplace_service_item_return_after_deliv_to_customer:
+                        type: number
+                        format: float
+                        example: 0
+        is_express:
+          type: boolean
+          example: false
+        quantum_id:
+          type: integer
+          example: 0
+        requirements:
+          type: object
+          properties:
+            products_requiring_gtd:
+              type: array
+              items:
+                type: string
+              example: []
+            products_requiring_country:
+              type: array
+              items:
+                type: string
+              example: []
+            products_requiring_mandatory_mark:
+              type: array
+              items:
+                type: string
+              example: []
+            products_requiring_jwn:
+              type: array
+              items:
+                type: string
+              example: []
+        tariffication:
+          type: array
+          items:
+            type: object
+            properties:
+              current_tariff_rate:
+                type: integer
+                example: 0
+              current_tariff_type:
+                type: string
+                example: ""
+              current_tariff_charge:
+                type: string
+                example: ""
+              current_tariff_charge_currency_code:
+                type: string
+                example: ""
+              next_tariff_rate:
+                type: integer
+                example: 0
+              next_tariff_type:
+                type: string
+                example: ""
+              next_tariff_charge:
+                type: string
+                example: ""
+              next_tariff_starts_at:
+                type: string
+                format: date-time
+                example: "2023-11-13T08:05:57.657Z"
+              next_tariff_charge_currency_code:
+                type: string
+                example: ""
+        has_next:
+          type: boolean
+          example: true
+    ListPostingsFbsResponse:
+      type: object
+      properties:
+        result:
+          type: object
+          properties:
+            postings:
+              type: array
+              items:
+                $ref: '#/components/schemas/PostingFbs'
+    GetProductPricesRequest:
+      type: object
+      properties:
+        cursor:
+          type: string
+          example: "string"
+        filter:
+          type: object
+          properties:
+            offer_id:
+              type: array
+              items:
+                type: string
+              example: [ "356792" ]
+            product_id:
+              type: array
+              items:
+                type: integer
+              example: [ 243686911 ]
+            visibility:
+              type: string
+              enum: [ ALL, VISIBLE, HIDDEN ]
+              example: "ALL"
+        limit:
+          type: integer
+          example: 100
+    GetProductPricesResponse:
+      type: object
+      properties:
+        cursor:
+          type: string
+          example: "string"
+        items:
+          type: array
+          items:
+            type: object
+            properties:
+              acquiring:
+                type: number
+                example: 0
+              commissions:
+                type: object
+                properties:
+                  fbo_deliv_to_customer_amount:
+                    type: number
+                    example: 14.75
+                  fbo_direct_flow_trans_max_amount:
+                    type: number
+                    example: 46.5
+                  fbo_direct_flow_trans_min_amount:
+                    type: number
+                    example: 31
+                  fbo_return_flow_amount:
+                    type: number
+                    example: 50
+                  fbs_deliv_to_customer_amount:
+                    type: number
+                    example: 60
+                  fbs_direct_flow_trans_max_amount:
+                    type: number
+                    example: 61.5
+                  fbs_direct_flow_trans_min_amount:
+                    type: number
+                    example: 41
+                  fbs_first_mile_max_amount:
+                    type: number
+                    example: 25
+                  fbs_first_mile_min_amount:
+                    type: number
+                    example: 0
+                  fbs_return_flow_amount:
+                    type: number
+                    example: 40
+                  sales_percent_fbo:
+                    type: number
+                    example: 15
+                  sales_percent_fbs:
+                    type: number
+                    example: 0
+              marketing_actions:
+                type: object
+                properties:
+                  actions:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        date_from:
+                          type: string
+                          format: date-time
+                          example: "2024-12-13T06:49:37.591Z"
+                        date_to:
+                          type: string
+                          format: date-time
+                          example: "2024-12-13T06:49:37.591Z"
+                        title:
+                          type: string
+                          example: "string"
+                        value:
+                          type: number
+                          example: 0
+                  current_period_from:
+                    type: string
+                    format: date-time
+                    example: "2024-12-13T06:49:37.591Z"
+                  current_period_to:
+                    type: string
+                    format: date-time
+                    example: "2024-12-13T06:49:37.591Z"
+                  ozon_actions_exist:
+                    type: boolean
+                    example: true
+              offer_id:
+                type: string
+                example: "356792"
+              price:
+                type: object
+                properties:
+                  auto_action_enabled:
+                    type: boolean
+                    example: true
+                  currency_code:
+                    type: string
+                    example: "RUB"
+                  marketing_price:
+                    type: number
+                    example: 0
+                  marketing_seller_price:
+                    type: number
+                    example: 0
+                  min_price:
+                    type: number
+                    example: 0
+                  old_price:
+                    type: number
+                    example: 579
+                  price:
+                    type: number
+                    example: 499
+                  retail_price:
+                    type: number
+                    example: 0
+                  vat:
+                    type: number
+                    example: 0.2
+              price_indexes:
+                type: object
+                properties:
+                  color_index:
+                    type: string
+                    example: "WITHOUT_INDEX"
+                  external_index_data:
+                    type: object
+                    properties:
+                      min_price:
+                        type: number
+                        example: 0
+                      min_price_currency:
+                        type: string
+                        example: "string"
+                      price_index_value:
+                        type: number
+                        example: 0
+                  ozon_index_data:
+                    type: object
+                    properties:
+                      min_price:
+                        type: number
+                        example: 0
+                      min_price_currency:
+                        type: string
+                        example: "string"
+                      price_index_value:
+                        type: number
+                        example: 0
+                  self_marketplaces_index_data:
+                    type: object
+                    properties:
+                      min_price:
+                        type: number
+                        example: 0
+                      min_price_currency:
+                        type: string
+                        example: "string"
+                      price_index_value:
+                        type: number
+                        example: 0
+              product_id:
+                type: integer
+                example: 243686911
+              volume_weight:
+                type: number
+                example: 0
+        total:
+          type: integer
+          example: 0
+    ImportProductPricesRequest:
+      type: object
+      properties:
+        prices:
+          type: array
+          items:
+            type: object
+            properties:
+              auto_action_enabled:
+                type: string
+                enum: [ UNKNOWN, TRUE, FALSE ]
+                example: "UNKNOWN"
+              currency_code:
+                type: string
+                example: "RUB"
+              min_price:
+                type: string
+                example: "800"
+              min_price_for_auto_actions_enabled:
+                type: boolean
+                example: true
+              offer_id:
+                type: string
+                example: ""
+              old_price:
+                type: string
+                example: "0"
+              price:
+                type: string
+                example: "1448"
+              price_strategy_enabled:
+                type: string
+                enum: [ UNKNOWN, TRUE, FALSE ]
+                example: "UNKNOWN"
+              product_id:
+                type: integer
+                example: 1386
+              quant_size:
+                type: integer
+                example: 1
+              vat:
+                type: string
+                example: "0.1"
+    ImportProductPricesResponse:
+      type: object
+      properties:
+        result:
+          type: array
+          items:
+            type: object
+            properties:
+              product_id:
+                type: integer
+                example: 1386
+              offer_id:
+                type: string
+                example: "PH8865"
+              updated:
+                type: boolean
+                example: true
+              errors:
+                type: array
+                items:
+                  type: string
+                example: []
+    ListFinanceTransactionsRequest:
+      type: object
+      properties:
+        filter:
+          type: object
+          properties:
+            date:
+              type: object
+              properties:
+                from:
+                  type: string
+                  format: date-time
+                  example: "2021-11-01T00:00:00.000Z"
+                to:
+                  type: string
+                  format: date-time
+                  example: "2021-11-02T00:00:00.000Z"
+            operation_type:
+              type: array
+              items:
+                type: string
+              example: []
+            posting_number:
+              type: string
+              example: ""
+            transaction_type:
+              type: string
+              enum: [ all, credit, debit ]
+              example: "all"
+        page:
+          type: integer
+          example: 1
+        page_size:
+          type: integer
+          example: 1000
+    Operation:
+      type: object
+      properties:
+        operation_id:
+          type: integer
+          example: 11401182187840
+        operation_type:
+          type: string
+          example: "MarketplaceMarketingActionCostOperation"
+        operation_date:
+          type: string
+          format: date-time
+          example: "2021-11-01 00:00:00"
+        operation_type_name:
+          type: string
+          example: "Услуги продвижения товаров"
+        delivery_charge:
+          type: number
+          example: 0
+        return_delivery_charge:
+          type: number
+          example: 0
+        accruals_for_sale:
+          type: number
+          example: 0
+        sale_commission:
+          type: number
+          example: 0
+        amount:
+          type: number
+          example: -6.46
+        type:
+          type: string
+          example: "services"
+        posting:
+          type: object
+          properties:
+            delivery_schema:
+              type: string
+              example: ""
+            order_date:
+              type: string
+              example: ""
+            posting_number:
+              type: string
+              example: ""
+            warehouse_id:
+              type: integer
+              example: 0
+        items:
+          type: array
+          items:
+            type: object
+        services:
+          type: array
+          items:
+            type: object
+            properties:
+              price:
+                type: string
+    ListFinanceTransactionsResponse:
+      type: object
+      properties:
+        result:
+          type: object
+          properties:
+            operations:
+              type: array
+              items:
+                $ref: "#/components/schemas/Operation"
+            page_count:
+              type: integer
+              example: 1
+            row_count:
+              type: integer
+              example: 355
+    GetProductStocksRequest:
+      type: object
+      properties:
+        cursor:
+          type: string
+          example: "string"
+        filter:
+          type: object
+          properties:
+            offer_id:
+              type: array
+              items:
+                type: string
+              example: [ "string" ]
+            product_id:
+              type: array
+              items:
+                type: string
+              example: [ "string" ]
+            visibility:
+              type: string
+              enum: [ ALL, VISIBLE, HIDDEN ]
+              example: "ALL"
+            with_quant:
+              type: object
+              properties:
+                created:
+                  type: boolean
+                  example: true
+                exists:
+                  type: boolean
+                  example: true
+        limit:
+          type: integer
+          example: 0
+    GetProductStocksResponse:
+      type: object
+      properties:
+        cursor:
+          type: string
+          example: "string"
+        items:
+          type: array
+          items:
+            type: object
+            properties:
+              offer_id:
+                type: string
+                example: "string"
+              product_id:
+                type: integer
+                example: 0
+              stocks:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    present:
+                      type: integer
+                      example: 0
+                    reserved:
+                      type: integer
+                      example: 0
+                    shipment_type:
+                      type: string
+                      example: "SHIPMENT_TYPE_GENERAL"
+                    sku:
+                      type: integer
+                      example: 0
+                    type:
+                      type: string
+                      example: "string"
+        total:
+          type: integer
+          example: 0
+    UpdateProductStocksRequest:
+      type: object
+      properties:
+        stocks:
+          type: array
+          items:
+            type: object
+            properties:
+              offer_id:
+                type: string
+                example: "PH11042"
+              product_id:
+                type: integer
+                example: 313455276
+              quant_size:
+                type: integer
+                example: 1
+              stock:
+                type: integer
+                example: 100
+              warehouse_id:
+                type: integer
+                example: 22142605386000
+    UpdateProductStocksResponse:
+      type: object
+      properties:
+        result:
+          type: array
+          items:
+            type: object
+            properties:
+              warehouse_id:
+                type: integer
+                example: 22142605386000
+              product_id:
+                type: integer
+                example: 118597312
+              quant_size:
+                type: integer
+                example: 1
+              offer_id:
+                type: string
+                example: "PH11042"
+              updated:
+                type: boolean
+                example: true
+              errors:
+                type: array
+                items:
+                  type: string
+                example: []
+    ListReturnsRequest:
+      type: object
+      properties:
+        filter:
+          type: object
+          properties:
+            logistic_return_date:
+              type: object
+              properties:
+                time_from:
+                  type: string
+                  format: date-time
+                  example: "2019-08-24T14:15:22Z"
+                time_to:
+                  type: string
+                  format: date-time
+                  example: "2019-08-24T14:15:22Z"
+            storage_tariffication_start_date:
+              type: object
+              properties:
+                time_from:
+                  type: string
+                  format: date-time
+                  example: "2019-08-24T14:15:22Z"
+                time_to:
+                  type: string
+                  format: date-time
+                  example: "2019-08-24T14:15:22Z"
+            visual_status_change_moment:
+              type: object
+              properties:
+                time_from:
+                  type: string
+                  format: date-time
+                  example: "2019-08-24T14:15:22Z"
+                time_to:
+                  type: string
+                  format: date-time
+                  example: "2019-08-24T14:15:22Z"
+            order_id:
+              type: string
+              example: "0"
+            posting_numbers:
+              type: array
+              items:
+                type: string
+              example: [ "string" ]
+            product_name:
+              type: string
+              example: "string"
+            offer_id:
+              type: string
+              example: "string"
+            visual_status_name:
+              type: string
+              example: "string"
+            warehouse_id:
+              type: string
+              example: "911"
+            barcode:
+              type: string
+              example: "string"
+            return_schema:
+              type: string
+              example: "FBO"
+        limit:
+          type: integer
+          example: 500
+        last_id:
+          type: integer
+          example: 0
+    ListReturnsResponse:
+      type: object
+      properties:
+        returns:
+          type: array
+          items:
+            type: object
+            properties:
+              exemplars:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      example: "1019562967545956"
+              id:
+                type: string
+                example: "1000015552"
+              company_id:
+                type: string
+                example: "3058"
+              return_reason_name:
+                type: string
+                example: "Покупатель отказался при вручении: недоволен качеством товара"
+              type:
+                type: string
+                example: "FullReturn"
+              schema:
+                type: string
+                example: "Fbs"
+              order_id:
+                type: string
+                example: "24540784250"
+              order_number:
+                type: string
+                example: "58544282-0057"
+              place:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: "23869688194000"
+                  name:
+                    type: string
+                    example: "СЦ_Львовский_Возвраты"
+                  address:
+                    type: string
+                    example: "Россия, обл. Московская, г. Подольск, промышленная зона Львовский, ул. Московская, д. 69, стр. 5"
+              target_place:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: "23869688194000"
+                  name:
+                    type: string
+                    example: "СЦ_Львовский_Возвраты"
+                  address:
+                    type: string
+                    example: "Россия, обл. Московская, г. Подольск, промышленная зона Львовский, ул. Московская, д. 69, стр. 5"
+              storage:
+                type: object
+                properties:
+                  sum:
+                    type: object
+                    properties:
+                      currency_code:
+                        type: string
+                        example: "RUB"
+                      price:
+                        type: string
+                        example: "1231"
+                  tariffication_first_date:
+                    type: string
+                    format: date-time
+                    example: "2024-07-30T06:15:48.998146Z"
+                  tariffication_start_date:
+                    type: string
+                    format: date-time
+                    example: "2024-07-29T06:15:48.998146Z"
+                  arrived_moment:
+                    type: string
+                    format: date-time
+                    example: "2024-07-29T06:15:48.998146Z"
+                  days:
+                    type: string
+                    example: "0"
+                  utilization_sum:
+                    type: object
+                    properties:
+                      currency_code:
+                        type: string
+                        example: "RUB"
+                      price:
+                        type: string
+                        example: "1231"
+                  utilization_forecast_date:
+                    type: string
+                    format: date-time
+                    example: "2024-07-29T06:15:48.998146Z"
+              product:
+                type: object
+                properties:
+                  sku:
+                    type: string
+                    example: "1100526203"
+                  offer_id:
+                    type: string
+                    example: "81451"
+                  name:
+                    type: string
+                    example: "Кукла Дотти Плачущий младенец Cry Babies Dressy Dotty"
+                  price:
+                    type: object
+                    properties:
+                      currency_code:
+                        type: string
+                        example: "RUB"
+                      price:
+                        type: string
+                        example: "3318"
+                  price_without_commission:
+                    type: object
+                    properties:
+                      currency_code:
+                        type: string
+                        example: "RUB"
+                      price:
+                        type: string
+                        example: "3318"
+                  commission_percent:
+                    type: string
+                    example: "1.2"
+                  commission:
+                    type: object
+                    properties:
+                      currency_code:
+                        type: string
+                        example: "RUB"
+                      price:
+                        type: string
+                        example: "2312"
+                  quantity:
+                    type: integer
+                    example: 1
+              logistic:
+                type: object
+                properties:
+                  technical_return_moment:
+                    type: string
+                    format: date-time
+                    example: "2024-07-29T06:15:48.998146Z"
+                  final_moment:
+                    type: string
+                    format: date-time
+                    example: "2024-07-29T06:15:48.998146Z"
+                  cancelled_with_compensation_moment:
+                    type: string
+                    format: date-time
+                    example: "2024-07-29T06:15:48.998146Z"
+                  return_date:
+                    type: string
+                    format: date-time
+                    example: "2024-07-29T06:15:48.998146Z"
+                  barcode:
+                    type: string
+                    example: "ii5275210303"
+              visual:
+                type: object
+                properties:
+                  status:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 3
+                      display_name:
+                        type: string
+                        example: "В пункте выдачи"
+                      sys_name:
+                        type: string
+                        example: "ArrivedAtReturnPlace"
+                  change_moment:
+                    type: string
+                    format: date-time
+                    example: "2024-07-29T06:15:48.998146Z"
+              additional_info:
+                type: object
+                properties:
+                  is_opened:
+                    type: boolean
+                    example: true
+                  is_super_econom:
+                    type: boolean
+                    example: false
+              source_id:
+                type: string
+                example: "90426223"
+              posting_number:
+                type: string
+                example: "58544282-0057-1"
+              clearing_id:
+                type: string
+                example: "21190893156000"
+              return_clearing_id:
+                type: string
+                nullable: true
+                example: null
+        has_next:
+          type: boolean
+          example: false
+    GetGiveoutListRequest:
+      type: object
+      properties:
+        last_id:
+          type: integer
+          example: 0
+        limit:
+          type: integer
+          example: 10
+    GetGiveoutListResponse:
+      type: object
+      properties:
+        giveouts:
+          type: array
+          items:
+            type: object
+            properties:
+              approved_articles_count:
+                type: integer
+                example: 5
+              created_at:
+                type: string
+                format: date-time
+                example: "2019-08-24T14:15:22Z"
+              giveout_id:
+                type: integer
+                example: 123456
+              giveout_status:
+                type: string
+                example: "approved"
+              total_articles_count:
+                type: integer
+                example: 10
+              warehouse_address:
+                type: string
+                example: "123 Warehouse St, City, Country"
+              warehouse_id:
+                type: integer
+                example: 1
+              warehouse_name:
+                type: string
+                example: "Main Warehouse"
+    ResetBarcodeRequest:
+      type: object
+      properties: {}
+    ResetBarcodeResponse:
+      type: object
+      properties:
+        png:
+          type: string
+          example: "base64_encoded_string_here"
+    GetActionsResponse:
+      type: object
+      properties:
+        result:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+                example: 71342
+              title:
+                type: string
+                example: "test voucher #2"
+              date_start:
+                type: string
+                format: date-time
+                example: "2021-11-22T09:46:38Z"
+              date_end:
+                type: string
+                format: date-time
+                example: "2021-11-30T20:59:59Z"
+              potential_products_count:
+                type: integer
+                example: 0
+              is_participating:
+                type: boolean
+                example: true
+              participating_products_count:
+                type: integer
+                example: 5
+              description:
+                type: string
+                example: ""
+              action_type:
+                type: string
+                example: "DISCOUNT"
+              banned_products_count:
+                type: integer
+                example: 0
+              with_targeting:
+                type: boolean
+                example: false
+              discount_type:
+                type: string
+                example: "UNKNOWN"
+              discount_value:
+                type: integer
+                example: 0
+              order_amount:
+                type: integer
+                example: 0
+              freeze_date:
+                type: string
+                example: ""
+              is_voucher_action:
+                type: boolean
+                example: true
+    GetActionCandidatesRequest:
+      type: object
+      properties:
+        action_id:
+          type: integer
+          example: 63337
+        limit:
+          type: integer
+          example: 10
+        offset:
+          type: integer
+          example: 0
+    GetActionCandidatesResponse:
+      type: object
+      properties:
+        result:
+          type: object
+          properties:
+            products:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 226
+                  price:
+                    type: integer
+                    example: 250
+                  action_price:
+                    type: integer
+                    example: 0
+                  max_action_price:
+                    type: integer
+                    example: 175
+                  add_mode:
+                    type: string
+                    example: "NOT_SET"
+                  stock:
+                    type: integer
+                    example: 0
+                  min_stock:
+                    type: integer
+                    example: 0
+            total:
+              type: integer
+              example: 2
+    GetActionProductsRequest:
+      type: object
+      properties:
+        action_id:
+          type: integer
+          example: 66011
+        limit:
+          type: integer
+          example: 10
+        offset:
+          type: integer
+          example: 0
+    GetActionProductsResponse:
+      type: object
+      properties:
+        result:
+          type: object
+          properties:
+            products:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1383
+                  price:
+                    type: integer
+                    example: 5503
+                  action_price:
+                    type: integer
+                    example: 621
+                  max_action_price:
+                    type: number
+                    example: 3712.1
+                  add_mode:
+                    type: string
+                    example: "MANUAL"
+                  stock:
+                    type: integer
+                    example: 0
+                  min_stock:
+                    type: integer
+                    example: 0
+            total:
+              type: integer
+              example: 1
+    ActivateActionProductsRequest:
+      type: object
+      properties:
+        action_id:
+          type: integer
+          example: 60564
+        products:
+          type: array
+          items:
+            type: object
+            properties:
+              action_price:
+                type: integer
+                example: 356
+              product_id:
+                type: integer
+                example: 1389
+              stock:
+                type: integer
+                example: 10
+    ActivateActionProductsResponse:
+      type: object
+      properties:
+        result:
+          type: object
+          properties:
+            product_ids:
+              type: array
+              items:
+                type: integer
+                example: 1389
+            rejected:
+              type: array
+              items:
+                type: object
+                properties: {}
+    DeactivateActionProductsRequest:
+      type: object
+      properties:
+        action_id:
+          type: integer
+          example: 66011
+        product_ids:
+          type: array
+          items:
+            type: integer
+            example: 14975
+    DeactivateActionProductsResponse:
+      type: object
+      properties:
+        result:
+          type: object
+          properties:
+            product_ids:
+              type: array
+              items:
+                type: integer
+                example: 14975
+            rejected:
+              type: array
+              items:
+                type: object
+                properties: {}
+paths:
+  /v1/posting/carriage-available/list:
+    post:
+      summary: Получить список доступных способов доставки
+      operationId: getCarriageAvailableList
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetCarriageAvailableListRequest'
+      responses:
+        '200':
+          description: Успешный ответ с доступными способами доставки
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetCarriageAvailableListResponse'
+        '400':
+          description: Неверный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Доступ запрещен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Ресурс не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Конфликт запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /v2/posting/fbs/act/create:
+    post:
+      summary: Создать акт FBS
+      operationId: createFbsAct
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateActRequest'
+      responses:
+        '200':
+          description: Успешное создание акта
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateActResponse'
+        '400':
+          description: Неверный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+        '403':
+          description: Доступ запрещен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Ресурс не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Конфликт запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /v3/posting/fbs/act/get-barcode:
+    post:
+      summary: Получить штрих-код акта FBS
+      operationId: getFbsActBarcode
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetBarcodeRequest'
+      responses:
+        '200':
+          description: Успешное получение штрих-кода
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetBarcodeResponse'
+        '400':
+          description: Неверный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Доступ запрещен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Ресурс не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Конфликт запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /v4/product/info/attributes:
+    post:
+      summary: Получить информацию о атрибутах продукта
+      operationId: getProductAttributes
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductAttributesRequest'
+      responses:
+        '200':
+          description: Успешное получение информации о атрибутах продукта
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductAttributesResponse'
+        '400':
+          description: Неверный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Доступ запрещен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Ресурс не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Конфликт запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /v3/product/info/list:
+    post:
+      summary: Получить информацию о продуктах
+      operationId: getProductInfo
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductInfoRequest'
+      responses:
+        '200':
+          description: Успешное получение информации о атрибутах продукта
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductInfoResponse'
+        '400':
+          description: Неверный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Доступ запрещен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Ресурс не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Конфликт запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /v2/posting/fbo/list:
+    post:
+      summary: Получить список заказов FBO
+      operationId: getFboPostingList
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ListPostingsFboRequest'
+      responses:
+        '200':
+          description: Успешное получение списка заказов
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListPostingsFboResponse'
+        '400':
+          description: Неверный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Доступ запрещен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Ресурс не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Конфликт запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /v3/posting/fbs/list:
+    post:
+      summary: Получить список заказов FBS
+      operationId: getFbsPostingList
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ListPostingsFbsRequest'
+      responses:
+        '200':
+          description: Успешное получение списка заказов
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListPostingsFbsResponse'
+        '400':
+          description: Неверный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Доступ запрещен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Ресурс не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Конфликт запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /v5/product/info/prices:
+    post:
+      summary: Получить информацию о ценах на продукты
+      operationId: getProductPrices
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetProductPricesRequest'
+      responses:
+        '200':
+          description: Успешное получение информации о ценах
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetProductPricesResponse'
+        '400':
+          description: Неверный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Доступ запрещен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Ресурс не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Конфликт запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /v1/product/import/prices:
+    post:
+      summary: Импортировать цены на продукты
+      operationId: importProductPrices
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ImportProductPricesRequest'
+      responses:
+        '200':
+          description: Успешный импорт цен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImportProductPricesResponse'
+        '400':
+          description: Неверный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Доступ запрещен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Ресурс не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Конфликт запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /v3/finance/transaction/list:
+    post:
+      summary: Получить список финансовых транзакций
+      operationId: listFinanceTransactions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ListFinanceTransactionsRequest'
+      responses:
+        '200':
+          description: Успешное получение списка транзакций
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListFinanceTransactionsResponse'
+        '400':
+          description: Неверный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Доступ запрещен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Ресурс не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Конфликт запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /v4/product/info/stocks:
+    post:
+      summary: Получить информацию о запасах продуктов
+      operationId: getProductStocks
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetProductStocksRequest'
+      responses:
+        '200':
+          description: Успешное получение информации о запасах
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetProductStocksResponse'
+        '400':
+          description: Неверный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Доступ запрещен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Ресурс не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Конфликт запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /v2/products/stocks:
+    post:
+      summary: Обновить запасы продуктов
+      operationId: updateProductStocks
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateProductStocksRequest'
+      responses:
+        '200':
+          description: Успешное обновление запасов
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateProductStocksResponse'
+        '400':
+          description: Неверный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Доступ запрещен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Ресурс не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Конфликт запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /v1/returns/list:
+    post:
+      summary: Получить список возвратов
+      operationId: listReturns
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ListReturnsRequest'
+      responses:
+        '200':
+          description: Успешное получение списка возвратов
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListReturnsResponse'
+        '400':
+          description: Неверный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Доступ запрещен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Ресурс не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Конфликт запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /v1/return/giveout/list:
+    post:
+      summary: Получить список выдач
+      operationId: getGiveoutList
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetGiveoutListRequest'
+      responses:
+        '200':
+          description: Успешное получение списка выдач
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetGiveoutListResponse'
+        '400':
+          description: Неверный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Доступ запрещен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Ресурс не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Конфликт запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /v1/return/giveout/barcode-reset:
+    post:
+      summary: Сбросить штрих-код
+      operationId: resetBarcode
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResetBarcodeRequest'
+      responses:
+        '200':
+          description: Успешный сброс штрих-кода
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResetBarcodeResponse'
+        '400':
+          description: Неверный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Доступ запрещен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Ресурс не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Конфликт запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /v1/actions:
+    get:
+      summary: Получить список акций
+      operationId: getActions
+      responses:
+        '200':
+          description: Успешное получение списка акций
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetActionsResponse'
+        '400':
+          description: Неверный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Доступ запрещен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Ресурс не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Конфликт запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /v1/actions/candidates:
+    post:
+      summary: Получить кандидатов для акции
+      operationId: getActionCandidates
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetActionCandidatesRequest'
+      responses:
+        '200':
+          description: Успешное получение кандидатов для акции
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetActionCandidatesResponse'
+        '400':
+          description: Неверный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Доступ запрещен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Ресурс не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Конфликт запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /v1/actions/products:
+    post:
+      summary: Получить продукты для акции
+      operationId: getActionProducts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetActionProductsRequest'
+      responses:
+        '200':
+          description: Успешное получение продуктов для акции
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetActionProductsResponse'
+        '400':
+          description: Неверный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Доступ запрещен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Ресурс не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Конфликт запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /v1/actions/products/activate:
+    post:
+      summary: Активировать продукты для акции
+      operationId: activateActionProducts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ActivateActionProductsRequest'
+      responses:
+        '200':
+          description: Успешная активация продуктов для акции
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActivateActionProductsResponse'
+        '400':
+          description: Неверный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Доступ запрещен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Ресурс не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Конфликт запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /v1/actions/products/deactivate:
+    post:
+      summary: Деактивировать продукты для акции
+      operationId: deactivateActionProducts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeactivateActionProductsRequest'
+      responses:
+        '200':
+          description: Успешная деактивация продуктов для акции
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeactivateActionProductsResponse'
+        '400':
+          description: Неверный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Доступ запрещен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Ресурс не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Конфликт запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'

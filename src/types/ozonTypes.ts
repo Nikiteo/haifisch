@@ -1,3 +1,5 @@
+import { ProductAttribute, ProductInfo } from './ozon/ozon-types'
+
 export interface ApiResponseOzon<T> {
 	data: T
 	limit: string
@@ -546,7 +548,7 @@ export interface OzonReturnFbs {
 			quantity?: number
 			price?: number
 			sku?: number
-		}
+		},
 	]
 }
 
@@ -913,7 +915,7 @@ export interface SendPromoOfferResponse {
 		{
 			product_id: number
 			reason: string
-		}
+		},
 	]
 }
 
@@ -1168,3 +1170,15 @@ export interface Giveout {
 	warehouse_id: number
 	warehouse_name: string
 }
+
+export interface ProductInfoWithAttributes
+	extends ProductInfo,
+		Pick<
+			ProductAttribute,
+			| 'height'
+			| 'depth'
+			| 'width'
+			| 'dimension_unit'
+			| 'weight'
+			| 'weight_unit'
+		> {}

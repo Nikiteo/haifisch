@@ -2,7 +2,7 @@ import { states } from '../../database'
 import { type State } from '../../types/msTypes'
 import { OrderStatusEnum } from '../../types/ozonTypes'
 
-export const prepareOzonStatuses = (status: OrderStatusEnum): State => {
+export const prepareOzonStatuses = (status?: string): State => {
 	switch (status) {
 		case OrderStatusEnum.cancelled:
 			return states.CANCELLED

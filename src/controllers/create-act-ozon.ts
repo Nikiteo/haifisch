@@ -1,5 +1,5 @@
 import Logger from '../lib/logger'
-import { createAct, getActs } from '../services/ozon/acts'
+import { createAct, getActs } from '../services/ozon/carriage-controller'
 import {
 	getGiveoutsOzon,
 	getReturnPng,
