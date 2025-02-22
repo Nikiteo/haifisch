@@ -1,4 +1,3 @@
-/* eslint-disable no-mixed-spaces-and-tabs */
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 
