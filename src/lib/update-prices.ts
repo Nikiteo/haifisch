@@ -1,8 +1,7 @@
 import Logger from './logger'
 import { bot } from '../bot'
 import { checkUser } from './check-user'
-import { updateYandexPrice } from '../controllers/update-yandex-price'
-import { updateOzonPrices } from '../controllers/update-ozon-prices'
+import { updateOzonPrices, updateYandexPrice } from '../controllers'
 
 export const updatePrices = (): void => {
 	bot.command('prices', async ctx => {

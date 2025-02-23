@@ -3,8 +3,8 @@ import {
 	createProducts,
 	getProducts,
 } from '../services/moysklad/productController'
-import { getCampaigns } from '../services/yandex/campaignController'
-import { getOffers } from '../services/yandex/offerController'
+import { getCampaigns } from '../services/yandex/api'
+import { getOffers } from '../services/yandex/offer-controller'
 import { type Product } from '../types/msTypes'
 import { prepareProducts } from '../utils/yandex/prepareProducts'
 
@@ -50,7 +50,7 @@ export const updateYandexProducts = async (
 			return
 		}
 
-		const businessId = campaigns.campaigns[0]?.business?.id
+		const businessId = campaigns[0]?.business?.id
 		if (!businessId) {
 			Logger.warn(`[${store}]: Не удалось получить businessId`)
 			await sendMessage(`[${store}]: Не удалось получить businessId`)
@@ -62,7 +62,7 @@ export const updateYandexProducts = async (
 			tags: ['Мрамор', 'мрамор'],
 		})
 
-		const domain = campaigns.campaigns[0].domain
+		const domain = campaigns[0].domain
 		const preparedProducts = prepareProducts(
 			products.rows,
 			offers ?? [],

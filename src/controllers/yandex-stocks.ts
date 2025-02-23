@@ -1,7 +1,7 @@
 import Logger from '../lib/logger'
 import { getProducts } from '../services/moysklad/productController'
-import { getCampaigns } from '../services/yandex/campaignController'
-import { getStocks, sendStocks } from '../services/yandex/stockController'
+import { getCampaigns } from '../services/yandex/api'
+import { getStocks, sendStocks } from '../services/yandex/stock-controller'
 import {
 	type UpdateStockDTO,
 	type UpdateStocksRequest,
@@ -22,7 +22,7 @@ export const updateYandexStocks = async (
 			const articlesFromMS = products.rows.map(row => row.article)
 
 			const campaigns = await getCampaigns(store)
-			const campaignIds = getCampaignIds(campaigns?.campaigns)
+			const campaignIds = getCampaignIds(campaigns)
 
 			Logger.info(`[${store}]: Получены данные по кампаниям магазина...`)
 

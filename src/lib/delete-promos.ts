@@ -1,6 +1,5 @@
 import { bot } from '../bot'
-import { deleteOzonPromos } from '../controllers/delete-ozon-promos'
-import { deletePromosYandex } from '../controllers/delete-promos-yandex'
+import { deleteOzonPromos, deletePromosYandex } from '../controllers'
 import { checkUser } from './check-user'
 import Logger from './logger'
 

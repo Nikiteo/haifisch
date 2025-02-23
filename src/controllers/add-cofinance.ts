@@ -1,7 +1,7 @@
 import Logger from '../lib/logger'
 import { getProducts } from '../services/moysklad/productController'
-import { getCampaigns } from '../services/yandex/campaignController'
-import { getOffers, sendOffers } from '../services/yandex/offerController'
+import { getCampaigns } from '../services/yandex/api'
+import { getOffers, sendOffers } from '../services/yandex/offer-controller'
 import { type UpdateOfferMappingsRequest } from '../types/yandex/api'
 export const addCofinance = async (
 	store: string,
@@ -15,8 +15,8 @@ export const addCofinance = async (
 			const campaigns = await getCampaigns(store)
 			Logger.info(`[${store}]: Получены данные по кампаниям магазина...`)
 
-			if (campaigns?.campaigns && campaigns.campaigns.length > 0) {
-				const businessId = campaigns.campaigns[0]?.business?.id
+			if (campaigns && campaigns.length > 0) {
+				const businessId = campaigns[0]?.business?.id
 
 				if (businessId) {
 					const offers = await getOffers(store, businessId, {
@@ -85,7 +85,7 @@ export const addCofinance = async (
 														'из литьевого мрамора',
 														'из искусственного камня'
 														// eslint-disable-next-line no-mixed-spaces-and-tabs
-												  )
+													)
 												: cur.offer.name
 
 										acc.offerMappings.push({

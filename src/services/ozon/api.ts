@@ -44,8 +44,10 @@ import {
 	type ProductAttribute,
 	ActionCandidatesProduct,
 	GetProductPrice,
+	Operation,
 } from '../../types/ozon/ozon-types'
 import { logOzonError } from '../../utils/log-ozon-error'
+import Logger from '../../lib/logger'
 
 export const getActs = async (
 	props: GetCarriageAvailableListRequest
@@ -153,31 +155,21 @@ const getTransactionPage = async (
 
 export const getTransactions = async (
 	props: ListFinanceTransactionsRequest
-): Promise<ListFinanceTransactionsResponse['result'] | undefined> => {
+): Promise<Operation[] | undefined> => {
 	try {
-		const getTransaction = async (
-			page: number
-		): Promise<ListFinanceTransactionsResponse['result'] | undefined> => {
+		const getTransaction = async (page: number): Promise<Operation[]> => {
 			const response = await getTransactionPage(props, page)
-			if (!response) return undefined
+			if (!response) return []
 
 			const operations = response.operations || []
 			const pageCount = response.page_count || 0
 
 			if (page < pageCount) {
-				const nextOperations = await getTransaction(page + 1)
-				return {
-					operations: operations.concat(
-						nextOperations?.operations || []
-					),
-					page_count: pageCount,
-					row_count: response.row_count,
-				}
+				return operations.concat(await getTransaction(page + 1))
 			} else {
-				return response
+				return operations
 			}
 		}
-
 		return await getTransaction(1)
 	} catch (error: unknown) {
 		logOzonError(error)

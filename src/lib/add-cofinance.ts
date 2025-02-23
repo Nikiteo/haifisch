@@ -1,6 +1,5 @@
 import { bot } from '../bot'
-import { addCofinance } from '../controllers/add-cofinance'
-import { addOzonCofinance } from '../controllers/add-ozon-cofinance'
+import { addOzonCofinance, addCofinance } from '../controllers'
 import Logger from './logger'
 
 export const addYandexCofinance = (): void => {

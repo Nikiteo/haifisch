@@ -1,5 +1,5 @@
 import { bot } from '../bot'
-import { feedbackAnswer } from '../controllers/feedback-answer'
+import { feedbackAnswer } from '../controllers'
 
 import Logger from './logger'
 

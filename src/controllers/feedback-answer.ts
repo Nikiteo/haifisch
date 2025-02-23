@@ -1,9 +1,9 @@
 import Logger from '../lib/logger'
-import { getCampaigns } from '../services/yandex/campaignController'
+import { getCampaigns } from '../services/yandex/api'
 import {
 	addFeedback,
 	getFeedbacks,
-} from '../services/yandex/feedbackController'
+} from '../services/yandex/feedback-controller'
 import {
 	type GoodsFeedbackDTO,
 	type UpdateGoodsFeedbackCommentRequest,
@@ -46,8 +46,8 @@ export const feedbackAnswer = async (
 		const campaigns = await getCampaigns(store)
 		Logger.info(`[${store}]: Получены данные по кампаниям магазина...`)
 
-		if (campaigns && campaigns.campaigns.length > 0) {
-			const businessId = campaigns.campaigns[0]?.business?.id
+		if (campaigns && campaigns.length > 0) {
+			const businessId = campaigns[0]?.business?.id
 
 			if (businessId) {
 				const feedbacks = await getFeedbacks(store, businessId)

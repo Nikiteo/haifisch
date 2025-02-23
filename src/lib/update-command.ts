@@ -1,6 +1,5 @@
 import { bot } from '../bot'
-import { updateOzonProducts } from '../controllers/update-ozon-products'
-import { updateYandexProducts } from '../controllers/update-yandex-products'
+import { updateOzonProducts, updateYandexProducts } from '../controllers'
 import { checkUser } from './check-user'
 import Logger from './logger'
 

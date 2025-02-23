@@ -9,48 +9,45 @@ const createOrders = (
 	orders: (PostingFbo | PostingFbs)[],
 	products: Product[],
 	transactions: Operation[],
-	existingOrders: CustomerOrder[],
 	createOrderFn: (
 		cur: PostingFbo | PostingFbs,
 		boughtItems: Product[],
 		transactions: Operation[]
 	) => CustomerOrder
 ): CustomerOrder[] => {
-	return orders.flatMap(cur => {
+	return orders.reduce<CustomerOrder[]>((acc, cur) => {
 		const { products: boughtProducts } = cur
 		const boughtItems = products.filter(product =>
 			boughtProducts?.some(item => item.offer_id === product.article)
 		)
 
-		if (boughtItems.length === 0) {
-			return []
+		if (boughtItems.length > 0) {
+			acc.push(createOrderFn(cur, boughtItems, transactions))
 		}
+		return acc
+	}, [])
+}
 
-		const isExistingOrder = existingOrders.some(
-			order => order.name === cur.posting_number
-		)
-		const isRecentOrder = existingOrders.some(
-			order =>
-				dayjs()
-					.add(3, 'hour')
-					.diff(dayjs(order.deliveryPlannedMoment), 'month') <= 1
-		)
+const filterRecentOrders = (
+	orders: CustomerOrder[],
+	postingOrders: (PostingFbo | PostingFbs)[]
+): (PostingFbo | PostingFbs)[] => {
+	return postingOrders.filter(order =>
+		orders.every(item => item.name !== order.posting_number)
+	)
+}
 
-		if (isExistingOrder && isRecentOrder) {
-			return existingOrders.map(order => ({
-				...order,
-				...createOrderFn(cur, boughtItems, transactions),
-			}))
-		}
-
-		return [createOrderFn(cur, boughtItems, transactions)]
-	})
+const mergeOrders = (
+	existingOrders: CustomerOrder[],
+	newOrders: CustomerOrder[]
+): CustomerOrder[] => {
+	return [...existingOrders, ...newOrders]
 }
 
 export const prepareOzonCustomerOrders = (
 	products: Product[],
 	fboOrders: PostingFbo[],
-	fbsOrders: PostingFbs[],
+	fbsOrders: (PostingFbs & { refundDate?: string })[],
 	orders: CustomerOrder[],
 	transactions: Operation[]
 ): CustomerOrder[] => {
@@ -64,65 +61,67 @@ export const prepareOzonCustomerOrders = (
 
 		const allOrders: CustomerOrder[] = []
 
-		if (orders.length === 0) {
-			allOrders.push(
-				...createOrders(
-					fboOrders,
-					products,
-					transactions,
-					[],
-					createCustomerOrderFbo
-				),
-				...createOrders(
-					fbsOrders,
-					products,
-					transactions,
-					[],
-					(cur, boughtItems, transactions) => {
-						if ('refundDate' in cur) {
-							return createCustomerOrderFbs(
-								cur as PostingFbs & { refundDate: string },
-								boughtItems,
-								transactions
-							)
-						}
-						return {} as CustomerOrder
-					}
-				)
-			)
-		} else {
-			const existingOrders = orders
+		const processOrders = (
+			postingOrders: (PostingFbo | PostingFbs)[],
+			createOrderFn: (
+				cur: PostingFbo | PostingFbs,
+				boughtItems: Product[],
+				transactions: Operation[]
+			) => CustomerOrder
+		) => {
+			const existingOrders = orders.reduce<CustomerOrder[]>(
+				(acc, order) => {
+					const recentOrders = postingOrders.filter(
+						cur =>
+							order.name === cur.posting_number &&
+							dayjs()
+								.add(3, 'hour')
+								.diff(
+									dayjs(order.deliveryPlannedMoment),
+									'month'
+								) <= 1
+					)
 
-			allOrders.push(
-				...createOrders(
-					fboOrders,
-					products,
-					transactions,
-					existingOrders,
-					createCustomerOrderFbo
-				),
-				...createOrders(
-					fbsOrders,
-					products,
-					transactions,
-					existingOrders,
-					(cur, boughtItems, transactions) => {
-						if ('refundDate' in cur) {
-							return createCustomerOrderFbs(
-								cur as PostingFbs & { refundDate: string },
-								boughtItems,
-								transactions
-							)
-						}
-						return {} as CustomerOrder
-					}
-				)
+					const createdOrders = createOrders(
+						recentOrders,
+						products,
+						transactions,
+						createOrderFn
+					)
+					return mergeOrders(
+						acc,
+						createdOrders.map(updatedOrder => ({
+							...order,
+							...updatedOrder,
+						}))
+					)
+				},
+				[]
 			)
+
+			const newPostingOrders = filterRecentOrders(orders, postingOrders)
+			const newCustomerOrders = createOrders(
+				newPostingOrders,
+				products,
+				transactions,
+				createOrderFn
+			)
+
+			return mergeOrders(existingOrders, newCustomerOrders)
+		}
+
+		if (fboOrders.length > 0) {
+			allOrders.push(...processOrders(fboOrders, createCustomerOrderFbo))
+		}
+
+		if (fbsOrders.length > 0) {
+			allOrders.push(...processOrders(fbsOrders, createCustomerOrderFbs))
 		}
 
 		return allOrders
 	} catch (err) {
 		Logger.error(err)
-		return []
 	}
+
+	return []
 }

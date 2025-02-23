@@ -1,6 +1,5 @@
 import { bot } from '../bot'
-import { addOzonPromos } from '../controllers/add-ozon-promos'
-import { addYandexPromos } from '../controllers/add-yandex-promos'
+import { addOzonPromos, addYandexPromos } from '../controllers'
 import { checkUser } from './check-user'
 import Logger from './logger'
 

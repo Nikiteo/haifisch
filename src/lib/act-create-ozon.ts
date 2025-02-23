@@ -1,7 +1,7 @@
 import Logger from './logger'
 import { bot } from '../bot'
 import { checkUser } from './check-user'
-import { createActOzon } from '../controllers/create-act-ozon'
+import { createActOzon } from '../controllers'
 
 export const actCreateOzon = (): void => {
 	bot.command('act', async ctx => {

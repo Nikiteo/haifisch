@@ -1,11 +1,6 @@
 import Logger from '../lib/logger'
 import { getProducts } from '../services/moysklad/productController'
-import { getCampaigns } from '../services/yandex/campaignController'
-import {
-	addPromosOffers,
-	getPromos,
-	getPromosOffers,
-} from '../services/yandex/promosController'
+import { addPromosOffers, getCampaigns, getPromos, getPromosOffers } from '../services/yandex/api'
 import {
 	type UpdatePromoOffersRequest,
 	type GetPromoOfferDTO,
@@ -27,13 +22,13 @@ export const addYandexPromos = async (
 
 		if (products != null && products.rows.length > 0) {
 			const campaigns = await getCampaigns(store)
-			const campaignIds = getCampaignIds(campaigns?.campaigns)
+			const campaignIds = getCampaignIds(campaigns)
 			Logger.info(`[${store}]: Получены данные по кампаниям магазина...`)
 
 			if (campaignIds !== undefined && campaigns !== undefined) {
-				const businessId = campaigns?.campaigns[0]?.business?.id
+				const businessId = campaigns[0]?.business?.id
 				if (businessId) {
-					const promos = await getPromos(store, businessId)
+					const promos = await getPromos(store, businessId, {})
 
 					Logger.info(
 						`[${store}]: Получены данные по акциям из магазина...`

@@ -97,7 +97,7 @@ export const updateOzon = async (
 		const transactionsProps = {
 			filter: {
 				date: {
-					from: filter.since,
+					from: dayjs(filter.since).add(1, 'day').toISOString(),
 					to: filter.to,
 				},
 				transaction_type:
@@ -115,10 +115,10 @@ export const updateOzon = async (
 		)
 		Logger.info(`[${store}] Получены данные по заказам из МС...`)
 
-		const fboOrders = await getOzonFboOrders({
-			...ordersProps,
-			dir: 'ASC' as ListPostingsFboRequestDirEnum,
-		})
+		// const fboOrders = await getOzonFboOrders({
+		// 	...ordersProps,
+		// 	dir: 'ASC' as ListPostingsFboRequestDirEnum,
+		// })
 		const fbsOrders = await getOzonFbsOrders({
 			...ordersProps,
 			dir: 'ASC' as ListPostingsFbsRequestDirEnum,
@@ -151,14 +151,14 @@ export const updateOzon = async (
 
 		Logger.info(`[${store}] Получены данные по возвратам магазина...`)
 
-		const fboAfterReturns = fboOrders?.map(order => {
-			const isReturned = fboReturns?.some(
-				item => item.posting_number === order.posting_number
-			)
-			return isReturned
-				? { ...order, status: OrderStatusEnum.returned }
-				: order
-		})
+		// const fboAfterReturns = fboOrders?.map(order => {
+		// 	const isReturned = fboReturns?.some(
+		// 		item => item.posting_number === order.posting_number
+		// 	)
+		// 	return isReturned
+		// 		? { ...order, status: OrderStatusEnum.returned }
+		// 		: order
+		// })
 
 		const fbsAfterReturns = fbsOrders?.map(order => {
 			const returnItem = fbsReturns?.find(
@@ -177,12 +177,12 @@ export const updateOzon = async (
 			return order
 		})
 
-		const filteredFboOrders = fboOrders?.filter(
-			order =>
-				!fboAfterReturns?.some(
-					fbo => fbo.posting_number === order.posting_number
-				)
-		)
+		// const filteredFboOrders = fboOrders?.filter(
+		// 	order =>
+		// 		!fboAfterReturns?.some(
+		// 			fbo => fbo.posting_number === order.posting_number
+		// 		)
+		// )
 		const filteredFbsOrders = fbsOrders?.filter(
 			order =>
 				!fbsAfterReturns?.some(
@@ -190,16 +190,16 @@ export const updateOzon = async (
 				)
 		)
 
-		Logger.info(JSON.stringify(transactionsProps))
-
 		const transactions = await getTransactions(transactionsProps)
+
+		Logger.info(`[${store}] Получены данные по транзакциям магазина...`)
 
 		const preparedCustomerOrders = prepareOzonCustomerOrders(
 			products?.rows ?? [],
-			[...(filteredFboOrders ?? []), ...(fboAfterReturns ?? [])],
+			[],
 			[...(filteredFbsOrders ?? []), ...(fbsAfterReturns ?? [])],
 			customerOrders ?? [],
-			transactions?.operations ?? []
+			transactions ?? []
 		)
 
 		Logger.info(`[${store}] Создаю заказы покупателей...`)
@@ -237,7 +237,7 @@ export const updateOzon = async (
 
 		const preparedPaymentins = prepareOzonPaymentin(
 			newDemands ?? [],
-			[...(filteredFboOrders ?? []), ...(fboAfterReturns ?? [])],
+			[],
 			[...(filteredFbsOrders ?? []), ...(fbsAfterReturns ?? [])],
 			paymentins ?? []
 		)
@@ -267,7 +267,7 @@ export const updateOzon = async (
 
 		const preparedPaymentouts = prepareOzonPaymentout(
 			newSalesReturns ?? [],
-			[...(filteredFboOrders ?? []), ...(fboAfterReturns ?? [])],
+			[],
 			[...(filteredFbsOrders ?? []), ...(fbsAfterReturns ?? [])],
 			paymentouts ?? []
 		)

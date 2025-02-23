@@ -1,7 +1,6 @@
 import { checkUser } from './check-user'
 import { bot } from '../bot'
-import { updateYandexStocks } from '../controllers/yandex-stocks'
-import { updateOzonStocks } from '../controllers/ozon-stocks'
+import { updateOzonStocks, updateYandexStocks } from '../controllers'
 
 export const stocksCommand = (): void => {
 	bot.command('stocks', async ctx => {

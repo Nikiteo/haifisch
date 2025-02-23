@@ -51,7 +51,7 @@ const prepareCommissions = (
 }
 
 export const createCustomerOrderFbs = (
-	order: PostingFbs & { refundDate: string },
+	order: PostingFbs & { refundDate?: string },
 	boughtProducts: Product[],
 	transactions: Operation[]
 ): CustomerOrder => {
