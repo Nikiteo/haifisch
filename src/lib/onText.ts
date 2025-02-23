@@ -2,14 +2,28 @@ import Logger from './logger'
 import { bot } from '../bot'
 import { checkUser } from './check-user'
 import { message } from 'telegraf/filters'
-import { createCashout } from '../services/moysklad/cashoutController'
-import { createCashoutObject, getExpenseItem } from '../utils/create-cashout'
+
+import { howMuchMoney } from './how-much-money'
+import { addCashout } from './add-cashout'
+import { ReactionType } from 'telegraf/typings/core/types/typegram'
 
 export const onText = (): void => {
 	bot.on(message('text'), async ctx => {
 		try {
 			const username = ctx.from.username
 			const text = ctx.message.text
+			const chatId = ctx.chat.id
+			const messageId = ctx.message.message_id
+			const sendMessage = async (
+				text: string,
+				extra?: {
+					reply_parameters: {
+						message_id: number
+					}
+				}
+			): Promise<void> => {
+				await ctx.telegram.sendMessage(chatId, text, extra)
+			}
 
 			if (text.toLocaleLowerCase() === 'логи') {
 				Logger.info(
@@ -20,7 +34,7 @@ export const onText = (): void => {
 					await ctx.sendDocument({ source: 'logs/all.log' })
 					await ctx.sendDocument({ source: 'logs/error.log' })
 				} else {
-					return await ctx.reply(
+					return await sendMessage(
 						'Прости, но ты не можешь использовать меня'
 					)
 				}
@@ -30,88 +44,36 @@ export const onText = (): void => {
 				text.toLocaleLowerCase().includes('трата') &&
 				ctx.message.chat.id === -1002457683199
 			) {
-				Logger.info(
-					`Бот пытался запустить: ${username} с текстом ${text}`
-				)
-				if (checkUser(username)) {
-					const textArray = text.split(',')
-					const numberMatch = textArray[0].match(/\d+/)
-					const sum =
-						numberMatch != null
-							? parseInt(numberMatch[0], 10)
-							: null
-					const expenseItem = textArray[1].trim().toLowerCase()
-					const description = textArray[2].trim().toLowerCase()
-
-					const expenseItemNew = getExpenseItem(expenseItem)
-
-					if (expenseItemNew === undefined) {
-						return await ctx.reply(
-							`Прости, но я не могу распознать твою cтатью расходов - ${expenseItem}\nВведи трату в формате: трата {сумма}, {статья расходов}, {комментарий}`,
-							{
-								reply_parameters: {
-									message_id: ctx.message.message_id,
-								},
-							}
-						)
-					}
-
-					if (sum === null) {
-						return await ctx.reply(
-							`Прости, но я не могу распознать твою сумму расходов - ${sum}\nВведи трату в формате: трата {сумма}, {статья расходов}, {комментарий}`,
-							{
-								reply_parameters: {
-									message_id: ctx.message.message_id,
-								},
-							}
-						)
-					}
-
-					if (sum !== null && expenseItemNew !== undefined) {
-						try {
-							const newCashOut = createCashoutObject({
-								username,
-								sum,
-								description,
-								expenseItem,
-							})
-
-							if (newCashOut !== undefined) {
-								const createdCashOut =
-									await createCashout(newCashOut)
-								await ctx.reply(
-									`Держи ссылку на созданный документ и проверь правильность - ${createdCashOut?.meta?.uuidHref}`,
-									{
-										reply_parameters: {
-											message_id: ctx.message.message_id,
-										},
-									}
-								)
-								Logger.info(
-									`${username} создал расходный ордер: ${sum} - ${description} - ${expenseItem}`
-								)
-							}
-						} catch (err) {
-							// eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/ban-ts-comment
-							// @ts-expect-error
-							// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-							return await ctx.reply(err.message)
-						}
-					} else {
-						return await ctx.reply(
-							'Прости, но что-то пошло не так\nВведи трату в формате: трата {сумма}, {статья расходов}, {комментарий}',
-							{
-								reply_parameters: {
-									message_id: ctx.message.message_id,
-								},
-							}
-						)
-					}
-				} else {
-					return await ctx.reply(
-						'Прости, но ты не можешь использовать меня'
+				const setReaction = async (
+					reaction: ReactionType[]
+				): Promise<void> => {
+					await ctx.telegram.setMessageReaction(
+						-1002457683199,
+						messageId,
+						reaction
 					)
 				}
+
+				await addCashout({
+					username,
+					text,
+					messageId,
+					sendMessage,
+					setReaction,
+				})
+			}
+
+			if (
+				text.toLocaleLowerCase().includes('сколько денег у нас?') ||
+				text.toLocaleLowerCase().includes('сколько у нас денег?') ||
+				text.toLocaleLowerCase().includes('сколько денег?') ||
+				text.toLocaleLowerCase().includes('деньги?')
+			) {
+				await howMuchMoney({
+					username,
+					text,
+					sendMessage,
+				})
 			}
 		} catch (err) {
 			Logger.error(err)

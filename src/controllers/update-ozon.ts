@@ -19,7 +19,7 @@ import {
 	createSalesReturn,
 	getSalesReturn,
 } from '../services/moysklad/salesreturnController'
-import { type CustomerOrder, type SalesReturn } from '../types/msTypes'
+import { type CustomerOrder } from '../types/msTypes'
 import { prepareOzonCustomerOrders } from '../utils/ozon/prepareOzonCustomerOrder'
 import { prepareOzonPaymentin } from '../utils/ozon/prepareOzonPaymentin'
 import { prepareOzonPaymentout } from '../utils/ozon/prepareOzonPaymentout'
@@ -35,8 +35,6 @@ import {
 	ListFinanceTransactionsRequestTransactionTypeEnum,
 	ListPostingsFboRequestDirEnum,
 	ListPostingsFbsRequestDirEnum,
-	PostingFbo,
-	PostingFbs,
 } from '../types/ozon/ozon-types'
 import { OrderFbsOzonStatus, OrderStatusEnum } from '../types/ozon/types'
 
@@ -45,15 +43,34 @@ dayjs.extend(utc)
 const getDateRange = (months: number) => {
 	const dateFrom = dayjs()
 		.subtract(months, 'month')
-		.startOf('day')
-		.toISOString()
-	const dateTo = dayjs().add(months, 'month').endOf('day').toISOString()
+		.set('hour', 0)
+		.set('minute', 0)
+		.set('second', 0)
+		.set('milliseconds', 0)
+		.format('YYYY-MM-DD')
+	const dateTo = dayjs()
+		.set('hour', 23)
+		.set('minute', 59)
+		.set('second', 59)
+		.set('milliseconds', 59)
+		.format('YYYY-MM-DD')
 	return { dateFrom, dateTo }
 }
 
 const getFilterDates = (months: number) => {
-	const from = dayjs().subtract(months, 'month').startOf('day').toISOString()
-	const to = dayjs().endOf('day').toISOString()
+	const from = dayjs()
+		.subtract(months, 'month')
+		.set('hour', 0)
+		.set('minute', 0)
+		.set('second', 0)
+		.set('milliseconds', 0)
+		.toISOString()
+	const to = dayjs()
+		.set('hour', 23)
+		.set('minute', 59)
+		.set('second', 59)
+		.set('milliseconds', 59)
+		.toISOString()
 	return { since: from, to }
 }
 
@@ -65,11 +82,10 @@ export const updateOzon = async (
 		const { dateFrom, dateTo } = getDateRange(1)
 		const filter = getFilterDates(1)
 
+		Logger.info(`[${store}]: ${dateFrom} - ${dateTo}`)
+
 		const ordersProps = {
-			filter: {
-				since: filter.since,
-				to: filter.to,
-			},
+			filter,
 			with: {
 				analytics_data: true,
 				financial_data: true,
@@ -81,11 +97,8 @@ export const updateOzon = async (
 		const transactionsProps = {
 			filter: {
 				date: {
-					from: dayjs()
-						.subtract(1, 'month')
-						.startOf('day')
-						.toISOString(),
-					to: dayjs().endOf('day').toISOString(),
+					from: filter.since,
+					to: filter.to,
 				},
 				transaction_type:
 					'all' as ListFinanceTransactionsRequestTransactionTypeEnum,
@@ -176,6 +189,8 @@ export const updateOzon = async (
 					fbs => fbs.posting_number === order.posting_number
 				)
 		)
+
+		Logger.info(JSON.stringify(transactionsProps))
 
 		const transactions = await getTransactions(transactionsProps)
 

@@ -1,16 +1,16 @@
 import Logger from './lib/logger'
 import { bot } from './bot'
 import { onText } from './lib/onText'
-import { syncCommand } from './lib/syncCommand'
-import { stocksCommand } from './lib/stocksCommand'
+import { syncCommand } from './lib/sync-command'
+import { stocksCommand } from './lib/stocks-command'
 import { remainingCommand } from './controllers/remainingCommand'
-import { updateCommand } from './lib/updateCommand'
-import { addPromos } from './lib/addPromos'
-import { addYandexCofinance } from './lib/addCofinance'
+import { updateCommand } from './lib/update-command'
+import { addPromos } from './lib/add-promos'
+import { addYandexCofinance } from './lib/add-cofinance'
 import { feedbacks } from './lib/feedbacks'
-import { deletePromos } from './lib/deletePromos'
-import { updatePrices } from './lib/updatePrices'
-import { actCreateOzon } from './lib/actCreateOzon'
+import { deletePromos } from './lib/delete-promos'
+import { updatePrices } from './lib/update-prices'
+import { actCreateOzon } from './lib/act-create-ozon'
 import { howMuchMoney } from './lib/how-much-money'
 
 void bot.telegram.setMyCommands([
@@ -24,7 +24,6 @@ void bot.telegram.setMyCommands([
 	{ command: '/act', description: 'Подтвердить отгрузку' },
 	{ command: '/cofinance', description: 'Проставить цену софинансирования' },
 	{ command: '/feedbacks', description: 'Ответить на отзывы' },
-	{ command: '/money', description: 'Сколько денег у нас?' },
 ])
 
 Logger.info('Bot started!')
@@ -46,7 +45,6 @@ updatePrices()
 actCreateOzon()
 addYandexCofinance()
 feedbacks()
-howMuchMoney()
 onText()
 
 void bot.launch({

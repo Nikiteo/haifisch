@@ -148,7 +148,7 @@ const getTransactionPage = async (
 		ListFinanceTransactionsRequest,
 		ListFinanceTransactionsResponse
 	>('v3/finance/transaction/list', { ...props, page })
-	return response?.result // Возвращаем result, который должен содержать operations и другие поля
+	return response?.result
 }
 
 export const getTransactions = async (
