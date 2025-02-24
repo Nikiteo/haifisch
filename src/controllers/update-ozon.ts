@@ -19,7 +19,7 @@ import {
 	createSalesReturn,
 	getSalesReturn,
 } from '../services/moysklad/salesreturnController'
-import { type CustomerOrder } from '../types/ms-types'
+import { SalesReturn, type CustomerOrder } from '../types/ms-types'
 import { prepareOzonCustomerOrders } from '../utils/ozon/prepareOzonCustomerOrder'
 import { prepareOzonPaymentin } from '../utils/ozon/prepareOzonPaymentin'
 import { prepareOzonPaymentout } from '../utils/ozon/prepareOzonPaymentout'
@@ -256,9 +256,22 @@ export const updateOzon = async (
 			'OZON'
 		)
 
-		const uniqReturns = Array.from(
-			new Map(preparedSalesReturn.map(ret => [ret.name, ret])).values()
-		)
+		const uniqReturns = preparedSalesReturn.reduce(
+			(acc, ret) => {
+				if (ret.name !== undefined) {
+					if (acc.forEach[ret.name]) return acc
+
+					acc.forEach[ret.name] = true
+					acc.uniqReturns.push(ret)
+				}
+
+				return acc
+			},
+			{
+				forEach: {} as unknown as Record<string, boolean>,
+				uniqReturns: [] as SalesReturn[],
+			}
+		).uniqReturns
 
 		const newSalesReturns = await createSalesReturn(uniqReturns)
 		Logger.info(`[${store}] Создаю документы возвратов...`)

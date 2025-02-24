@@ -65,7 +65,6 @@ export const createSalesReturn = (
 			? (demand.attributes?.find(
 					attribute =>
 						attribute.id === '807c3874-9100-11ef-0a80-0de10004c634'
-					// eslint-disable-next-line no-mixed-spaces-and-tabs
 				)?.value ?? demand.moment)
 			: demand.moment
 	// eslint-disable-next-line @typescript-eslint/ban-ts-comment

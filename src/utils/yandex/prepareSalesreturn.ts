@@ -65,7 +65,6 @@ export const prepareSalesReturn = (
 					states.CANCELLED_IN_DELIVERY.meta,
 					states.RETURNED.meta,
 					states.PARTIALLY_RETURNED.meta,
-					// eslint-disable-next-line no-mixed-spaces-and-tabs
 				].filter(meta => meta !== undefined)
 
 		const filteredOrders = filterOrdersByState(orders, stateMeta)
