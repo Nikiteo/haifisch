@@ -262,8 +262,6 @@ export const updateOzon = async (
 			'OZON'
 		)
 
-		Logger.info(JSON.stringify(preparedSalesReturn))
-
 		const uniqReturns = preparedSalesReturn.reduce(
 			(acc, ret) => {
 				if (ret.name !== undefined) {
