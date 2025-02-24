@@ -1,62 +1,91 @@
 import { consignee, ozonAgent, carrier, sberAgent } from '../../database'
-import {
-	type Meta,
-	type Attribute,
-	type CustomerOrder,
-	type Demand,
-} from '../../types/ms-types'
+import { Attribute, Meta, CustomerOrder, Demand } from '../../types/ms-types'
 
 export const createOverhadSum = (
-	attributes?: Attribute[],
+	attributes: Attribute[],
 	place?: string
 ): number => {
-	const doubleAttributes = attributes?.filter(
-		attribute => attribute.type === 'double'
-	)
-
-	if (doubleAttributes?.length === 0) {
+	if (
+		attributes.filter(attribute => attribute.type === 'double').length === 0
+	) {
 		return 0
 	}
 
 	if (place === 'OZON') {
-		const ozonValue =
-			doubleAttributes?.find(
-				attribute =>
-					attribute.id === '279ba9fa-9d67-11ee-0a80-09f500178da3'
-			)?.value || 0
-		return parseFloat((parseFloat(ozonValue as string) * 100).toFixed(2))
+		return parseFloat(
+			(
+				parseFloat(
+					parseFloat(
+						// eslint-disable-next-line @typescript-eslint/strict-boolean-expressions, @typescript-eslint/no-unsafe-argument
+						attributes?.find(
+							attribute =>
+								attribute.id ===
+								'279ba9fa-9d67-11ee-0a80-09f500178da3'
+						)?.value || 0
+					).toFixed(2)
+				) * 100
+			).toFixed(2)
+		)
 	}
 
-	const sumOfCommissions = doubleAttributes
-		?.filter(
-			attribute =>
-				![
-					'2d77bca0-974b-11ee-0a80-146900276f3a',
-					'279ba9fa-9d67-11ee-0a80-09f500178da3',
-				].includes(attribute.id ?? '')
+	const sumOfComissions = attributes
+		.filter(attribute => attribute.type === 'double')
+		.filter(
+			attribute => attribute.id !== '2d77bca0-974b-11ee-0a80-146900276f3a'
 		)
+		.filter(
+			attribute => attribute.id !== '279ba9fa-9d67-11ee-0a80-09f500178da3'
+		)
+		.map(attribute => attribute.value as number)
 		.reduce(
-			(acc, attribute) =>
-				acc +
-				(typeof attribute.value === 'number' ? attribute.value : 0),
+			(acc: number, cur: number): number =>
+				parseFloat((acc + cur).toFixed(2)),
 			0
 		)
 
-	return parseFloat((sumOfCommissions ?? 0 * 100).toFixed(2))
+	return parseFloat((sumOfComissions * 100).toFixed(2))
 }
 
-const createCarrier = (place?: string): { meta: Meta } => {
-	const carriers = {
-		OZON: ozonAgent,
-		SBER: sberAgent,
+const createCarrier = (
+	place?: string
+): {
+	meta: Meta
+} => {
+	switch (place) {
+		case 'OZON':
+			return ozonAgent
+		case 'SBER':
+			return sberAgent
+		default:
+			return carrier
 	}
-
-	return carriers[place as keyof typeof carriers] || carrier
 }
 
 export const createDemand = (order: CustomerOrder, place?: string): Demand => {
-	const { meta, attributes, deliveryPlannedMoment, id, state, ...rest } =
-		order
+	const {
+		meta,
+		id,
+		accountId,
+		applicable,
+		attributes,
+		owner,
+		organizationAccount,
+		deliveryPlannedMoment,
+		externalCode,
+		syncId,
+		updated,
+		state,
+		sum,
+		agentAccount,
+		created,
+		printed,
+		published,
+		reservedSum,
+		payedSum,
+		shippedSum,
+		invoicedSum,
+		...rest
+	} = order
 
 	return {
 		...rest,
@@ -64,12 +93,12 @@ export const createDemand = (order: CustomerOrder, place?: string): Demand => {
 			meta: order.meta,
 		},
 		overhead: {
-			sum: createOverhadSum(order.attributes, place),
+			sum:
+				order.attributes !== undefined
+					? createOverhadSum(order.attributes, place)
+					: 0,
 			distribution: 'price',
 		},
-		consignee,
-		carrier: createCarrier(place),
-		moment: deliveryPlannedMoment,
 		attributes:
 			place === 'OZON'
 				? [
@@ -85,11 +114,13 @@ export const createDemand = (order: CustomerOrder, place?: string): Demand => {
 							value: order.attributes?.find(
 								attribute =>
 									attribute.id ===
-									'cd289eaa-eacf-11ef-0a80-016f000e54c2'
+									'c09d1b3e-90ff-11ef-0a80-0efd00046bc2'
 							)?.value,
 						},
-						// eslint-disable-next-line no-mixed-spaces-and-tabs
 					]
 				: [],
+		consignee,
+		carrier: createCarrier(place),
+		moment: order.deliveryPlannedMoment,
 	}
 }
