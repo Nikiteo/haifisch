@@ -42,7 +42,7 @@ const createCarrier = (place?: string): { meta: Meta } => {
 }
 
 export const createDemand = (order: CustomerOrder, place?: string): Demand => {
-	const { meta, attributes, deliveryPlannedMoment, ...rest } = order
+	const { meta, attributes, deliveryPlannedMoment, id, accountId, ...rest } = order
 
 	const overheadSum = attributes ? createOverhadSum(attributes, place) : 0
 
