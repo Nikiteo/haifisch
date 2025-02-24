@@ -17,8 +17,8 @@ export const syncCommand = (): void => {
 			}
 			await ctx.reply('Начал обновление...')
 			await updateOzon('Ozon', sendMessage)
-			// await updateYandex('Haifisch', sendMessage)
-			// await updateYandex('Top', sendMessage)
+			await updateYandex('Haifisch', sendMessage)
+			await updateYandex('Top', sendMessage)
 		} else {
 			return await ctx.reply('Прости, но ты не можешь использовать меня')
 		}
