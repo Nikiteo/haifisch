@@ -218,13 +218,12 @@ export const updateOzon = async (
 				return preparedCustomerOrders.find(
 					order => order.name === cur.name
 				)
-					? { ...cur, meta: cur.meta }
+					? { ...order, meta: cur.meta }
 					: null
 			})
 			.filter(Boolean) as CustomerOrder[]
 
 		const preparedDemands = prepareDemands(
-			
 			ordersForDemands ?? [],
 			demands ?? [],
 			'OZON'
