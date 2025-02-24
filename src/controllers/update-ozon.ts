@@ -224,6 +224,7 @@ export const updateOzon = async (
 			.filter(Boolean) as CustomerOrder[]
 
 		const preparedDemands = prepareDemands(
+			
 			ordersForDemands ?? [],
 			demands ?? [],
 			'OZON'
