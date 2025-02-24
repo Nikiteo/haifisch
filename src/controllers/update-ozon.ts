@@ -229,6 +229,8 @@ export const updateOzon = async (
 			'OZON'
 		)
 
+		Logger.info(JSON.stringify(preparedDemands))
+
 		const newDemands = await createDemand(preparedDemands)
 
 		Logger.info(`[${store}] Создаю документы отгрузок...`)
