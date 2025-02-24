@@ -14,7 +14,7 @@ export interface ErrorResponse {
 			error: string
 			code: number
 			moreInfo?: string
-		}
+		},
 	]
 }
 
@@ -281,6 +281,7 @@ export interface Demand {
 	published?: boolean
 	files?: Files
 	positions?: CreatePosition[]
+	attributes?: Attribute[]
 	vatEnabled?: boolean
 	vatIncluded?: boolean
 	vatSum?: number
