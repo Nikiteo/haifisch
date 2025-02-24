@@ -66,6 +66,7 @@ const getFilterDates = (months: number) => {
 		.set('milliseconds', 0)
 		.toISOString()
 	const to = dayjs()
+		.add(1, 'day')
 		.set('hour', 23)
 		.set('minute', 59)
 		.set('second', 59)
@@ -97,7 +98,7 @@ export const updateOzon = async (
 		const transactionsProps = {
 			filter: {
 				date: {
-					from: dayjs(filter.since).add(1, 'day').toISOString(),
+					from: dayjs(filter.since).add(2, 'day').toISOString(),
 					to: filter.to,
 				},
 				transaction_type:
