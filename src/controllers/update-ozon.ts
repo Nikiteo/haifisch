@@ -213,15 +213,20 @@ export const updateOzon = async (
 
 		Logger.info(`[${store}] Получаю документы отгрузок...`)
 
-		const ordersForDemands = createdCustomerOrders
-			?.map(cur => {
-				return preparedCustomerOrders.find(
-					order => order.name === cur.name
-				)
-					? { ...order, meta: cur.meta }
-					: null
-			})
-			.filter(Boolean) as CustomerOrder[]
+		const ordersForDemands = createdCustomerOrders?.reduce<CustomerOrder[]>(
+			(acc, cur) => {
+				preparedCustomerOrders.forEach(order => {
+					if (order.name === cur.name) {
+						acc.push({
+							...order,
+							meta: cur.meta,
+						})
+					}
+				})
+				return acc
+			},
+			[]
+		)
 
 		const preparedDemands = prepareDemands(
 			ordersForDemands ?? [],
