@@ -134,6 +134,7 @@ export const createCustomerOrderFbs = (
 				type: 'text',
 				value: colorValue,
 			},
+
 			{
 				meta: {
 					href: 'https://api.moysklad.ru/api/remap/1.2/entity/customerorder/metadata/attributes/cd289eaa-eacf-11ef-0a80-016f000e54c2',

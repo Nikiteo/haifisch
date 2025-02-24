@@ -85,7 +85,7 @@ export const createDemand = (order: CustomerOrder, place?: string): Demand => {
 							value: order.attributes?.find(
 								attribute =>
 									attribute.id ===
-									'c09d1b3e-90ff-11ef-0a80-0efd00046bc2'
+									'cd289eaa-eacf-11ef-0a80-016f000e54c2'
 							)?.value,
 						},
 						// eslint-disable-next-line no-mixed-spaces-and-tabs
