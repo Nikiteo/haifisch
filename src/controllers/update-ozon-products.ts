@@ -1,10 +1,10 @@
-import Logger from '../lib/logger'
+import { Logger } from '../lib'
 import {
 	createProducts,
 	getProducts,
 } from '../services/moysklad/productController'
-import { getOzonAttributes, getOzonOffers } from '../services/ozon/api'
-import { Product } from '../types/msTypes'
+import { getOzonAttributes, getOzonOffers } from '../services'
+import { Product } from '../types/ms-types'
 import { ProductInfoWithAttributes } from '../types/ozon/types'
 
 import { prepareOzonOffers } from '../utils/ozon/prepareOzonOffers'

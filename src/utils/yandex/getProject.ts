@@ -4,7 +4,7 @@ import {
 	fbyTopProject,
 	fbsTopProject,
 } from '../../database'
-import { type Project } from '../../types/msTypes'
+import { type Project } from '../../types/ms-types'
 
 export const getProject = (domain: string, type: string): Project => {
 	if (domain === 'Haifisch') {

@@ -1,7 +1,7 @@
 import axios from 'axios'
 import {} from '../../types/ozon/types'
 import { apiService } from './service'
-import Logger from '../../lib/logger'
+
 import {
 	type Shipments,
 	type RequestShipments,
@@ -9,7 +9,8 @@ import {
 	type Orders,
 	type ShipmentsData,
 	type Shipment,
-} from '../../types/sberTypes'
+} from '../../types/sber-types'
+import { Logger } from '../../lib'
 
 export const getSberShipments = async ({
 	...props

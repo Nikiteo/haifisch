@@ -1,5 +1,5 @@
-import { type SberStatuses, type Item } from '../../types/sberTypes'
-import { type CreatePosition, type Product } from '../../types/msTypes'
+import { type SberStatuses, type Item } from '../../types/sber-types'
+import { type CreatePosition, type Product } from '../../types/ms-types'
 
 export const preparePositions = (
 	products: Product[],

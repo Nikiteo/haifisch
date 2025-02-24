@@ -3,9 +3,9 @@ import {
 	type ResponseMS,
 	type Demand,
 	type ErrorResponse,
-} from '../../types/msTypes'
+} from '../../types/ms-types'
 import { apiService } from './service'
-import Logger from '../../lib/logger'
+import { Logger } from '../../lib'
 
 export const getDemands = async (dates: {
 	dateFrom: string

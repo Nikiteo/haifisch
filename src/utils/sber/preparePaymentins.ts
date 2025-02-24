@@ -1,6 +1,7 @@
-import Logger from '../../lib/logger'
-import { type Demand, type Paymentin } from '../../types/msTypes'
-import { type Shipment } from '../../types/sberTypes'
+import { Logger } from '../../lib'
+
+import { type Demand, type Paymentin } from '../../types/ms-types'
+import { type Shipment } from '../../types/sber-types'
 import { createPaymentin } from './createPaymentin'
 
 export const preparePaymentin = (

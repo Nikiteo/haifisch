@@ -1,5 +1,5 @@
-import { type Product, type Attribute } from '../../types/msTypes'
-import { type Shipment } from '../../types/sberTypes'
+import { type Product, type Attribute } from '../../types/ms-types'
+import { type Shipment } from '../../types/sber-types'
 
 export const prepareCustomerOrdersAttributes = (
 	products: Product[],

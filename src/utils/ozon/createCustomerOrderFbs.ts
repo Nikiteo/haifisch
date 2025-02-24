@@ -11,7 +11,7 @@ import {
 	ozonSalesChannel,
 	fbsStore,
 } from '../../database'
-import { type Product, type CustomerOrder } from '../../types/msTypes'
+import { type Product, type CustomerOrder } from '../../types/ms-types'
 import { prepareOzonFbsStatuses } from './prepareOzonFbsStatuses'
 import { prepareOzonPositions } from './prepareOzonPositions'
 import { Operation, PostingFbs } from '../../types/ozon/ozon-types'
@@ -143,8 +143,9 @@ export const createCustomerOrderFbs = (
 				id: 'cd289eaa-eacf-11ef-0a80-016f000e54c2',
 				name: 'Дата получения возврата',
 				type: 'string',
-				value:
-					dayjs(refundDate).format('YYYY-MM-DD HH:mm:ss.SSS') || '',
+				value: refundDate
+					? dayjs(refundDate).format('YYYY-MM-DD HH:mm:ss.SSS')
+					: '',
 			},
 		],
 		organization,

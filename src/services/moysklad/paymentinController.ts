@@ -3,9 +3,9 @@ import {
 	type ErrorResponse,
 	type ResponseMS,
 	type Paymentin,
-} from '../../types/msTypes'
+} from '../../types/ms-types'
 import { apiService } from './service'
-import Logger from '../../lib/logger'
+import { Logger } from '../../lib'
 
 export const getPaymentin = async (dates: {
 	dateFrom: string

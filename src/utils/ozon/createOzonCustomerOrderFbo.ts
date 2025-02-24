@@ -10,7 +10,7 @@ import {
 	country,
 	ozonSalesChannel,
 } from '../../database'
-import { type Product, type CustomerOrder } from '../../types/msTypes'
+import { type Product, type CustomerOrder } from '../../types/ms-types'
 import { prepareOzonPositions } from './prepareOzonPositions'
 import { prepareOzonStatuses } from './prepareOzonStatuses'
 import { Operation, PostingFbo } from '../../types/ozon/ozon-types'

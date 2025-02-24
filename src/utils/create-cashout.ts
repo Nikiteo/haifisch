@@ -20,7 +20,7 @@ import {
 	taxes,
 	writing,
 } from '../database'
-import { type Owner, type Cashout, type Meta } from '../types/msTypes'
+import { type Owner, type Cashout, type Meta } from '../types/ms-types'
 
 interface CreateCashoutObjectProps {
 	username?: string

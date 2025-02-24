@@ -1,5 +1,5 @@
 import { states } from '../../database'
-import { type State } from '../../types/msTypes'
+import { type State } from '../../types/ms-types'
 import { OrderFbsOzonStatus } from '../../types/ozon/types'
 
 export const prepareOzonFbsStatuses = (status?: string): State => {

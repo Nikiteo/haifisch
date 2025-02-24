@@ -1,4 +1,4 @@
-import { type CreatePosition, type Product } from '../../types/msTypes'
+import { type CreatePosition, type Product } from '../../types/ms-types'
 import {
 	type OrderStatsStatusType,
 	type OrdersStatsItemDTO,

@@ -1,8 +1,7 @@
-import Logger from '../lib/logger'
+import { Logger } from '../lib'
+import { getCampaigns, getOffers, sendPrices } from '../services'
 import { getProducts } from '../services/moysklad/productController'
-import { getCampaigns } from '../services/yandex/api'
-import { getOffers } from '../services/yandex/offer-controller'
-import { sendPrices } from '../services/yandex/update-price'
+
 import { type UpdateBusinessPricesRequest } from '../types/yandex/api'
 
 export const updateYandexPrice = async (

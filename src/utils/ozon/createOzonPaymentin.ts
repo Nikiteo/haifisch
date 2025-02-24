@@ -1,4 +1,4 @@
-import { type Demand, type Paymentin } from '../../types/msTypes'
+import { type Demand, type Paymentin } from '../../types/ms-types'
 
 export const createOzonPaymentin = (
 	demand: Demand,

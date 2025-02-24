@@ -4,7 +4,7 @@ import {
 	priceTypeHF,
 	priceTypeTop,
 } from '../../database'
-import { type Product } from '../../types/msTypes'
+import { type Product } from '../../types/ms-types'
 import { type GetOfferMappingDTO } from '../../types/yandex/api'
 import { createProduct } from './createProduct'
 import { getAttributes } from './getAttributes'

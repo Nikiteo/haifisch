@@ -1,11 +1,11 @@
-import Logger from '../lib/logger'
+import { Logger } from '../lib'
+import { getCampaigns, getOffers } from '../services'
 import {
 	createProducts,
 	getProducts,
 } from '../services/moysklad/productController'
-import { getCampaigns } from '../services/yandex/api'
-import { getOffers } from '../services/yandex/offer-controller'
-import { type Product } from '../types/msTypes'
+
+import { type Product } from '../types/ms-types'
 import { prepareProducts } from '../utils/yandex/prepareProducts'
 
 const getNotSellingProducts = (

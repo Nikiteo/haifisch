@@ -1,6 +1,6 @@
 import { states } from '../../database'
-import { type State } from '../../types/msTypes'
-import { SberStatuses } from '../../types/sberTypes'
+import { type State } from '../../types/ms-types'
+import { SberStatuses } from '../../types/sber-types'
 
 export const prepareStatuses = (status?: SberStatuses): State => {
 	switch (status) {

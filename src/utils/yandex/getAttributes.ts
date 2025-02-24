@@ -1,5 +1,5 @@
 import dayjs from 'dayjs'
-import { type Attribute } from '../../types/msTypes'
+import { type Attribute } from '../../types/ms-types'
 import { type GetOfferMappingDTO } from '../../types/yandex/api'
 dayjs().format()
 

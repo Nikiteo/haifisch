@@ -1,5 +1,6 @@
-import Logger from '../../lib/logger'
-import { type Demand, type Paymentin } from '../../types/msTypes'
+import { Logger } from '../../lib'
+
+import { type Demand, type Paymentin } from '../../types/ms-types'
 import {
 	type OrdersStatsOrderDTO,
 	type EnrichedOrdersStatsOrderDTO,

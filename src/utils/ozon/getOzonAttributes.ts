@@ -1,4 +1,4 @@
-import { type Attribute } from '../../types/msTypes'
+import { type Attribute } from '../../types/ms-types'
 import { ProductInfoWithAttributes } from '../../types/ozon/types'
 
 const prepareVolume = (

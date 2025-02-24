@@ -7,7 +7,7 @@ import {
 	country,
 	organization,
 } from '../../database'
-import { type Product } from '../../types/msTypes'
+import { type Product } from '../../types/ms-types'
 import { type ProductInfoWithAttributes } from '../../types/ozon/types'
 import { getAttributes } from './getOzonAttributes'
 

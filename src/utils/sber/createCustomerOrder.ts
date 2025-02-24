@@ -10,8 +10,8 @@ import {
 	sberSalesChannel,
 	fbsStore,
 } from '../../database'
-import { type Shipment } from '../../types/sberTypes'
-import { type Product, type CustomerOrder } from '../../types/msTypes'
+import { type Shipment } from '../../types/sber-types'
+import { type Product, type CustomerOrder } from '../../types/ms-types'
 import { prepareStatuses } from './prepareStatuses'
 import { prepareCustomerOrdersAttributes } from './prepareCustomerOrdersAttibutes'
 import { preparePositions } from './preparePositions'

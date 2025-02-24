@@ -1,5 +1,5 @@
 import dayjs from 'dayjs'
-import Logger from '../lib/logger'
+import { Logger } from '../lib'
 import utc from 'dayjs/plugin/utc'
 import {
 	getSberOrders,
@@ -12,7 +12,7 @@ import {
 import { getProducts } from '../services/moysklad/productController'
 import { prepareCustomerOrders } from '../utils/sber/prepareCustomerOrders'
 import { createDemand, getDemands } from '../services/moysklad/demandController'
-import { type CustomerOrder } from '../types/msTypes'
+import { type CustomerOrder } from '../types/ms-types'
 import { prepareDemands } from '../utils/yandex/prepareDemands'
 import { createPaymentin } from '../services/moysklad/paymentinController'
 import { preparePaymentin } from '../utils/sber/preparePaymentins'

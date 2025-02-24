@@ -4,7 +4,7 @@ import {
 	type SalesReturn,
 	type Paymentout,
 	type State,
-} from '../../types/msTypes'
+} from '../../types/ms-types'
 import {
 	type OrdersStatsSubsidyType,
 	type OrdersStatsPaymentDTO,

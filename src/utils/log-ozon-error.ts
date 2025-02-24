@@ -1,5 +1,5 @@
 import axios from 'axios'
-import Logger from '../lib/logger'
+import { Logger } from '../lib'
 import { type ErrorResponse } from '../types/ozon/ozon-types'
 
 export const logOzonError = (error: unknown): void => {

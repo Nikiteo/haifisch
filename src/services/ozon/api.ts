@@ -47,7 +47,6 @@ import {
 	Operation,
 } from '../../types/ozon/ozon-types'
 import { logOzonError } from '../../utils/log-ozon-error'
-import Logger from '../../lib/logger'
 
 export const getActs = async (
 	props: GetCarriageAvailableListRequest
@@ -130,7 +129,7 @@ export const getProductPrices = async ({
 	return response?.items
 }
 
-export const sendPrices = async ({
+export const sendOzonPrices = async ({
 	...props
 }: ImportProductPricesRequest): Promise<
 	ImportProductPricesResponse | undefined
@@ -238,14 +237,14 @@ export const getReturnPng = async ({
 	return response?.png
 }
 
-export const getPromos = async (): Promise<
+export const getOzonPromos = async (): Promise<
 	GetActionsResponse['result'] | undefined
 > => {
 	const response = await getRequest<GetActionsResponse>('v1/actions')
 	return response?.result
 }
 
-export const getPromosOffers = async ({
+export const getOzonPromosOffers = async ({
 	...props
 }: GetActionCandidatesRequest): Promise<
 	ActionCandidatesProduct[] | undefined
@@ -287,7 +286,7 @@ export const sendPromosOffers = async ({
 	return response?.result
 }
 
-export const deletePromosOffers = async ({
+export const deleteOzonPromosOffers = async ({
 	...props
 }: DeactivateActionProductsRequest): Promise<
 	DeactivateActionProductsResponse['result'] | undefined

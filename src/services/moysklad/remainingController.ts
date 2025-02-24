@@ -3,8 +3,9 @@ import {
 	type ResponseMS,
 	type ErrorResponse,
 	type Remainings,
-} from '../../types/msTypes'
-import Logger from '../../lib/logger'
+} from '../../types/ms-types'
+import { Logger } from '../../lib'
+
 import { apiService } from './service'
 
 export const getRemainingGoods = async (): Promise<

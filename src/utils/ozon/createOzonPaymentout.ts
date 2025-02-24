@@ -1,4 +1,4 @@
-import { type SalesReturn, type Paymentout } from '../../types/msTypes'
+import { type SalesReturn, type Paymentout } from '../../types/ms-types'
 
 export const createOzonPaymentout = (
 	ret: SalesReturn,

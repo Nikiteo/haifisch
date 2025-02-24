@@ -1,7 +1,6 @@
-import Logger from '../lib/logger'
+import { Logger } from '../lib'
+import { getCampaigns, getStocks, sendStocks } from '../services'
 import { getProducts } from '../services/moysklad/productController'
-import { getCampaigns } from '../services/yandex/api'
-import { getStocks, sendStocks } from '../services/yandex/stock-controller'
 import {
 	type UpdateStockDTO,
 	type UpdateStocksRequest,

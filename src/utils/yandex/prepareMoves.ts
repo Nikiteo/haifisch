@@ -1,4 +1,4 @@
-import { type Product, type Move } from '../../types/msTypes'
+import { type Product, type Move } from '../../types/ms-types'
 import { type ReturnDTO } from '../../types/yandex/api'
 import { createMove } from './createMove'
 

@@ -5,8 +5,8 @@ import {
 	type ResponseMS,
 	type CustomerOrder,
 	type ErrorResponse,
-} from '../../types/msTypes'
-import Logger from '../../lib/logger'
+} from '../../types/ms-types'
+import { Logger } from '../../lib'
 
 export const getCustomerOrders = async (
 	dates: {

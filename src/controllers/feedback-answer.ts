@@ -1,9 +1,6 @@
-import Logger from '../lib/logger'
-import { getCampaigns } from '../services/yandex/api'
-import {
-	addFeedback,
-	getFeedbacks,
-} from '../services/yandex/feedback-controller'
+import { Logger } from '../lib'
+import { addFeedback, getCampaigns, getFeedbacks } from '../services'
+
 import {
 	type GoodsFeedbackDTO,
 	type UpdateGoodsFeedbackCommentRequest,

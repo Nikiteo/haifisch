@@ -1,17 +1,18 @@
-import Logger from './lib/logger'
 import { bot } from './bot'
-import { onText } from './lib/on-text'
-import { syncCommand } from './lib/sync-command'
-import { stocksCommand } from './lib/stocks-command'
 import { remainingCommand } from './controllers'
-import { updateCommand } from './lib/update-command'
-import { addPromos } from './lib/add-promos'
-import { addYandexCofinance } from './lib/add-cofinance'
-import { feedbacks } from './lib/feedbacks'
-import { deletePromos } from './lib/delete-promos'
-import { updatePrices } from './lib/update-prices'
-import { actCreateOzon } from './lib/act-create-ozon'
-import { howMuchMoney } from './lib/how-much-money'
+import {
+	Logger,
+	syncCommand,
+	updateCommand,
+	stocksCommand,
+	addPromos,
+	deletePromos,
+	updatePrices,
+	actCreateOzon,
+	addYandexCofinance,
+	feedbacks,
+	onText,
+} from './lib'
 
 void bot.telegram.setMyCommands([
 	{ command: '/sync', description: 'Синхронизировать' },

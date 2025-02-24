@@ -1,6 +1,6 @@
 import { bot } from '../bot'
-import { checkUser } from '../lib/check-user'
-import Logger from '../lib/logger'
+import { checkUser, Logger } from '../lib'
+
 import { getRemainingGoods } from '../services/moysklad/remainingController'
 
 export const remainingCommand = (): void => {

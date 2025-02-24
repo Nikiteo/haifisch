@@ -1,6 +1,6 @@
 import { bot } from '../bot'
 import { addOzonCofinance, addCofinance } from '../controllers'
-import Logger from './logger'
+import { Logger } from '../lib'
 
 export const addYandexCofinance = (): void => {
 	bot.command('cofinance', async ctx => {

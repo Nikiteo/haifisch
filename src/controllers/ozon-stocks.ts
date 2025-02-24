@@ -1,6 +1,6 @@
-import Logger from '../lib/logger'
+import { Logger } from '../lib'
 import { getProducts } from '../services/moysklad/productController'
-import { getOzonStocks, sendOzonStocks } from '../services/ozon/api'
+import { getOzonStocks, sendOzonStocks } from '../services'
 import {
 	UpdateProductStocksRequest,
 	GetProductStocksRequestVisibilityEnum,

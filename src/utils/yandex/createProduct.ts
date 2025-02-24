@@ -8,7 +8,7 @@ import {
 	country,
 	organization,
 } from '../../database'
-import { type Product } from '../../types/msTypes'
+import { type Product } from '../../types/ms-types'
 import { type GetOfferMappingDTO } from '../../types/yandex/api'
 import { getAttributes } from './getAttributes'
 

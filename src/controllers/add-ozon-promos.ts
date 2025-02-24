@@ -1,10 +1,11 @@
-import Logger from '../lib/logger'
-import { getProducts } from '../services/moysklad/productController'
+import { Logger } from '../lib'
 import {
-	getPromos,
-	getPromosOffers,
+	getOzonPromos,
+	getOzonPromosOffers,
 	sendPromosOffers,
-} from '../services/ozon/api'
+} from '../services'
+import { getProducts } from '../services/moysklad/productController'
+
 import { ActivateActionProductsRequest } from '../types/ozon/ozon-types'
 import { PromoOffersById } from '../types/ozon/types'
 
@@ -20,7 +21,7 @@ export const addOzonPromos = async (
 		if (!products || products.rows.length === 0) return
 
 		Logger.info(`[${store}]: Получены данные по кампаниям магазина...`)
-		const promos = await getPromos()
+		const promos = await getOzonPromos()
 		Logger.info(`[${store}]: Получены данные по акциям из магазина...`)
 
 		const promosIds =
@@ -34,7 +35,7 @@ export const addOzonPromos = async (
 			const offersById: PromoOffersById = {}
 			await Promise.all(
 				ids.map(async id => {
-					const offer = await getPromosOffers({
+					const offer = await getOzonPromosOffers({
 						action_id: id,
 						limit: 1000,
 					})

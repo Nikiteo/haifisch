@@ -1,5 +1,5 @@
-import Logger from '../lib/logger'
-import { createAct, getActs, getReturnPng } from '../services/ozon/api'
+import { Logger } from '../lib'
+import { createAct, getActs, getReturnPng } from '../services'
 
 export const createActOzon = async (
 	store: string,

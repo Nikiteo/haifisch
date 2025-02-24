@@ -1,6 +1,6 @@
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
-import Logger from '../lib/logger'
+import { Logger } from '../lib'
 import { createDemand, getDemands } from '../services/moysklad/demandController'
 import {
 	getCustomerOrders,
@@ -19,7 +19,7 @@ import {
 	createSalesReturn,
 	getSalesReturn,
 } from '../services/moysklad/salesreturnController'
-import { type CustomerOrder } from '../types/msTypes'
+import { type CustomerOrder } from '../types/ms-types'
 import { prepareOzonCustomerOrders } from '../utils/ozon/prepareOzonCustomerOrder'
 import { prepareOzonPaymentin } from '../utils/ozon/prepareOzonPaymentin'
 import { prepareOzonPaymentout } from '../utils/ozon/prepareOzonPaymentout'
@@ -30,7 +30,7 @@ import {
 	getOzonFbsOrders,
 	getOzonReturns,
 	getTransactions,
-} from '../services/ozon/api'
+} from '../services'
 import {
 	ListFinanceTransactionsRequestTransactionTypeEnum,
 	ListPostingsFboRequestDirEnum,

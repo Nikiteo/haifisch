@@ -1,4 +1,4 @@
-import { type Product, type CreatePosition } from '../../types/msTypes'
+import { type Product, type CreatePosition } from '../../types/ms-types'
 import { PostingFbo, PostingFbs } from '../../types/ozon/ozon-types'
 
 type ProductItem<T> = T extends (infer U)[] ? U : never

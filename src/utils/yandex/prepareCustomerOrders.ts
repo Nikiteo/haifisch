@@ -1,6 +1,7 @@
 import dayjs from 'dayjs'
-import Logger from '../../lib/logger'
-import { type Product, type CustomerOrder } from '../../types/msTypes'
+import { Logger } from '../../lib'
+
+import { type Product, type CustomerOrder } from '../../types/ms-types'
 import { createCustomerOrder } from './createCustomerOrder'
 import {
 	type EnrichedOrdersStatsOrderDTO,

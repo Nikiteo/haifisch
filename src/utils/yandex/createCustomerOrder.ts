@@ -9,7 +9,7 @@ import {
 	country,
 	salesChannels,
 } from '../../database'
-import { type Product, type CustomerOrder } from '../../types/msTypes'
+import { type Product, type CustomerOrder } from '../../types/ms-types'
 import { prepareCustomerOrdersAttributes } from './customerOrderAttributes'
 import { getProject } from './getProject'
 import { getStore } from './getStore'

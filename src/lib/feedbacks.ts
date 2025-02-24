@@ -1,7 +1,7 @@
 import { bot } from '../bot'
 import { feedbackAnswer } from '../controllers'
 
-import Logger from './logger'
+import { Logger } from '../lib'
 
 export const feedbacks = (): void => {
 	bot.command('feedbacks', async ctx => {

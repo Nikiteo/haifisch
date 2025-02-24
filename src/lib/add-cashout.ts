@@ -1,5 +1,5 @@
 import { checkUser } from './check-user'
-import Logger from './logger'
+import { Logger } from '../lib'
 import { createCashout } from '../services/moysklad/cashoutController'
 import { createCashoutObject, getExpenseItem } from '../utils/create-cashout'
 import { ReactionType } from 'telegraf/typings/core/types/typegram'

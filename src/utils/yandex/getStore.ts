@@ -1,5 +1,5 @@
 import { fbsStore, fbyHfStore, fbyTopStore } from '../../database'
-import { type Store } from '../../types/msTypes'
+import { type Store } from '../../types/ms-types'
 
 export const getStore = (domain: string, type: string): Store => {
 	if (domain === 'Haifisch') {

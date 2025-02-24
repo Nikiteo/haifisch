@@ -1,7 +1,6 @@
-import { bot } from '../bot'
 import { getBankAccounts } from '../services/tbank/api'
 import { AccountInfo3 } from '../types/tbank/tbank'
-import Logger from './logger'
+import { Logger } from '../lib'
 
 interface HowMuchMoney {
 	username?: string

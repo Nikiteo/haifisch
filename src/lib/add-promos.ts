@@ -1,7 +1,7 @@
 import { bot } from '../bot'
 import { addOzonPromos, addYandexPromos } from '../controllers'
 import { checkUser } from './check-user'
-import Logger from './logger'
+import { Logger } from '../lib'
 
 export const addPromos = (): void => {
 	bot.command('promos', async ctx => {

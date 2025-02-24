@@ -1,5 +1,5 @@
 import axios, { AxiosError } from 'axios'
-import Logger from '../../lib/logger'
+import { Logger } from '../../lib'
 
 const URL = process.env.TINKOFF_URL
 const tokens = {

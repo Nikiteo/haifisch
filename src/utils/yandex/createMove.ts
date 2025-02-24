@@ -14,7 +14,7 @@ import {
 	type Product,
 	type Move,
 	type CreatePosition,
-} from '../../types/msTypes'
+} from '../../types/ms-types'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
 import { type ReturnItemDTO, type ReturnDTO } from '../../types/yandex/api'
 

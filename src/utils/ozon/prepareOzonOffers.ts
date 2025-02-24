@@ -1,5 +1,5 @@
 import { currency, organization, priceTypeOzon } from '../../database'
-import { type Product } from '../../types/msTypes'
+import { type Product } from '../../types/ms-types'
 import { ProductInfoWithAttributes } from '../../types/ozon/types'
 import { createOzonProduct } from './createOzonProduct'
 import { getAttributes } from './getOzonAttributes'

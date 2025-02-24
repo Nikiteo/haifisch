@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 import axios from 'axios'
-import { type Cashout, type ErrorResponse } from '../../types/msTypes'
+import { type Cashout, type ErrorResponse } from '../../types/ms-types'
 import { apiService } from './service'
-import Logger from '../../lib/logger'
+import { Logger } from '../../lib'
 
 export const createCashout = async (
 	cashouts: Cashout

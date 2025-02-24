@@ -1,6 +1,11 @@
-import Logger from '../lib/logger'
+import { Logger } from '../lib'
 import { getProducts } from '../services/moysklad/productController'
-import { deletePromosOffers, getCampaigns, getPromos, getPromosOffers } from '../services/yandex/api'
+import {
+	deletePromosOffers,
+	getCampaigns,
+	getPromos,
+	getPromosOffers,
+} from '../services'
 import {
 	type DeletePromoOffersRequest,
 	type GetPromoOfferDTO,

@@ -1,5 +1,5 @@
 import axios from 'axios'
-import Logger from '../lib/logger'
+import { Logger } from '../lib'
 import { type ApiErrorResponse } from '../types/yandex/api'
 
 export const logError = (error: unknown): void => {

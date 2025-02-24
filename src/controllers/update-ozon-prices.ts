@@ -1,7 +1,7 @@
-import Logger from '../lib/logger'
+import { Logger } from '../lib'
 import { getProducts } from '../services/moysklad/productController'
-import { getProductPrices, sendPrices } from '../services/ozon/api'
-import { Product } from '../types/msTypes'
+import { getProductPrices, sendOzonPrices } from '../services'
+import { Product } from '../types/ms-types'
 import {
 	GetProductPricesRequestVisibilityEnum,
 	GetProductPrice,
@@ -59,7 +59,7 @@ export const updateOzonPrices = async (
 			Logger.info(`[${store}]: Отправляю данные по ценам магазина...`)
 
 			if (pricesForSend?.prices && pricesForSend?.prices?.length > 0) {
-				const response = await sendPrices(pricesForSend)
+				const response = await sendOzonPrices(pricesForSend)
 
 				if (response?.result) {
 					for (const item of response.result) {

@@ -1,4 +1,4 @@
-import Logger from './logger'
+import { Logger } from '../lib'
 import { bot } from '../bot'
 import { checkUser } from './check-user'
 import { createActOzon } from '../controllers'

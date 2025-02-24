@@ -1,4 +1,4 @@
-import { type Product, type Attribute } from '../../types/msTypes'
+import { type Product, type Attribute } from '../../types/ms-types'
 import {
 	type OrdersStatsOrderDTO,
 	type EnrichedOrdersStatsOrderDTO,
@@ -11,7 +11,7 @@ const createBidFee = (bidFees?: number[]): number => {
 				(acc, cur) => parseFloat(((acc + cur) / 100).toFixed(2)),
 				0
 				// eslint-disable-next-line no-mixed-spaces-and-tabs
-		  )
+			)
 		: 0
 }
 

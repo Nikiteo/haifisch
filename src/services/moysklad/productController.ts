@@ -3,9 +3,9 @@ import {
 	type ErrorResponse,
 	type ResponseMS,
 	type Product,
-} from '../../types/msTypes'
+} from '../../types/ms-types'
 import { apiService } from './service'
-import Logger from '../../lib/logger'
+import { Logger } from '../../lib'
 
 export const getProducts = async (): Promise<
 	ResponseMS<Product> | undefined

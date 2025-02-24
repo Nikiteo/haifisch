@@ -1,6 +1,6 @@
 import dayjs from 'dayjs'
-import { type Demand, type Paymentin } from '../../types/msTypes'
-import { type Item } from '../../types/sberTypes'
+import { type Demand, type Paymentin } from '../../types/ms-types'
+import { type Item } from '../../types/sber-types'
 
 export const createPaymentin = (
 	demand: Demand,

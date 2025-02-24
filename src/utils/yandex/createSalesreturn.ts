@@ -16,7 +16,7 @@ import {
 	type Demand,
 	type SalesReturn,
 	type Project,
-} from '../../types/msTypes'
+} from '../../types/ms-types'
 
 const projectRefundMap: Record<string, any> = {
 	[fbyTopProject.meta.href]: fbyTopRefund,
@@ -62,11 +62,11 @@ export const createSalesReturn = (
 
 	const moment =
 		place === 'OZON'
-			? demand.attributes?.find(
+			? (demand.attributes?.find(
 					attribute =>
-						attribute.id === 'cd289eaa-eacf-11ef-0a80-016f000e54c2'
+						attribute.id === '807c3874-9100-11ef-0a80-0de10004c634'
 					// eslint-disable-next-line no-mixed-spaces-and-tabs
-			  )?.value ?? demand.moment
+				)?.value ?? demand.moment)
 			: demand.moment
 	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 	// @ts-expect-error

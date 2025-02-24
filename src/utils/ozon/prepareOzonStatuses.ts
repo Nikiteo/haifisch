@@ -1,5 +1,5 @@
 import { states } from '../../database'
-import { type State } from '../../types/msTypes'
+import { type State } from '../../types/ms-types'
 import { OrderStatusEnum } from '../../types/ozon/types'
 
 export const prepareOzonStatuses = (status?: string): State => {

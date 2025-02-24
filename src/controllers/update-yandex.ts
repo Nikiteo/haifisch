@@ -1,5 +1,5 @@
 import dayjs from 'dayjs'
-import Logger from '../lib/logger'
+import { Logger } from '../lib'
 import { createDemand, getDemands } from '../services/moysklad/demandController'
 import {
 	getCustomerOrders,
@@ -18,9 +18,7 @@ import {
 	createSalesReturn,
 	getSalesReturn,
 } from '../services/moysklad/salesreturnController'
-import { getCampaigns } from '../services/yandex/api'
-import { getOrders, getOrdersStats } from '../services/yandex/order-controller'
-import { type CustomerOrder } from '../types/msTypes'
+import { type CustomerOrder } from '../types/ms-types'
 import { getCampaignIds } from '../utils/yandex/getCampaignIds'
 import { prepareCustomerOrders } from '../utils/yandex/prepareCustomerOrders'
 import { prepareDemands } from '../utils/yandex/prepareDemands'
@@ -29,7 +27,6 @@ import { preparePaymentout } from '../utils/yandex/preparePaymentout'
 import { prepareSalesReturn } from '../utils/yandex/prepareSalesreturn'
 import utc from 'dayjs/plugin/utc'
 import { createMove, getMoves } from '../services/moysklad/moveController'
-import { getReturns } from '../services/yandex/returns-controller'
 import { prepareMoves } from '../utils/yandex/prepareMoves'
 import {
 	type OrdersStatsOrderDTO,
@@ -37,6 +34,12 @@ import {
 	type EnrichedOrdersStatsOrderDTO,
 } from '../types/yandex/api'
 import { states } from '../database'
+import {
+	getCampaigns,
+	getOrdersStats,
+	getOrders,
+	getReturns,
+} from '../services'
 
 dayjs.extend(utc)
 

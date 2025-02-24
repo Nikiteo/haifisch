@@ -1,11 +1,11 @@
-import Logger from '../lib/logger'
-import { getProducts } from '../services/moysklad/productController'
+import { Logger } from '../lib'
 import {
-	deletePromosOffers,
-	getPromos,
-	getPromosOffers,
-	getPromosProducts,
-} from '../services/ozon/api'
+	deleteOzonPromosOffers,
+	getOzonPromos,
+	getOzonPromosOffers,
+} from '../services'
+import { getProducts } from '../services/moysklad/productController'
+
 import { DeactivateActionProductsRequest } from '../types/ozon/ozon-types'
 import { PromoOffersById } from '../types/ozon/types'
 
@@ -22,7 +22,7 @@ export const deleteOzonPromos = async (
 		if (products != null && products.rows.length > 0) {
 			Logger.info(`[${store}]: Получены данные по кампаниям магазина...`)
 
-			const promos = await getPromos()
+			const promos = await getOzonPromos()
 
 			Logger.info(`[${store}]: Получены данные по акциям из магазина...`)
 
@@ -37,7 +37,7 @@ export const deleteOzonPromos = async (
 				const offersById: PromoOffersById = {}
 				await Promise.all(
 					ids.map(async id => {
-						const offer = await getPromosOffers({
+						const offer = await getOzonPromosOffers({
 							action_id: id,
 							limit: 1000,
 						})
@@ -94,7 +94,7 @@ export const deleteOzonPromos = async (
 					promoForSend.product_ids &&
 					promoForSend?.product_ids?.length > 0
 				) {
-					const response = await deletePromosOffers(promoForSend)
+					const response = await deleteOzonPromosOffers(promoForSend)
 
 					if (
 						response?.product_ids != null &&

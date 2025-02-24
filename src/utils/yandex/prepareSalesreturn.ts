@@ -1,11 +1,12 @@
 import { states, country } from '../../database'
-import Logger from '../../lib/logger'
+import { Logger } from '../../lib'
+
 import {
 	type Demand,
 	type CustomerOrder,
 	type SalesReturn,
 	type Meta,
-} from '../../types/msTypes'
+} from '../../types/ms-types'
 import { createSalesReturn } from './createSalesreturn'
 
 const filterOrdersByState = (
@@ -65,7 +66,7 @@ export const prepareSalesReturn = (
 					states.RETURNED.meta,
 					states.PARTIALLY_RETURNED.meta,
 					// eslint-disable-next-line no-mixed-spaces-and-tabs
-			  ].filter(meta => meta !== undefined)
+				].filter(meta => meta !== undefined)
 
 		const filteredOrders = filterOrdersByState(orders, stateMeta)
 

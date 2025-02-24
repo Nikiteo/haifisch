@@ -4,7 +4,7 @@ import {
 	type Attribute,
 	type CustomerOrder,
 	type Demand,
-} from '../../types/msTypes'
+} from '../../types/ms-types'
 
 export const createOverhadSum = (
 	attributes?: Attribute[],
@@ -55,7 +55,8 @@ const createCarrier = (place?: string): { meta: Meta } => {
 }
 
 export const createDemand = (order: CustomerOrder, place?: string): Demand => {
-	const { meta, attributes, deliveryPlannedMoment, id, state, ...rest } = order
+	const { meta, attributes, deliveryPlannedMoment, id, state, ...rest } =
+		order
 
 	return {
 		...rest,
@@ -74,11 +75,11 @@ export const createDemand = (order: CustomerOrder, place?: string): Demand => {
 				? [
 						{
 							meta: {
-								href: 'https://api.moysklad.ru/api/remap/1.2/entity/customerorder/metadata/attributes/cd289eaa-eacf-11ef-0a80-016f000e54c2',
+								href: 'https://api.moysklad.ru/api/remap/1.2/entity/demand/metadata/attributes/807c3874-9100-11ef-0a80-0de10004c634',
 								type: 'attributemetadata',
 								mediaType: 'application/json',
 							},
-							id: 'cd289eaa-eacf-11ef-0a80-016f000e54c2',
+							id: '807c3874-9100-11ef-0a80-0de10004c634',
 							name: 'Дата получения возврата',
 							type: 'string',
 							value: order.attributes?.find(
@@ -88,7 +89,7 @@ export const createDemand = (order: CustomerOrder, place?: string): Demand => {
 							)?.value,
 						},
 						// eslint-disable-next-line no-mixed-spaces-and-tabs
-				  ]
+					]
 				: [],
 	}
 }

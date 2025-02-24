@@ -1,6 +1,7 @@
 import { states } from '../../database'
-import Logger from '../../lib/logger'
-import { type CustomerOrder, type Demand } from '../../types/msTypes'
+import { Logger } from '../../lib'
+
+import { type CustomerOrder, type Demand } from '../../types/ms-types'
 import { createDemand } from './createDemand'
 
 export const prepareDemands = (
@@ -25,8 +26,7 @@ export const prepareDemands = (
 				place === 'OZON'
 					? filteredOrders.filter(
 							order => order.state?.meta !== states.CANCELLED.meta
-							// eslint-disable-next-line no-mixed-spaces-and-tabs
-					  )
+						)
 					: filteredOrders
 
 			return validOrders.map(order => createDemand(order, place))
