@@ -29,10 +29,12 @@ const mapDemandToSalesReturn = (
 		if (matchingOrder) {
 			acc.push({
 				...cur,
-				positions: matchingOrder.positions?.map(pos => ({
-					...pos,
-					country,
-				})),
+				positions: matchingOrder.positions
+					? matchingOrder.positions?.map(pos => ({
+							...pos,
+							country,
+						}))
+					: [],
 			})
 		}
 		return acc

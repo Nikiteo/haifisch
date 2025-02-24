@@ -126,17 +126,17 @@ export const updateOzon = async (
 		})
 		Logger.info(`[${store}] Получены данные по заказам магазина...`)
 
-		const fboReturns = await getOzonReturns({
-			filter: {
-				logistic_return_date: {
-					time_from: filter.since,
-					time_to: filter.to,
-				},
-				return_schema: 'FBO',
-			},
-			last_id: 0,
-			limit: 500,
-		})
+		// const fboReturns = await getOzonReturns({
+		// 	filter: {
+		// 		logistic_return_date: {
+		// 			time_from: filter.since,
+		// 			time_to: filter.to,
+		// 		},
+		// 		return_schema: 'FBO',
+		// 	},
+		// 	last_id: 0,
+		// 	limit: 500,
+		// })
 
 		const fbsReturns = await getOzonReturns({
 			filter: {
@@ -228,6 +228,7 @@ export const updateOzon = async (
 			demands ?? [],
 			'OZON'
 		)
+
 		const newDemands = await createDemand(preparedDemands)
 
 		Logger.info(`[${store}] Создаю документы отгрузок...`)
