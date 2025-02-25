@@ -10,7 +10,6 @@ import {
 	NotificationType,
 	PingNotificationDTO,
 } from './types'
-import { message } from 'telegraf/filters'
 import { bot } from '../../bot'
 
 export const yandexRouter = Router()
@@ -27,11 +26,18 @@ yandexRouter.post('/notification', async (req: Request, res: Response) => {
 
 	switch (notificationType) {
 		case NotificationType.PING:
-			// await bot.telegram.sendMessage(chatId, message)
 			const ping: PingNotificationDTO = req.body
 			Logger.info(`Ping request: ${JSON.stringify(ping)}`)
 			Logger.info(`Response: ${JSON.stringify(response)}`)
 			res.json(response)
+			await bot.telegram.sendMessage(
+				838975962,
+				`Запрос: ${JSON.stringify(req.body)}`
+			)
+			await bot.telegram.sendMessage(
+				838975962,
+				`Запрос: ${JSON.stringify(response)}`
+			)
 			break
 
 		case NotificationType.ORDER_CREATED:
@@ -42,6 +48,14 @@ yandexRouter.post('/notification', async (req: Request, res: Response) => {
 			)
 			Logger.info(`Response: ${JSON.stringify(response)}`)
 			res.json(response)
+			await bot.telegram.sendMessage(
+				838975962,
+				`Запрос: ${JSON.stringify(req.body)}`
+			)
+			await bot.telegram.sendMessage(
+				838975962,
+				`Запрос: ${JSON.stringify(response)}`
+			)
 			break
 
 		case NotificationType.ORDER_CANCELLED:
@@ -52,6 +66,14 @@ yandexRouter.post('/notification', async (req: Request, res: Response) => {
 			)
 			Logger.info(`Response: ${JSON.stringify(response)}`)
 			res.json(response)
+			await bot.telegram.sendMessage(
+				838975962,
+				`Запрос: ${JSON.stringify(req.body)}`
+			)
+			await bot.telegram.sendMessage(
+				838975962,
+				`Запрос: ${JSON.stringify(response)}`
+			)
 			break
 
 		case NotificationType.ORDER_STATUS_UPDATED:
@@ -62,6 +84,14 @@ yandexRouter.post('/notification', async (req: Request, res: Response) => {
 			)
 			Logger.info(`Response: ${JSON.stringify(response)}`)
 			res.json(response)
+			await bot.telegram.sendMessage(
+				838975962,
+				`Запрос: ${JSON.stringify(req.body)}`
+			)
+			await bot.telegram.sendMessage(
+				838975962,
+				`Запрос: ${JSON.stringify(response)}`
+			)
 			break
 
 		case NotificationType.ORDER_RETURN_CREATED:
@@ -72,6 +102,14 @@ yandexRouter.post('/notification', async (req: Request, res: Response) => {
 			)
 			Logger.info(`Response: ${JSON.stringify(response)}`)
 			res.json(response)
+			await bot.telegram.sendMessage(
+				838975962,
+				`Запрос: ${JSON.stringify(req.body)}`
+			)
+			await bot.telegram.sendMessage(
+				838975962,
+				`Запрос: ${JSON.stringify(response)}`
+			)
 			break
 
 		default:
