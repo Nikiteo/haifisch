@@ -11,9 +11,9 @@ import {
 } from './types'
 import { bot } from '../../bot'
 
-export const ozon = Router()
+export const ozonRouter = Router()
 
-ozon.post('/', async (req: Request, res: Response) => {
+ozonRouter.post('/', async (req: Request, res: Response) => {
 	const { message_type } = req.body
 
 	const currentTime = new Date().toISOString()
