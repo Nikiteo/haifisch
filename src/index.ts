@@ -1,3 +1,5 @@
+import express from 'express'
+import bodyParser from 'body-parser'
 import { bot } from './bot'
 import { remainingCommand } from './controllers'
 import {
@@ -13,6 +15,34 @@ import {
 	feedbacks,
 	onText,
 } from './lib'
+import https from 'https'
+import fs from 'fs'
+
+const app = express()
+
+app.use(bodyParser.json())
+
+app.post('/notification', (req, res) => {
+	const { notificationType, time } = req.body
+
+	if (notificationType === 'PING') {
+		const response = {
+			version: '1.0',
+			name: 'Haifisch',
+			time: time,
+		}
+		res.json(response)
+	} else {
+		res.status(400).json({ error: 'Invalid notification type' })
+	}
+})
+
+const options = {
+	key: fs.readFileSync('path/to/your/private.key'),
+	cert: fs.readFileSync('path/to/your/certificate.crt'),
+}
+
+const httpsServer = https.createServer(options, app)
 
 void bot.telegram.setMyCommands([
 	{ command: '/sync', description: 'Синхронизировать' },
@@ -47,6 +77,10 @@ actCreateOzon()
 addYandexCofinance()
 feedbacks()
 onText()
+
+httpsServer.listen(3000, () => {
+	Logger.info('HTTPS сервер запущен на порту 3000')
+})
 
 void bot.launch({
 	dropPendingUpdates: true,
