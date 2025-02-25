@@ -10,30 +10,10 @@ import {
 	NotificationType,
 	PingNotificationDTO,
 } from './types'
-import ip6 from 'ip6'
-
-const allowedRanges = ['5.45.207.0/25', '141.8.142.0/25', '5.255.253.0/25']
-
-const isIpAllowed = (ip: string): boolean => {
-	return allowedRanges.some(range => ip6.cidrSubnet(range).contains(ip))
-}
 
 export const yandexRouter = Router()
 
 yandexRouter.post('/notification', (req: Request, res: Response) => {
-	const clientIp = req.ip
-
-	if (!clientIp) {
-		Logger.error('IP address is undefined')
-		return
-		// return res.status(400).json({ error: 'IP address is required' })
-	}
-
-	if (!isIpAllowed(clientIp)) {
-		Logger.error(`Access denied for IP: ${clientIp}`)
-		return
-	}
-
 	const { notificationType } = req.body
 
 	const currentTime = new Date().toISOString()
