@@ -15,7 +15,7 @@ import {
 	feedbacks,
 	onText,
 } from './lib'
-import https from 'https'
+import http from 'http'
 import fs from 'fs'
 
 const app = express()
@@ -37,12 +37,16 @@ app.post('/notification', (req, res) => {
 	}
 })
 
-const options = {
-	key: fs.readFileSync('path/to/your/private.key'),
-	cert: fs.readFileSync('path/to/your/certificate.crt'),
-}
+app.get('/notification', (req, res) => {
+	res.send('GET request received')
+})
 
-const httpsServer = https.createServer(options, app)
+// const options = {
+// 	key: fs.readFileSync('path/to/your/private.key'),
+// 	cert: fs.readFileSync('path/to/your/certificate.crt'),
+// }
+
+const httpServer = http.createServer(app)
 
 void bot.telegram.setMyCommands([
 	{ command: '/sync', description: 'Синхронизировать' },
@@ -78,8 +82,8 @@ addYandexCofinance()
 feedbacks()
 onText()
 
-httpsServer.listen(3000, () => {
-	Logger.info('HTTPS сервер запущен на порту 3000')
+httpServer.listen(80, () => {
+	Logger.info('HTTPS сервер запущен на порту 80')
 })
 
 void bot.launch({
