@@ -22,6 +22,7 @@ import { yandexRouter } from './services'
 const app = express()
 
 app.use(bodyParser.json())
+
 app.use(yandexRouter)
 
 const options = {

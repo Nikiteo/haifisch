@@ -75,6 +75,10 @@ export const onText = (): void => {
 					sendMessage,
 				})
 			}
+
+			if (text.toLocaleLowerCase().includes('какой это chatId')) {
+				return await sendMessage(`Твой текущий chatID: ${chatId}`)
+			}
 		} catch (err) {
 			Logger.error(err)
 		}

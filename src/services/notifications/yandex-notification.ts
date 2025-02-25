@@ -10,10 +10,12 @@ import {
 	NotificationType,
 	PingNotificationDTO,
 } from './types'
+import { message } from 'telegraf/filters'
+import { bot } from '../../bot'
 
 export const yandexRouter = Router()
 
-yandexRouter.post('/notification', (req: Request, res: Response) => {
+yandexRouter.post('/notification', async (req: Request, res: Response) => {
 	const { notificationType } = req.body
 
 	const currentTime = new Date().toISOString()
@@ -25,6 +27,7 @@ yandexRouter.post('/notification', (req: Request, res: Response) => {
 
 	switch (notificationType) {
 		case NotificationType.PING:
+			// await bot.telegram.sendMessage(chatId, message)
 			const ping: PingNotificationDTO = req.body
 			Logger.info(`Ping request: ${JSON.stringify(ping)}`)
 			Logger.info(`Response: ${JSON.stringify(response)}`)
