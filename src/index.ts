@@ -66,8 +66,8 @@ onText()
 const httpsServer = https.createServer(options, app)
 
 httpsServer
-	.listen(3000, () => {
-		Logger.info('HTTPS сервер запущен на порту 3000')
+	.listen(443, () => {
+		Logger.info('HTTPS сервер запущен на порту 443')
 	})
 	.on('error', err => {
 		Logger.error(`Ошибка при запуске сервера: ${err.message}`)
