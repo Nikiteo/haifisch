@@ -1,4 +1,4 @@
-import express from 'express'
+import express, { Request, Response } from 'express'
 import bodyParser from 'body-parser'
 import { bot } from './bot'
 import { remainingCommand } from './controllers'
@@ -16,13 +16,14 @@ import {
 	onText,
 } from './lib'
 import http from 'http'
-import fs from 'fs'
 
 const app = express()
 
+// Middleware для парсинга JSON
 app.use(bodyParser.json())
 
-app.post('/notification', (req, res) => {
+// Обработка POST-запроса на /notification
+app.post('/notification', (req: Request, res: Response) => {
 	const { notificationType, time } = req.body
 
 	if (notificationType === 'PING') {
@@ -37,17 +38,15 @@ app.post('/notification', (req, res) => {
 	}
 })
 
-app.get('/notification', (req, res) => {
+// Обработка GET-запроса на /notification
+app.get('/notification', (req: Request, res: Response) => {
 	res.send('GET request received')
 })
 
-// const options = {
-// 	key: fs.readFileSync('path/to/your/private.key'),
-// 	cert: fs.readFileSync('path/to/your/certificate.crt'),
-// }
-
+// Настройка HTTP-сервера
 const httpServer = http.createServer(app)
 
+// Настройка команд бота
 void bot.telegram.setMyCommands([
 	{ command: '/sync', description: 'Синхронизировать' },
 	{ command: '/remainings', description: 'Показать остатки' },
@@ -63,6 +62,7 @@ void bot.telegram.setMyCommands([
 
 Logger.info('Bot started!')
 
+// Обработка запуска бота
 bot.start(async ctx => {
 	const username = ctx.from.username
 	const text = ctx.message.text
@@ -70,6 +70,7 @@ bot.start(async ctx => {
 	await ctx.reply('Добро пожаловать в телеграм бот Haifisch')
 })
 
+// Инициализация команд
 syncCommand()
 remainingCommand()
 updateCommand()
@@ -82,10 +83,12 @@ addYandexCofinance()
 feedbacks()
 onText()
 
+// Запуск HTTP-сервера на порту 80
 httpServer.listen(80, () => {
-	Logger.info('HTTPS сервер запущен на порту 80')
+	Logger.info('HTTP сервер запущен на порту 80')
 })
 
+// Запуск бота
 void bot.launch({
 	dropPendingUpdates: true,
 })
