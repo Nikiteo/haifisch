@@ -84,9 +84,13 @@ feedbacks()
 onText()
 
 // Запуск HTTP-сервера на порту 80
-httpServer.listen(80, () => {
-	Logger.info('HTTP сервер запущен на порту 80')
-})
+httpServer
+	.listen(80, () => {
+		Logger.info('HTTP сервер запущен на порту 80')
+	})
+	.on('error', err => {
+		Logger.error(`Ошибка при запуске сервера: ${err.message}`)
+	})
 
 // Запуск бота
 void bot.launch({
