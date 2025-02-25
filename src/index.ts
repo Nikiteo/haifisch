@@ -94,3 +94,5 @@ httpsServer
 void bot.launch({
 	dropPendingUpdates: true,
 })
+
+//_globalsign-domain-verification=ihqNxR9RueepAkWmKULP5lebS-ma-kudUJ_wVbZRR4

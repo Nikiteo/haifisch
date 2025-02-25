@@ -49,6 +49,7 @@ const getDateRange = (months: number) => {
 		.set('milliseconds', 0)
 		.format('YYYY-MM-DD')
 	const dateTo = dayjs()
+		.add(months, 'month')
 		.set('hour', 23)
 		.set('minute', 59)
 		.set('second', 59)
