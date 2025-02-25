@@ -17,36 +17,17 @@ import {
 } from './lib'
 import https from 'https'
 import fs from 'fs'
+import { yandexRouter } from './services'
 
 const app = express()
 
 app.use(bodyParser.json())
-
-app.post('/notification', (req: Request, res: Response) => {
-	const { notificationType, time } = req.body
-
-	if (notificationType === 'PING') {
-		const response = {
-			version: '1.0',
-			name: 'Haifisch',
-			time: time,
-		}
-		res.json(response)
-	} else {
-		res.status(400).json({ error: 'Invalid notification type' })
-	}
-})
-
-app.get('/notification', (req: Request, res: Response) => {
-	res.send('GET request received')
-})
+app.use(yandexRouter)
 
 const options = {
 	key: fs.readFileSync('/etc/letsencrypt/live/haifisch.ru/privkey.pem'),
 	cert: fs.readFileSync('/etc/letsencrypt/live/haifisch.ru/fullchain.pem'),
 }
-
-const httpsServer = https.createServer(options, app)
 
 void bot.telegram.setMyCommands([
 	{ command: '/sync', description: 'Синхронизировать' },
@@ -82,15 +63,16 @@ addYandexCofinance()
 feedbacks()
 onText()
 
+const httpsServer = https.createServer(options, app)
+
 httpsServer
-	.listen(443, () => {
-		Logger.info('HTTPS сервер запущен на порту 443')
+	.listen(3000, () => {
+		Logger.info('HTTPS сервер запущен на порту 3000')
 	})
 	.on('error', err => {
 		Logger.error(`Ошибка при запуске сервера: ${err.message}`)
 	})
 
-// Запуск бота
 void bot.launch({
 	dropPendingUpdates: true,
 })
