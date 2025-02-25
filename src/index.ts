@@ -15,14 +15,13 @@ import {
 	feedbacks,
 	onText,
 } from './lib'
-import http from 'http'
+import https from 'https'
+import fs from 'fs'
 
 const app = express()
 
-// Middleware для парсинга JSON
 app.use(bodyParser.json())
 
-// Обработка POST-запроса на /notification
 app.post('/notification', (req: Request, res: Response) => {
 	const { notificationType, time } = req.body
 
@@ -38,15 +37,17 @@ app.post('/notification', (req: Request, res: Response) => {
 	}
 })
 
-// Обработка GET-запроса на /notification
 app.get('/notification', (req: Request, res: Response) => {
 	res.send('GET request received')
 })
 
-// Настройка HTTP-сервера
-const httpServer = http.createServer(app)
+const options = {
+	key: fs.readFileSync('/etc/letsencrypt/live/haifisch.ru/privkey.pem'),
+	cert: fs.readFileSync('/etc/letsencrypt/live/haifisch.ru/fullchain.pem'),
+}
 
-// Настройка команд бота
+const httpsServer = https.createServer(options, app)
+
 void bot.telegram.setMyCommands([
 	{ command: '/sync', description: 'Синхронизировать' },
 	{ command: '/remainings', description: 'Показать остатки' },
@@ -62,7 +63,6 @@ void bot.telegram.setMyCommands([
 
 Logger.info('Bot started!')
 
-// Обработка запуска бота
 bot.start(async ctx => {
 	const username = ctx.from.username
 	const text = ctx.message.text
@@ -70,7 +70,6 @@ bot.start(async ctx => {
 	await ctx.reply('Добро пожаловать в телеграм бот Haifisch')
 })
 
-// Инициализация команд
 syncCommand()
 remainingCommand()
 updateCommand()
@@ -83,10 +82,9 @@ addYandexCofinance()
 feedbacks()
 onText()
 
-// Запуск HTTP-сервера на порту 80
-httpServer
-	.listen(8080, () => {
-		Logger.info('HTTP сервер запущен на порту 8080')
+httpsServer
+	.listen(443, () => {
+		Logger.info('HTTPS сервер запущен на порту 443')
 	})
 	.on('error', err => {
 		Logger.error(`Ошибка при запуске сервера: ${err.message}`)
