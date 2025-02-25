@@ -1,4 +1,4 @@
-import express, { Request, Response } from 'express'
+import express from 'express'
 import bodyParser from 'body-parser'
 import { bot } from './bot'
 import { remainingCommand } from './controllers'
@@ -76,5 +76,3 @@ httpsServer
 void bot.launch({
 	dropPendingUpdates: true,
 })
-
-//_globalsign-domain-verification=ihqNxR9RueepAkWmKULP5lebS-ma-kudUJ_wVbZRR4
