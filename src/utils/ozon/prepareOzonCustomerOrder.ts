@@ -1,125 +1,206 @@
 import dayjs from 'dayjs'
-import { Logger } from '../../lib'
 
-import { type Product, type CustomerOrder } from '../../types/ms-types'
 import { createCustomerOrderFbs } from './createCustomerOrderFbs'
 import { createCustomerOrderFbo } from './createOzonCustomerOrderFbo'
 import { Operation, PostingFbo, PostingFbs } from '../../types/ozon/ozon-types'
-
-const createOrders = (
-	orders: (PostingFbo | PostingFbs)[],
-	products: Product[],
-	transactions: Operation[],
-	createOrderFn: (
-		cur: PostingFbo | PostingFbs,
-		boughtItems: Product[],
-		transactions: Operation[]
-	) => CustomerOrder
-): CustomerOrder[] => {
-	return orders.reduce<CustomerOrder[]>((acc, cur) => {
-		const { products: boughtProducts } = cur
-		const boughtItems = products.filter(product =>
-			boughtProducts?.some(item => item.offer_id === product.article)
-		)
-
-		if (boughtItems.length > 0) {
-			acc.push(createOrderFn(cur, boughtItems, transactions))
-		}
-		return acc
-	}, [])
-}
-
-const filterRecentOrders = (
-	orders: CustomerOrder[],
-	postingOrders: (PostingFbo | PostingFbs)[]
-): (PostingFbo | PostingFbs)[] => {
-	return postingOrders.filter(order =>
-		orders.every(item => item.name !== order.posting_number)
-	)
-}
-
-const mergeOrders = (
-	existingOrders: CustomerOrder[],
-	newOrders: CustomerOrder[]
-): CustomerOrder[] => {
-	return [...existingOrders, ...newOrders]
-}
+import { Logger } from '../../lib'
+import { Product, CustomerOrder } from '../../types/ms-types'
 
 export const prepareOzonCustomerOrders = (
 	products: Product[],
 	fboOrders: PostingFbo[],
 	fbsOrders: (PostingFbs & { refundDate?: string })[],
 	orders: CustomerOrder[],
-	transactions: Operation[]
+	prices: Operation[]
 ): CustomerOrder[] => {
 	try {
-		if (
-			products.length === 0 ||
-			(fboOrders.length === 0 && fbsOrders.length === 0)
-		) {
+		if (fboOrders.length === 0 && fbsOrders.length === 0) {
 			return []
 		}
 
-		const allOrders: CustomerOrder[] = []
-
-		const processOrders = (
-			postingOrders: (PostingFbo | PostingFbs)[],
-			createOrderFn: (
-				cur: PostingFbo | PostingFbs,
-				boughtItems: Product[],
-				transactions: Operation[]
-			) => CustomerOrder
-		) => {
-			const existingOrders = orders.reduce<CustomerOrder[]>(
-				(acc, order) => {
-					const recentOrders = postingOrders.filter(
-						cur =>
-							order.name === cur.posting_number &&
-							dayjs()
-								.add(3, 'hour')
-								.diff(
-									dayjs(order.deliveryPlannedMoment),
-									'month'
-								) <= 1
-					)
-
-					const createdOrders = createOrders(
-						recentOrders,
-						products,
-						transactions,
-						createOrderFn
-					)
-					return mergeOrders(
-						acc,
-						createdOrders.map(updatedOrder => ({
-							...order,
-							...updatedOrder,
-						}))
-					)
-				},
-				[]
-			)
-
-			const newPostingOrders = filterRecentOrders(orders, postingOrders)
-			const newCustomerOrders = createOrders(
-				newPostingOrders,
-				products,
-				transactions,
-				createOrderFn
-			)
-
-			return mergeOrders(existingOrders, newCustomerOrders)
+		if (products.length === 0) {
+			return []
 		}
 
-		if (fboOrders.length > 0) {
-			allOrders.push(...processOrders(fboOrders, createCustomerOrderFbo))
+		if (orders.length === 0) {
+			const allOrders = [] as CustomerOrder[]
+
+			if (fboOrders.length !== 0) {
+				const ordersFbo = fboOrders.reduce<CustomerOrder[]>(
+					(acc, cur) => {
+						const { products: boughtProducts } = cur
+						const boughtItems = products.filter(product =>
+							boughtProducts?.some(
+								item => item.offer_id === product.article
+							)
+						)
+						if (boughtItems.length > 0) {
+							acc.push(
+								createCustomerOrderFbo(cur, boughtItems, prices)
+							)
+						}
+						return acc
+					},
+					[]
+				)
+				allOrders.push(...ordersFbo)
+			}
+
+			if (fbsOrders.length !== 0) {
+				const ordersFbs = fbsOrders.reduce<CustomerOrder[]>(
+					(acc, cur) => {
+						const { products: boughtProducts } = cur
+						const boughtItems = products.filter(product =>
+							boughtProducts?.some(
+								item => item.offer_id === product.article
+							)
+						)
+						if (boughtItems.length > 0) {
+							acc.push(
+								createCustomerOrderFbs(cur, boughtItems, prices)
+							)
+						}
+						return acc
+					},
+					[]
+				)
+				allOrders.push(...ordersFbs)
+			}
+
+			return allOrders
 		}
 
-		if (fbsOrders.length > 0) {
-			allOrders.push(...processOrders(fbsOrders, createCustomerOrderFbs))
-		}
+		if (orders.length !== 0) {
+			const allOrders = [] as CustomerOrder[]
 
-		return allOrders
+			if (fboOrders.length !== 0) {
+				const ordersFbo = fboOrders.reduce<CustomerOrder[]>(
+					(acc, cur) => {
+						orders.forEach(order => {
+							if (
+								order.name === cur.posting_number &&
+								dayjs()
+									.add(3, 'hour')
+									.diff(
+										dayjs(order.deliveryPlannedMoment),
+										'month'
+									) <= 1
+							) {
+								const { products: boughtProducts } = cur
+								const boughtItems = products.filter(product =>
+									boughtProducts?.some(
+										item =>
+											item.offer_id === product.article
+									)
+								)
+								if (boughtItems.length > 0) {
+									const updatedOrders =
+										createCustomerOrderFbo(
+											cur,
+											boughtItems,
+											prices
+										)
+									acc.push({
+										...order,
+										...updatedOrders,
+									})
+								}
+							}
+						})
+						return acc
+					},
+					[]
+				)
+
+				const findNewOrders = fboOrders.filter(order =>
+					orders.every(item => item.name !== order.posting_number)
+				)
+
+				const newCustomerOrders = findNewOrders.reduce<CustomerOrder[]>(
+					(acc, cur) => {
+						const { products: boughtProducts } = cur
+						const boughtItems = products.filter(product =>
+							boughtProducts?.some(
+								item => item.offer_id === product.article
+							)
+						)
+						if (boughtItems.length > 0) {
+							acc.push(
+								createCustomerOrderFbo(cur, boughtItems, prices)
+							)
+						}
+						return acc
+					},
+					[]
+				)
+				allOrders.push(...ordersFbo, ...newCustomerOrders)
+			}
+
+			if (fbsOrders.length !== 0) {
+				const ordersFbs = fbsOrders.reduce<CustomerOrder[]>(
+					(acc, cur) => {
+						orders.forEach(order => {
+							if (
+								order.name === cur.posting_number &&
+								dayjs()
+									.add(3, 'hour')
+									.diff(
+										dayjs(order.deliveryPlannedMoment),
+										'month'
+									) <= 1
+							) {
+								const { products: boughtProducts } = cur
+								const boughtItems = products.filter(product =>
+									boughtProducts?.some(
+										item =>
+											item.offer_id === product.article
+									)
+								)
+								if (boughtItems.length > 0) {
+									const updatedOrders =
+										createCustomerOrderFbs(
+											cur,
+											boughtItems,
+											prices
+										)
+									acc.push({
+										...order,
+										...updatedOrders,
+									})
+								}
+							}
+						})
+						return acc
+					},
+					[]
+				)
+
+				const findNewOrders = fbsOrders.filter(order =>
+					orders.every(item => item.name !== order.posting_number)
+				)
+
+				const newCustomerOrders = findNewOrders.reduce<CustomerOrder[]>(
+					(acc, cur) => {
+						const { products: boughtProducts } = cur
+						const boughtItems = products.filter(product =>
+							boughtProducts?.some(
+								item => item.offer_id === product.article
+							)
+						)
+						if (boughtItems.length > 0) {
+							acc.push(
+								createCustomerOrderFbs(cur, boughtItems, prices)
+							)
+						}
+						return acc
+					},
+					[]
+				)
+				allOrders.push(...ordersFbs, ...newCustomerOrders)
+			}
+
+			return allOrders
+		}
 	} catch (err) {
 		Logger.error(err)
 	}
