@@ -31,6 +31,7 @@ export const onText = (): void => {
 				)
 
 				if (checkUser(username)) {
+					await ctx.sendMessage('Твой chatID: ' + chatId)
 					await ctx.sendDocument({ source: 'logs/all.log' })
 					await ctx.sendDocument({ source: 'logs/error.log' })
 				} else {
@@ -74,10 +75,6 @@ export const onText = (): void => {
 					text,
 					sendMessage,
 				})
-			}
-
-			if (text.toLocaleLowerCase().includes('какой это chatId')) {
-				return await sendMessage(`Твой текущий chatID: ${chatId}`)
 			}
 		} catch (err) {
 			Logger.error(err)
