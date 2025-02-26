@@ -1,7 +1,9 @@
-import { bot } from '../bot'
 import { Logger } from '../lib'
 import { getOrderById, OrderCreatedNotificationDTO } from '../services'
-import { getCustomerOrderByName } from '../services/moysklad/ordersController'
+import {
+	createNewCustomerOrder,
+	getCustomerOrderByName,
+} from '../services/moysklad/ordersController'
 import { getProducts } from '../services/moysklad/productController'
 import { createCustomerOrder } from '../utils/yandex/create-customer-order'
 
@@ -32,7 +34,7 @@ export const createProduct = async (order: OrderCreatedNotificationDTO) => {
 				newOrder,
 				boughtProducts
 			)
-			return newCustomerOrder
+			return await createNewCustomerOrder(newCustomerOrder)
 		}
 	}
 }
