@@ -167,7 +167,7 @@ export const updateCustomerOrder = async (
 ): Promise<CustomerOrder | undefined> => {
 	try {
 		const response = await apiService.put<CustomerOrder>(
-			'entity/customerorder',
+			`entity/customerorder/${order.id}`,
 			order
 		)
 		return response.data
