@@ -30,7 +30,6 @@ export const postRequest = async <T, R>(
 	data?: T
 ): Promise<R | undefined> => {
 	const service = getService(store)
-
 	try {
 		const response = await service.post<R>(url, data)
 		return response.data
@@ -45,7 +44,6 @@ export const getRequest = async <R>(
 	params?: Record<string, any>
 ): Promise<R | undefined> => {
 	const service = getService(store)
-	Logger.info(service)
 	try {
 		const response = await service.get<R>(url, { params })
 		return response.data
