@@ -50,6 +50,7 @@ export const updateProduct = async (
 						order.substatus
 					),
 				}
+				Logger.info(JSON.stringify(updatedCustomerOrder))
 				return await updateCustomerOrder(updatedCustomerOrder)
 			}
 		}
