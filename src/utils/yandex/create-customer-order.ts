@@ -124,7 +124,9 @@ export const createCustomerOrder = (
 		shared: true,
 		group,
 		name: order.id?.toString(),
-		moment: dayjs(order.creationDate).format('YYYY-MM-DD HH:mm:ss'),
+		moment: dayjs(order.creationDate, 'DD-MM-YYYY HH:mm:ss').format(
+			'YYYY-MM-DD HH:mm:ss.SSS'
+		),
 		applicable: true,
 		rate: {
 			currency,
