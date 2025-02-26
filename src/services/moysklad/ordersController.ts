@@ -115,3 +115,27 @@ export const getCustomerOrderByName = async (
 		}
 	}
 }
+
+export const createNewCustomerOrder = async (
+	order: CustomerOrder
+): Promise<CustomerOrder | undefined> => {
+	try {
+		const response = await apiService.post<CustomerOrder>(
+			'entity/customerorder',
+			order
+		)
+		return response.data
+	} catch (error: unknown) {
+		Logger.warn(error)
+		const err = error as ErrorResponse
+		if (axios.isAxiosError(err)) {
+			if (err?.response == null || err.code === null) {
+				Logger.error('No response')
+			} else {
+				Logger.error(err.response.data)
+			}
+		} else {
+			Logger.error('Different error than axios')
+		}
+	}
+}

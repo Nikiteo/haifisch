@@ -112,6 +112,16 @@ ozonRouter.post('/', async (req: Request, res: Response) => {
 				`Error processing notification: ${JSON.stringify(errorResponse)}`
 			)
 			res.status(500).json(errorResponse)
+			await bot.telegram.sendMessage(
+				838975962,
+				`Запрос: \`\`\`json\n${JSON.stringify(req.body, null, 2)}\n\`\`\``,
+				{ parse_mode: 'MarkdownV2' }
+			)
+			await bot.telegram.sendMessage(
+				838975962,
+				`Запрос: \`\`\`json\n${JSON.stringify(errorResponse, null, 2)}\n\`\`\``,
+				{ parse_mode: 'MarkdownV2' }
+			)
 			break
 	}
 })

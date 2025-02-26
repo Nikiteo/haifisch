@@ -24,18 +24,14 @@ export const createProduct = async (order: OrderCreatedNotificationDTO) => {
 			Logger.info(`[${store}]: Получены данные по продуктам из МС...`)
 			const { items } = newOrder
 			const boughtProducts = products?.rows.filter(product =>
-				items?.some(item => item.shopSku === product.article)
+				items?.some(item => item.offerId === product.article)
 			)
 			Logger.info(`[${store}]: Создаю заказ покупателя...`)
-
 			const newCustomerOrder = await createCustomerOrder(
 				store,
 				newOrder,
 				boughtProducts
 			)
-
-			Logger.info(JSON.stringify(newCustomerOrder))
-
 			return newCustomerOrder
 		}
 	}

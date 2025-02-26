@@ -12,6 +12,7 @@ import {
 } from './types'
 import { bot } from '../../bot'
 import { createProduct } from '../../controllers/create-product'
+import { createNewCustomerOrder } from '../moysklad/ordersController'
 
 export const yandexRouter = Router()
 
@@ -62,6 +63,14 @@ yandexRouter.post('/notification', async (req: Request, res: Response) => {
 				{ parse_mode: 'MarkdownV2' }
 			)
 			const createOrder = await createProduct(orderCreatedNotification)
+			if (createOrder) {
+				const createdOrder = await createNewCustomerOrder(createOrder)
+				await bot.telegram.sendMessage(
+					838975962,
+					`Создан [заказ покупателя](${createdOrder?.meta?.uuidHref})`,
+					{ parse_mode: 'MarkdownV2' }
+				)
+			}
 			break
 
 		case NotificationType.ORDER_CANCELLED:

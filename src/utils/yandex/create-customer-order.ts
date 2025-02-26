@@ -95,12 +95,20 @@ export const preparePositions = (
 	return products.flatMap(
 		product =>
 			items
-				?.filter(item => item.shopSku === product.article)
+				?.filter(item => item.offerId === product.article)
 				.map(item => {
 					const totalPrice = item.price
+					const totalPromos =
+						item.promos?.reduce((a, b) => +a + +b.subsidy, 0) || 0
+					const totalSubsidies =
+						item.subsidies?.reduce((a, b) => +a + +b.amount, 0) || 0
 					return {
 						quantity: item.count,
-						price: totalPrice * 100,
+						price:
+							(totalPrice +
+								totalPromos +
+								totalSubsidies * item.count) *
+							100,
 						discount: 0,
 						vat: 0,
 						assortment: {
