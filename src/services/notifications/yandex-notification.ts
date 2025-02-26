@@ -26,7 +26,7 @@ yandexRouter.post('/notification', async (req: Request, res: Response) => {
 		time: currentTime,
 	}
 
-	if (campaignId === 23726642 || campaignId === 22176022) {
+	if (campaignId !== 23726642 || campaignId !== 22176022) {
 		const errorResponse: ErrorResponse = {
 			error: {
 				type: 'WRONG_EVENT_FORMAT',
