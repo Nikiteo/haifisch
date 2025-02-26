@@ -44,6 +44,7 @@ import {
 	OrderCreatedNotificationDTO,
 	OrderStatusUpdatedNotificationDTO,
 } from '../notifications'
+import { Logger } from '../../lib'
 
 export const getCampaigns = async (
 	store: string
@@ -349,6 +350,7 @@ export const getOrderById = async ({
 	| OrderCancelledNotificationDTO): Promise<OrderDTO | undefined> => {
 	const { campaignId, orderId } = props
 	const store = campaignId === 23726642 ? 'Haifisch' : 'Top'
+	Logger.info(store)
 	const response = await getRequest<GetOrderResponse>(
 		store,
 		`campaigns/${campaignId}/orders/${orderId}`

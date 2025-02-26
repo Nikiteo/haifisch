@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { logError } from '../../utils/log-error'
 import { getService } from '../../utils/get-service'
+import { Logger } from '../../lib'
 
 const TOP_TOKEN = process.env.TOP_TOKEN
 const HF_TOKEN = process.env.HF_TOKEN
@@ -44,7 +45,7 @@ export const getRequest = async <R>(
 	params?: Record<string, any>
 ): Promise<R | undefined> => {
 	const service = getService(store)
-
+	Logger.info(service)
 	try {
 		const response = await service.get<R>(url, { params })
 		return response.data
