@@ -62,6 +62,11 @@ yandexRouter.post('/notification', async (req: Request, res: Response) => {
 				{ parse_mode: 'MarkdownV2' }
 			)
 			const createOrder = await createProduct(orderCreatedNotification)
+			await bot.telegram.sendMessage(
+				838975962,
+				`Создан новый заказ покупателя = \`\`\`javascript\n${JSON.stringify(createOrder, null, 2)}\n\`\`\``,
+				{ parse_mode: 'MarkdownV2' }
+			)
 			break
 
 		case NotificationType.ORDER_CANCELLED:

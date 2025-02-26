@@ -31,11 +31,8 @@ export const createProduct = async (order: OrderCreatedNotificationDTO) => {
 				newOrder,
 				boughtProducts
 			)
-			await bot.telegram.sendMessage(
-				838975962,
-				`Создан новый заказ покупателя = \`\`\`javascript\n${JSON.stringify(newCustomerOrder, null, 2)}\n\`\`\``,
-				{ parse_mode: 'MarkdownV2' }
-			)
+
+			return newCustomerOrder
 		}
 	}
 }
