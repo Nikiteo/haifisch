@@ -7,8 +7,8 @@ import {
 	OrderStatusUpdatedNotificationDTO,
 } from '../services'
 import {
-	createNewCustomerOrder,
 	getCustomerOrderByName,
+	updateCustomerOrder,
 } from '../services/moysklad/ordersController'
 import { prepareStatusesForCustomerOrders } from '../utils/yandex/create-customer-order'
 
@@ -37,7 +37,7 @@ export const updateProduct = async (
 						...states.CANCELLED,
 					},
 				}
-				return await createNewCustomerOrder(updatedCustomerOrder)
+				return await updateCustomerOrder(updatedCustomerOrder)
 			} else if (
 				order.notificationType === NotificationType.ORDER_STATUS_UPDATED
 			) {
@@ -50,7 +50,7 @@ export const updateProduct = async (
 						order.substatus
 					),
 				}
-				return await createNewCustomerOrder(updatedCustomerOrder)
+				return await updateCustomerOrder(updatedCustomerOrder)
 			}
 		}
 	}
