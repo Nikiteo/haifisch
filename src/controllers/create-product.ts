@@ -33,7 +33,9 @@ export const createProduct = async (order: OrderCreatedNotificationDTO) => {
 				newOrder,
 				boughtProducts
 			)
+
 			Logger.info(JSON.stringify(newCustomerOrder))
+
 			return newCustomerOrder
 		}
 	}
