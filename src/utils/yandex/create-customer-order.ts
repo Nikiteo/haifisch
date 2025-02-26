@@ -98,7 +98,7 @@ export const preparePositions = (
 				.map(item => {
 					const totalPrice = item.price
 					const totalPromos =
-						item.promos?.reduce((a, b) => +a + +b, 0) || 0
+						item.promos?.reduce((a, b) => +a + +b.subsidy, 0) || 0
 					return {
 						quantity: item.count,
 						price: (totalPrice * item.count + totalPromos) * 100,
