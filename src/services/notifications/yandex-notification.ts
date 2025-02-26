@@ -9,6 +9,7 @@ import {
 	ErrorResponse,
 	NotificationType,
 	PingNotificationDTO,
+	OrderStatusType,
 } from './types'
 import { bot } from '../../bot'
 import { createNewCustomerOrder } from '../moysklad/ordersController'
@@ -96,14 +97,19 @@ yandexRouter.post('/notification', async (req: Request, res: Response) => {
 				`Запрос: \`\`\`json\n${JSON.stringify(req.body, null, 2)}\n\`\`\``,
 				{ parse_mode: 'MarkdownV2' }
 			)
-			const updatedOrder = await updateProduct(
-				orderStatusUpdatedNotification
-			)
-			await bot.telegram.sendMessage(
-				838975962,
-				`Обновлен статус [заказа покупателя](${updatedOrder?.meta?.uuidHref})`,
-				{ parse_mode: 'MarkdownV2' }
-			)
+			if (
+				orderStatusUpdatedNotification.status !==
+				OrderStatusType.PROCESSING
+			) {
+				const updatedOrder = await updateProduct(
+					orderStatusUpdatedNotification
+				)
+				await bot.telegram.sendMessage(
+					838975962,
+					`Обновлен статус [заказа покупателя](${updatedOrder?.meta?.uuidHref})`,
+					{ parse_mode: 'MarkdownV2' }
+				)
+			}
 			break
 
 		case NotificationType.ORDER_RETURN_CREATED:
