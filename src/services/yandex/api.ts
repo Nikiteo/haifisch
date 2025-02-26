@@ -7,6 +7,7 @@ import {
 	GetOfferMappingDTO,
 	GetOfferMappingsRequest,
 	GetOfferMappingsResponse,
+	GetOrderResponse,
 	GetOrdersResponse,
 	GetOrdersStatsRequest,
 	GetOrdersStatsResponse,
@@ -38,6 +39,7 @@ import {
 import { getService } from '../../utils/get-service'
 import { logError } from '../../utils/log-error'
 import { getRequest, postRequest } from './service'
+import { OrderCreatedNotificationDTO } from '../notifications'
 
 export const getCampaigns = async (
 	store: string
@@ -333,4 +335,16 @@ export const sendPrices = async (
 		{ status: string }
 	>(store, `businesses/${id}/offer-prices/updates`, data)
 	return response
+}
+
+export const getOrderById = async ({
+	...props
+}: OrderCreatedNotificationDTO): Promise<OrderDTO | undefined> => {
+	const { campaignId, orderId } = props
+	const store = campaignId === 23726642 ? 'Haifisch' : 'Top'
+	const response = await getRequest<GetOrderResponse>(
+		store,
+		`campaigns/${campaignId}/orders/${orderId}`
+	)
+	return response?.order
 }

@@ -11,6 +11,7 @@ import {
 	PingNotificationDTO,
 } from './types'
 import { bot } from '../../bot'
+import { createProduct } from '../../controllers/create-product'
 
 export const yandexRouter = Router()
 
@@ -32,11 +33,13 @@ yandexRouter.post('/notification', async (req: Request, res: Response) => {
 			res.json(response)
 			await bot.telegram.sendMessage(
 				838975962,
-				`Запрос: ${JSON.stringify(req.body)}`
+				`Запрос: \`\`\`json\n${JSON.stringify(req.body, null, 2)}\n\`\`\``,
+				{ parse_mode: 'MarkdownV2' }
 			)
 			await bot.telegram.sendMessage(
 				838975962,
-				`Запрос: ${JSON.stringify(response)}`
+				`Запрос: \`\`\`json\n${JSON.stringify(response, null, 2)}\n\`\`\``,
+				{ parse_mode: 'MarkdownV2' }
 			)
 			break
 
@@ -50,12 +53,15 @@ yandexRouter.post('/notification', async (req: Request, res: Response) => {
 			res.json(response)
 			await bot.telegram.sendMessage(
 				838975962,
-				`Запрос: ${JSON.stringify(req.body)}`
+				`Запрос: \`\`\`json\n${JSON.stringify(req.body, null, 2)}\n\`\`\``,
+				{ parse_mode: 'MarkdownV2' }
 			)
 			await bot.telegram.sendMessage(
 				838975962,
-				`Запрос: ${JSON.stringify(response)}`
+				`Запрос: \`\`\`json\n${JSON.stringify(response, null, 2)}\n\`\`\``,
+				{ parse_mode: 'MarkdownV2' }
 			)
+			const createOrder = await createProduct(orderCreatedNotification)
 			break
 
 		case NotificationType.ORDER_CANCELLED:
@@ -68,12 +74,15 @@ yandexRouter.post('/notification', async (req: Request, res: Response) => {
 			res.json(response)
 			await bot.telegram.sendMessage(
 				838975962,
-				`Запрос: ${JSON.stringify(req.body)}`
+				`Запрос: \`\`\`json\n${JSON.stringify(req.body, null, 2)}\n\`\`\``,
+				{ parse_mode: 'MarkdownV2' }
 			)
 			await bot.telegram.sendMessage(
 				838975962,
-				`Запрос: ${JSON.stringify(response)}`
+				`Запрос: \`\`\`json\n${JSON.stringify(response, null, 2)}\n\`\`\``,
+				{ parse_mode: 'MarkdownV2' }
 			)
+
 			break
 
 		case NotificationType.ORDER_STATUS_UPDATED:
@@ -86,11 +95,13 @@ yandexRouter.post('/notification', async (req: Request, res: Response) => {
 			res.json(response)
 			await bot.telegram.sendMessage(
 				838975962,
-				`Запрос: ${JSON.stringify(req.body)}`
+				`Запрос: \`\`\`json\n${JSON.stringify(req.body, null, 2)}\n\`\`\``,
+				{ parse_mode: 'MarkdownV2' }
 			)
 			await bot.telegram.sendMessage(
 				838975962,
-				`Запрос: ${JSON.stringify(response)}`
+				`Запрос: \`\`\`json\n${JSON.stringify(response, null, 2)}\n\`\`\``,
+				{ parse_mode: 'MarkdownV2' }
 			)
 			break
 
@@ -104,11 +115,13 @@ yandexRouter.post('/notification', async (req: Request, res: Response) => {
 			res.json(response)
 			await bot.telegram.sendMessage(
 				838975962,
-				`Запрос: ${JSON.stringify(req.body)}`
+				`Запрос: \`\`\`json\n${JSON.stringify(req.body, null, 2)}\n\`\`\``,
+				{ parse_mode: 'MarkdownV2' }
 			)
 			await bot.telegram.sendMessage(
 				838975962,
-				`Запрос: ${JSON.stringify(response)}`
+				`Запрос: \`\`\`json\n${JSON.stringify(response, null, 2)}\n\`\`\``,
+				{ parse_mode: 'MarkdownV2' }
 			)
 			break
 

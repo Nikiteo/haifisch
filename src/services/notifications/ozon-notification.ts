@@ -33,11 +33,13 @@ ozonRouter.post('/', async (req: Request, res: Response) => {
 			res.json(pingResponse)
 			await bot.telegram.sendMessage(
 				838975962,
-				`Запрос: ${JSON.stringify(req.body)}`
+				`Запрос: \`\`\`json\n${JSON.stringify(req.body, null, 2)}\n\`\`\``,
+				{ parse_mode: 'MarkdownV2' }
 			)
 			await bot.telegram.sendMessage(
 				838975962,
-				`Ответ: ${JSON.stringify(pingResponse)}`
+				`Запрос: \`\`\`json\n${JSON.stringify(response, null, 2)}\n\`\`\``,
+				{ parse_mode: 'MarkdownV2' }
 			)
 			break
 
@@ -50,11 +52,13 @@ ozonRouter.post('/', async (req: Request, res: Response) => {
 			res.json(response)
 			await bot.telegram.sendMessage(
 				838975962,
-				`Запрос: ${JSON.stringify(req.body)}`
+				`Запрос: \`\`\`json\n${JSON.stringify(req.body, null, 2)}\n\`\`\``,
+				{ parse_mode: 'MarkdownV2' }
 			)
 			await bot.telegram.sendMessage(
 				838975962,
-				`Ответ: ${JSON.stringify(response)}`
+				`Запрос: \`\`\`json\n${JSON.stringify(response, null, 2)}\n\`\`\``,
+				{ parse_mode: 'MarkdownV2' }
 			)
 			break
 
@@ -67,11 +71,13 @@ ozonRouter.post('/', async (req: Request, res: Response) => {
 			res.json(response)
 			await bot.telegram.sendMessage(
 				838975962,
-				`Запрос: ${JSON.stringify(req.body)}`
+				`Запрос: \`\`\`json\n${JSON.stringify(req.body, null, 2)}\n\`\`\``,
+				{ parse_mode: 'MarkdownV2' }
 			)
 			await bot.telegram.sendMessage(
 				838975962,
-				`Ответ: ${JSON.stringify(response)}`
+				`Запрос: \`\`\`json\n${JSON.stringify(response, null, 2)}\n\`\`\``,
+				{ parse_mode: 'MarkdownV2' }
 			)
 			break
 
@@ -84,11 +90,13 @@ ozonRouter.post('/', async (req: Request, res: Response) => {
 			res.json(response)
 			await bot.telegram.sendMessage(
 				838975962,
-				`Запрос: ${JSON.stringify(req.body)}`
+				`Запрос: \`\`\`json\n${JSON.stringify(req.body, null, 2)}\n\`\`\``,
+				{ parse_mode: 'MarkdownV2' }
 			)
 			await bot.telegram.sendMessage(
 				838975962,
-				`Ответ: ${JSON.stringify(response)}`
+				`Запрос: \`\`\`json\n${JSON.stringify(response, null, 2)}\n\`\`\``,
+				{ parse_mode: 'MarkdownV2' }
 			)
 			break
 
