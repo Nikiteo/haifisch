@@ -79,9 +79,8 @@ export const prepareStatusesForCustomerOrders = (
 }
 
 export const preparePositions = (
-	products?: Product[],
-	items?: OrderItemDTO[],
-	status?: OrderStatusType
+	order: OrderDTO,
+	products?: Product[]
 ): CreatePosition[] => {
 	const validStatuses = new Set([
 		'PROCESSING',
@@ -94,28 +93,22 @@ export const preparePositions = (
 
 	return products.flatMap(
 		product =>
-			items
+			order.items
 				?.filter(item => item.offerId === product.article)
 				.map(item => {
 					const totalPrice = item.price
 					const totalPromos =
-						item.promos?.reduce((a, b) => +a + +b.subsidy, 0) || 0
-					const totalSubsidies =
-						item.subsidies?.reduce((a, b) => +a + +b.amount, 0) || 0
+						item.promos?.reduce((a, b) => +a + +b, 0) || 0
 					return {
 						quantity: item.count,
-						price:
-							(totalPrice +
-								totalPromos +
-								totalSubsidies * item.count) *
-							100,
+						price: (totalPrice * item.count + totalPromos) * 100,
 						discount: 0,
 						vat: 0,
 						assortment: {
 							meta: product.meta,
 						},
 						reserve:
-							status && validStatuses.has(status)
+							order.status && validStatuses.has(order.status)
 								? item.count
 								: 0,
 					}
@@ -147,7 +140,7 @@ export const createCustomerOrder = (
 		state: prepareStatusesForCustomerOrders(order.status, order.substatus),
 		printed: false,
 		published: false,
-		positions: preparePositions(boughtProducts, order.items, order.status),
+		positions: preparePositions(order, boughtProducts),
 		vatEnabled: true,
 		vatIncluded: true,
 		vatSum: 0.0,
