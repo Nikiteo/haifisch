@@ -96,13 +96,9 @@ export const preparePositions = (
 			order.items
 				?.filter(item => item.offerId === product.article)
 				.map(item => {
-					const totalPrice = item.price
-					const totalSubsidies =
-						order.subsidies?.reduce((a, b) => +a + +b.amount, 0) ||
-						0
 					return {
 						quantity: item.count,
-						price: (totalPrice + totalSubsidies / item.count) * 100,
+						price: item.price * item.count * 100,
 						discount: 0,
 						vat: 0,
 						assortment: {
@@ -176,6 +172,8 @@ export const createCustomerOrder = (
 	order: OrderDTO,
 	boughtProducts?: Product[]
 ): CustomerOrder => {
+	const totalSubsidy =
+		order.subsidies?.reduce((a, b) => +a + +b.amount, 0) || 0
 	return {
 		shared: true,
 		group,
@@ -187,6 +185,7 @@ export const createCustomerOrder = (
 		rate: {
 			currency,
 		},
+		sum: (order.itemsTotal + totalSubsidy) * 100,
 		store: fbsStore,
 		project: store === 'Haifisch' ? fbsHfProject : fbsTopProject,
 		agent,
