@@ -99,12 +99,9 @@ export const preparePositions = (
 				.map(item => {
 					const totalSubsidies =
 						item.subsidies?.reduce((a, b) => +a + +b.amount, 0) || 0
-					Logger.info(
-						`item.price = ${(item.price * item.count + totalSubsidies) * 100}`
-					)
 					return {
 						quantity: item.count,
-						price: (item.price * item.count + totalSubsidies) * 100,
+						price: (item.price + totalSubsidies) * 100,
 						discount: 0,
 						vat: 0,
 						assortment: {
