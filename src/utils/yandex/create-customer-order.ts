@@ -26,6 +26,7 @@ import {
 	OrderStatusType,
 	OrderSubstatusType,
 } from '../../types/yandex/api'
+import { Logger } from '../../lib'
 
 dayjs.extend(customParseFormat)
 
@@ -98,6 +99,9 @@ export const preparePositions = (
 				.map(item => {
 					const totalSubsidies =
 						item.subsidies?.reduce((a, b) => +a + +b.amount, 0) || 0
+					Logger.info(
+						`item.price = ${item.price * item.count + totalSubsidies * 100}`
+					)
 					return {
 						quantity: item.count,
 						price: item.price * item.count + totalSubsidies * 100,
