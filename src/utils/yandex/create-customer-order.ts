@@ -101,7 +101,7 @@ export const preparePositions = (
 						order.subsidies?.reduce((a, b) => +a + +b, 0) || 0
 					return {
 						quantity: item.count,
-						price: (totalPrice + totalSubsidies) * 100,
+						price: (totalPrice + totalSubsidies / item.count) * 100,
 						discount: 0,
 						vat: 0,
 						assortment: {
