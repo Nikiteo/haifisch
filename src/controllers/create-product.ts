@@ -8,10 +8,13 @@ import { getProducts } from '../services/moysklad/productController'
 import { createCustomerOrder } from '../utils/yandex/create-customer-order'
 
 export const createProduct = async (order: OrderCreatedNotificationDTO) => {
-	const { campaignId } = order
+	const { campaignId, orderId } = order
 	const store = campaignId === 23726642 ? 'Haifisch' : 'Top'
 
-	const newOrder = await getOrderById(order)
+	const newOrder = await getOrderById({
+		campaignId,
+		orderId,
+	})
 	Logger.info(`[${store}]: Получены данные по новому заказу...`)
 
 	if (newOrder) {

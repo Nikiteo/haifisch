@@ -17,6 +17,7 @@ import {
 	GetPromoOffersResponse,
 	GetPromosRequest,
 	GetPromosResponse,
+	GetReturnResponse,
 	GetReturnsResponse,
 	GetWarehouseStocksRequest,
 	GetWarehouseStocksResponse,
@@ -42,6 +43,7 @@ import { getRequest, postRequest } from './service'
 import {
 	OrderCancelledNotificationDTO,
 	OrderCreatedNotificationDTO,
+	OrderReturnCreatedNotificationDTO,
 	OrderStatusUpdatedNotificationDTO,
 } from '../notifications'
 import { Logger } from '../../lib'
@@ -344,10 +346,9 @@ export const sendPrices = async (
 
 export const getOrderById = async ({
 	...props
-}:
-	| OrderCreatedNotificationDTO
-	| OrderStatusUpdatedNotificationDTO
-	| OrderCancelledNotificationDTO): Promise<OrderDTO | undefined> => {
+}: Pick<OrderCreatedNotificationDTO, 'campaignId' | 'orderId'>): Promise<
+	OrderDTO | undefined
+> => {
 	const { campaignId, orderId } = props
 	const store = campaignId === 23726642 ? 'Haifisch' : 'Top'
 	const response = await getRequest<GetOrderResponse>(
@@ -355,4 +356,19 @@ export const getOrderById = async ({
 		`campaigns/${campaignId}/orders/${orderId}`
 	)
 	return response?.order
+}
+
+export const getReturnById = async ({
+	...props
+}: Pick<
+	OrderReturnCreatedNotificationDTO,
+	'campaignId' | 'orderId' | 'returnId'
+>): Promise<ReturnDTO | undefined> => {
+	const { campaignId, orderId, returnId } = props
+	const store = campaignId === 23726642 ? 'Haifisch' : 'Top'
+	const response = await getRequest<GetReturnResponse>(
+		store,
+		`campaigns/${campaignId}/orders/${orderId}/return/${returnId}`
+	)
+	return response?.result
 }

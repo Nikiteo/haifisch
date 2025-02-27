@@ -23,7 +23,6 @@ import {
 import {
 	type OrderDeliveryDTO,
 	OrderDTO,
-	OrderItemDTO,
 	OrderStatusType,
 	OrderSubstatusType,
 } from '../../types/yandex/api'
@@ -98,11 +97,11 @@ export const preparePositions = (
 				?.filter(item => item.offerId === product.article)
 				.map(item => {
 					const totalPrice = item.price
-					const totalPromos =
-						item.promos?.reduce((a, b) => +a + +b.subsidy, 0) || 0
+					const totalSubsidies =
+						order.subsidies?.reduce((a, b) => +a + +b, 0) || 0
 					return {
 						quantity: item.count,
-						price: (totalPrice * item.count + totalPromos) * 100,
+						price: (totalPrice + totalSubsidies) * 100,
 						discount: 0,
 						vat: 0,
 						assortment: {

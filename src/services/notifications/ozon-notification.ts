@@ -36,11 +36,7 @@ ozonRouter.post('/', async (req: Request, res: Response) => {
 				`Запрос: \`\`\`json\n${JSON.stringify(req.body, null, 2)}\n\`\`\``,
 				{ parse_mode: 'MarkdownV2' }
 			)
-			await bot.telegram.sendMessage(
-				838975962,
-				`Запрос: \`\`\`json\n${JSON.stringify(response, null, 2)}\n\`\`\``,
-				{ parse_mode: 'MarkdownV2' }
-			)
+
 			break
 
 		case MessageType.TYPE_NEW_POSTING:
@@ -48,18 +44,13 @@ ozonRouter.post('/', async (req: Request, res: Response) => {
 			Logger.info(
 				`Posting created request: ${JSON.stringify(postingCreatedNotification)}`
 			)
-			Logger.info(`Response: ${JSON.stringify(response)}`)
 			res.json(response)
 			await bot.telegram.sendMessage(
 				838975962,
 				`Запрос: \`\`\`json\n${JSON.stringify(req.body, null, 2)}\n\`\`\``,
 				{ parse_mode: 'MarkdownV2' }
 			)
-			await bot.telegram.sendMessage(
-				838975962,
-				`Запрос: \`\`\`json\n${JSON.stringify(response, null, 2)}\n\`\`\``,
-				{ parse_mode: 'MarkdownV2' }
-			)
+
 			break
 
 		case MessageType.TYPE_POSTING_CANCELLED:
@@ -67,18 +58,13 @@ ozonRouter.post('/', async (req: Request, res: Response) => {
 			Logger.info(
 				`Posting cancelled request: ${JSON.stringify(postingCancelledNotification)}`
 			)
-			Logger.info(`Response: ${JSON.stringify(response)}`)
 			res.json(response)
 			await bot.telegram.sendMessage(
 				838975962,
 				`Запрос: \`\`\`json\n${JSON.stringify(req.body, null, 2)}\n\`\`\``,
 				{ parse_mode: 'MarkdownV2' }
 			)
-			await bot.telegram.sendMessage(
-				838975962,
-				`Запрос: \`\`\`json\n${JSON.stringify(response, null, 2)}\n\`\`\``,
-				{ parse_mode: 'MarkdownV2' }
-			)
+
 			break
 
 		case MessageType.TYPE_STATE_CHANGED:
@@ -86,18 +72,13 @@ ozonRouter.post('/', async (req: Request, res: Response) => {
 			Logger.info(
 				`Posting state changed request: ${JSON.stringify(postingStateChangedNotification)}`
 			)
-			Logger.info(`Response: ${JSON.stringify(response)}`)
 			res.json(response)
 			await bot.telegram.sendMessage(
 				838975962,
 				`Запрос: \`\`\`json\n${JSON.stringify(req.body, null, 2)}\n\`\`\``,
 				{ parse_mode: 'MarkdownV2' }
 			)
-			await bot.telegram.sendMessage(
-				838975962,
-				`Запрос: \`\`\`json\n${JSON.stringify(response, null, 2)}\n\`\`\``,
-				{ parse_mode: 'MarkdownV2' }
-			)
+
 			break
 
 		default:

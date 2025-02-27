@@ -1,10 +1,12 @@
-import { states } from '../database'
+import { consignee, states } from '../database'
 import { Logger } from '../lib'
 import {
 	getOrderById,
 	NotificationType,
 	OrderCancelledNotificationDTO,
+	OrderStatusType,
 	OrderStatusUpdatedNotificationDTO,
+	OrderSubstatusType,
 } from '../services'
 import {
 	getCustomerOrderByName,
@@ -15,10 +17,13 @@ import { prepareStatusesForCustomerOrders } from '../utils/yandex/create-custome
 export const updateProduct = async (
 	order: OrderStatusUpdatedNotificationDTO | OrderCancelledNotificationDTO
 ) => {
-	const { campaignId } = order
+	const { campaignId, orderId } = order
 	const store = campaignId === 23726642 ? 'Haifisch' : 'Top'
 
-	const yandexOrder = await getOrderById(order)
+	const yandexOrder = await getOrderById({
+		campaignId,
+		orderId,
+	})
 	Logger.info(`[${store}]: Получены данные по заказу...`)
 
 	if (yandexOrder) {
@@ -39,10 +44,16 @@ export const updateProduct = async (
 				}
 				return await updateCustomerOrder(updatedCustomerOrder)
 			} else if (
-				order.notificationType === NotificationType.ORDER_STATUS_UPDATED
+				order.notificationType ===
+					NotificationType.ORDER_STATUS_UPDATED &&
+				order.status !== OrderStatusType.CANCELLED
 			) {
-				Logger.info(`Статус заказа ${order.orderId} был обновлен.`)
 				Logger.info(`[${store}]: Обновляю заказ покупателя...`)
+				if (
+					!customerOrder[0].demands &&
+					order.substatus === OrderSubstatusType.READY_TO_SHIP
+				) {
+				}
 				const updatedCustomerOrder = {
 					...customerOrder[0],
 					state: prepareStatusesForCustomerOrders(
