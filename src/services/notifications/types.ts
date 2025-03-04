@@ -7,19 +7,17 @@ export enum NotificationType {
 	ORDER_RETURN_CREATED = 'ORDER_RETURN_CREATED', // Создан новый возврат или невыкуп
 }
 
-// Интерфейс для проверочного уведомления
+// Интерфейсы для уведомлений
 export interface PingNotificationDTO {
 	notificationType: NotificationType.PING // Тип уведомления
 	time: string // Дата и время обработки уведомления (ISO 8601)
 }
 
-// Интерфейс для элемента заказа
 export interface NotificationOrderItemDTO {
 	count: number // Количество товара
 	offerId: string // SKU — идентификатор товара в вашей системе
 }
 
-// Интерфейс для уведомления о создании нового заказа
 export interface OrderCreatedNotificationDTO {
 	notificationType: NotificationType.ORDER_CREATED // Тип уведомления
 	campaignId: number // Идентификатор кампании
@@ -59,10 +57,9 @@ export enum OrderSubstatusType {
 	REPLACING_ORDER = 'REPLACING_ORDER', // Покупатель решил заменить товар другим по собственной инициативе
 	PROCESSING_EXPIRED = 'PROCESSING_EXPIRED', // Значение более не используется
 	TECHNICAL_ERROR = 'TECHNICAL_ERROR', // Техническая ошибка на стороне Маркета
-	// Добавьте другие значения по мере необходимости
 }
 
-// Интерфейс для уведомления об изменении статуса заказа
+// Интерфейсы для уведомлений об изменении статуса заказа
 export interface OrderStatusUpdatedNotificationDTO {
 	notificationType: NotificationType.ORDER_STATUS_UPDATED // Тип уведомления
 	campaignId: number // Идентификатор кампании
@@ -104,10 +101,11 @@ export interface ErrorResponse {
 	error: {
 		type: string // Тип ошибки
 		message: string // Сообщение об ошибке
-		details?: string | null
+		details?: string | null // Дополнительные детали об ошибке
 	}
 }
 
+// Enum для типов сообщений
 export enum MessageType {
 	TYPE_PING = 'TYPE_PING', // Проверка статуса готовности сервиса при первичном подключении и периодически после подключения
 	TYPE_NEW_POSTING = 'TYPE_NEW_POSTING', // Новое отправление
@@ -126,17 +124,19 @@ export enum MessageType {
 	TYPE_CHAT_CLOSED = 'TYPE_CHAT_CLOSED', // Чат закрыт
 }
 
+// Интерфейсы для событий отправлений
 export interface Product {
 	sku: number // SKU товара
 	quantity: number // Количество товара
 }
 
 export interface Ping {
-	message_type: string
-	time: string
+	message_type: string // Тип сообщения
+	time: string // Время сообщения
 }
+
 export interface NewPostingEvent {
-	message_type: 'TYPE_NEW_POSTING' // Тип уведомления
+	message_type: MessageType.TYPE_NEW_POSTING // Тип уведомления
 	posting_number: string // Номер отправления
 	products: Product[] // Информация о товарах
 	in_process_at: string // Дата и время начала обработки отправления в формате UTC
@@ -150,7 +150,7 @@ export interface Reason {
 }
 
 export interface PostingCancelledEvent {
-	message_type: 'TYPE_POSTING_CANCELLED' // Тип уведомления
+	message_type: MessageType.TYPE_POSTING_CANCELLED // Тип уведомления
 	posting_number: string // Номер отправления
 	products: Product[] // Информация о товарах
 	old_state: string // Предыдущий статус отправления
@@ -161,6 +161,7 @@ export interface PostingCancelledEvent {
 	seller_id: number // Идентификатор продавца
 }
 
+// Enum для статусов отправлений
 export enum PostingStatus {
 	POSTING_ACCEPTANCE_IN_PROGRESS = 'posting_acceptance_in_progress', // Идёт приёмка
 	POSTING_CREATED = 'posting_created', // Создано
@@ -178,8 +179,9 @@ export enum PostingStatus {
 	POSTING_NOT_IN_SORT_CENTER = 'posting_not_in_sort_center', // Не принят на сортировочном центре
 }
 
+// Интерфейс для события изменения статуса отправления
 export interface StateChangedEvent {
-	message_type: 'TYPE_STATE_CHANGED' // Тип уведомления
+	message_type: MessageType.TYPE_STATE_CHANGED // Тип уведомления
 	posting_number: string // Номер отправления
 	new_state: PostingStatus // Новый статус отправления
 	changed_state_date: string // Дата и время изменения статуса отправления в формате UTC

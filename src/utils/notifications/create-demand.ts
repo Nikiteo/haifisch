@@ -30,17 +30,6 @@ export const createOverhadSum = (
 	return parseFloat((sumOfCommissions * 100).toFixed(2))
 }
 
-const createCarrier = (place?: string): { meta: Meta } => {
-	switch (place) {
-		case 'OZON':
-			return ozonAgent
-		case 'SBER':
-			return sberAgent
-		default:
-			return carrier
-	}
-}
-
 export const createDemand = (order: CustomerOrder, place?: string): Demand => {
 	const {
 		meta,
@@ -59,7 +48,7 @@ export const createDemand = (order: CustomerOrder, place?: string): Demand => {
 	const additionalAttribute =
 		place === 'OZON' &&
 		attributes?.find(
-			attribute => attribute.id === 'c09d1b3e-90ff-11ef-0a80-0efd00046bc2'
+			attribute => attribute.id === 'cd289eaa-eacf-11ef-0a80-016f000e54c2'
 		)
 	const newAttribute = additionalAttribute
 		? {
@@ -86,7 +75,7 @@ export const createDemand = (order: CustomerOrder, place?: string): Demand => {
 		},
 		attributes: newAttribute ? [...(attributes || []), newAttribute] : [],
 		consignee,
-		carrier: createCarrier(place),
+		carrier: place === 'OZON' ? ozonAgent : carrier,
 		moment: deliveryPlannedMoment,
 	}
 }

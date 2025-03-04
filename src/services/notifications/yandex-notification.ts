@@ -8,136 +8,100 @@ import {
 	Integration,
 	ErrorResponse,
 	NotificationType,
-	PingNotificationDTO,
-	OrderStatusType,
 } from './types'
-import { bot } from '../../bot'
 import { createProduct, updateProduct } from '../../controllers'
+import { sendTelegramMessage } from '../../utils'
 
 export const yandexRouter = Router()
 
-yandexRouter.post('/notification', async (req: Request, res: Response) => {
-	const { notificationType } = req.body
-	const currentTime = new Date().toISOString()
-	const response: Integration = {
-		version: '1.0.0',
-		name: 'Haifisch',
-		time: currentTime,
+const handleResponse = (res: Response, response: Integration) => {
+	res.json(response)
+}
+
+const handleError = async (res: Response, reqBody: any) => {
+	const errorResponse: ErrorResponse = {
+		error: {
+			type: 'UNKNOWN',
+			message: 'UNKNOWN error',
+		},
 	}
+	Logger.error(`Error processing notification: ${JSON.stringify(reqBody)}`)
+	await sendTelegramMessage(
+		`Ошибка: \`\`\`json\n${JSON.stringify(reqBody, null, 2)}\n\`\`\``
+	)
+	res.status(500).json(errorResponse)
+}
 
-	switch (notificationType) {
-		case NotificationType.PING:
-			const ping: PingNotificationDTO = req.body
-			Logger.info(`Ping request: ${JSON.stringify(ping)}`)
-			res.json(response)
-			await bot.telegram.sendMessage(
-				838975962,
-				`Запрос: \`\`\`json\n${JSON.stringify(req.body, null, 2)}\n\`\`\``,
-				{ parse_mode: 'MarkdownV2' }
-			)
-			break
+const notificationHandlers: {
+	[key in NotificationType]: (req: Request, res: Response) => Promise<void>
+} = {
+	[NotificationType.PING]: async (req, res) => {
+		const response: Integration = {
+			version: '1.0.0',
+			name: 'Haifisch',
+			time: new Date().toISOString(),
+		}
+		handleResponse(res, response)
+	},
+	[NotificationType.ORDER_CREATED]: async (req, res) => {
+		const orderCreatedNotification: OrderCreatedNotificationDTO = req.body
+		const response: Integration = {
+			version: '1.0.0',
+			name: 'Haifisch',
+			time: new Date().toISOString(),
+		}
+		handleResponse(res, response)
+		await sendTelegramMessage(
+			`Запрос: \`\`\`json\n${JSON.stringify(req.body, null, 2)}\n\`\`\``
+		)
+		await createProduct(orderCreatedNotification)
+	},
+	[NotificationType.ORDER_CANCELLED]: async (req, res) => {
+		const orderCancelledNotification: OrderCancelledNotificationDTO =
+			req.body
+		const response: Integration = {
+			version: '1.0.0',
+			name: 'Haifisch',
+			time: new Date().toISOString(),
+		}
+		handleResponse(res, response)
+		await updateProduct(orderCancelledNotification)
+	},
+	[NotificationType.ORDER_STATUS_UPDATED]: async (req, res) => {
+		const orderStatusUpdatedNotification: OrderStatusUpdatedNotificationDTO =
+			req.body
+		const response: Integration = {
+			version: '1.0.0',
+			name: 'Haifisch',
+			time: new Date().toISOString(),
+		}
+		handleResponse(res, response)
+		await updateProduct(orderStatusUpdatedNotification)
+	},
+	[NotificationType.ORDER_RETURN_CREATED]: async (req, res) => {
+		const orderReturnCreatedNotification: OrderReturnCreatedNotificationDTO =
+			req.body
+		const response: Integration = {
+			version: '1.0.0',
+			name: 'Haifisch',
+			time: new Date().toISOString(),
+		}
+		handleResponse(res, response)
+		await sendTelegramMessage(
+			`Запрос: \`\`\`json\n${JSON.stringify(req.body, null, 2)}\n\`\`\``
+		)
+	},
+}
 
-		case NotificationType.ORDER_CREATED:
-			const orderCreatedNotification: OrderCreatedNotificationDTO =
-				req.body
-			Logger.info(
-				`Order request: ${JSON.stringify(orderCreatedNotification)}`
-			)
-			res.json(response)
-			await bot.telegram.sendMessage(
-				838975962,
-				`Запрос: \`\`\`json\n${JSON.stringify(req.body, null, 2)}\n\`\`\``,
-				{ parse_mode: 'MarkdownV2' }
-			)
-			const createdOrder = await createProduct(orderCreatedNotification)
-			await bot.telegram.sendMessage(
-				838975962,
-				`Создан [заказ покупателя](${createdOrder?.meta?.uuidHref})`,
-				{ parse_mode: 'MarkdownV2' }
-			)
+yandexRouter.post('/notification', async (req: Request, res: Response) => {
+	const { notificationType } = req.body as {
+		notificationType: NotificationType
+	}
+	const handler = notificationHandlers[notificationType]
 
-			break
-
-		case NotificationType.ORDER_CANCELLED:
-			const orderCancelledNotification: OrderCancelledNotificationDTO =
-				req.body
-			Logger.info(
-				`Order cancelled request: ${JSON.stringify(orderCancelledNotification)}`
-			)
-			res.json(response)
-			await bot.telegram.sendMessage(
-				838975962,
-				`Запрос: \`\`\`json\n${JSON.stringify(req.body, null, 2)}\n\`\`\``,
-				{ parse_mode: 'MarkdownV2' }
-			)
-			const сancelledOrder = await updateProduct(
-				orderCancelledNotification
-			)
-			await bot.telegram.sendMessage(
-				838975962,
-				`Отменен [заказ покупателя](${сancelledOrder?.meta?.uuidHref})`,
-				{ parse_mode: 'MarkdownV2' }
-			)
-			break
-
-		case NotificationType.ORDER_STATUS_UPDATED:
-			const orderStatusUpdatedNotification: OrderStatusUpdatedNotificationDTO =
-				req.body
-			Logger.info(
-				`Order status updated request: ${JSON.stringify(orderStatusUpdatedNotification)}`
-			)
-			res.json(response)
-			await bot.telegram.sendMessage(
-				838975962,
-				`Запрос: \`\`\`json\n${JSON.stringify(req.body, null, 2)}\n\`\`\``,
-				{ parse_mode: 'MarkdownV2' }
-			)
-			if (
-				orderStatusUpdatedNotification.status !==
-				OrderStatusType.PROCESSING
-			) {
-				const updatedOrder = await updateProduct(
-					orderStatusUpdatedNotification
-				)
-				await bot.telegram.sendMessage(
-					838975962,
-					`Обновлен статус [заказа покупателя](${updatedOrder?.meta?.uuidHref})`,
-					{ parse_mode: 'MarkdownV2' }
-				)
-			}
-			break
-
-		case NotificationType.ORDER_RETURN_CREATED:
-			const orderReturnCreatedNotification: OrderReturnCreatedNotificationDTO =
-				req.body
-			Logger.info(
-				`Order return created request: ${JSON.stringify(orderReturnCreatedNotification)}`
-			)
-			res.json(response)
-			await bot.telegram.sendMessage(
-				838975962,
-				`Запрос: \`\`\`json\n${JSON.stringify(req.body, null, 2)}\n\`\`\``,
-				{ parse_mode: 'MarkdownV2' }
-			)
-			break
-
-		default:
-			const errorResponse: ErrorResponse = {
-				error: {
-					type: 'UNKNOWN',
-					message: 'UNKNOWN error',
-				},
-			}
-			Logger.error(
-				`Error processing notification: ${JSON.stringify(errorResponse)}`
-			)
-
-			res.status(500).json(errorResponse)
-			await bot.telegram.sendMessage(
-				838975962,
-				`Запрос: \`\`\`json\n${JSON.stringify(req.body, null, 2)}\n\`\`\``,
-				{ parse_mode: 'MarkdownV2' }
-			)
-			break
+	if (handler) {
+		await handler(req, res)
+	} else {
+		await handleError(res, req.body)
 	}
 })

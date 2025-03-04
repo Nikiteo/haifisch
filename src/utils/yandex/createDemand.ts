@@ -59,7 +59,7 @@ export const createDemand = (order: CustomerOrder, place?: string): Demand => {
 	const additionalAttribute =
 		place === 'OZON' &&
 		attributes?.find(
-			attribute => attribute.id === 'c09d1b3e-90ff-11ef-0a80-0efd00046bc2'
+			attribute => attribute.id === 'cd289eaa-eacf-11ef-0a80-016f000e54c2'
 		)
 	const newAttribute = additionalAttribute
 		? {
