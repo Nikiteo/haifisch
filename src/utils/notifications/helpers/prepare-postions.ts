@@ -1,5 +1,5 @@
-import { CreatePosition, Product } from '../../types/ms-types'
-import { OrderDTO } from '../../types/yandex/api'
+import { CreatePosition, Product } from '../../../types/ms-types'
+import { OrderDTO } from '../../../types/yandex/api'
 
 export const preparePositions = (
 	order: OrderDTO,

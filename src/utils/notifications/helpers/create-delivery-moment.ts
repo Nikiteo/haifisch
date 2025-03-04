@@ -1,6 +1,6 @@
 import dayjs from 'dayjs'
-import { OrderDeliveryDTO } from '../../types/yandex/api'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
+import { OrderDeliveryDTO } from '../../../types/yandex/api'
 dayjs.extend(customParseFormat)
 
 export const createMoment = (delivery: OrderDeliveryDTO): string => {
