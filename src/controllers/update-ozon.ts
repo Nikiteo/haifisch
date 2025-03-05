@@ -169,7 +169,7 @@ export const updateOzon = async (
 			if (returnItem) {
 				return {
 					...order,
-					refundDate: returnItem.visual?.change_moment || null,
+					refundDate: returnItem.logistic?.return_date || null,
 					status:
 						returnItem.visual?.status?.display_name === 'Уже у вас'
 							? OrderFbsOzonStatus.picked_return
