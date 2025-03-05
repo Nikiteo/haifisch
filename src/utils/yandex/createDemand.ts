@@ -84,7 +84,7 @@ export const createDemand = (order: CustomerOrder, place?: string): Demand => {
 			sum: overheadSum,
 			distribution: 'price',
 		},
-		attributes: newAttribute ? [...(attributes || []), newAttribute] : [],
+		attributes: newAttribute ? [newAttribute] : [],
 		consignee,
 		carrier: createCarrier(place),
 		moment: deliveryPlannedMoment,
