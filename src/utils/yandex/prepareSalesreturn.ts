@@ -47,7 +47,7 @@ export const prepareSalesReturn = (
 
 				return addPositionsToDemands.reduce(
 					(acc: SalesReturn[], cur: Demand) => {
-						acc.push(createSalesReturn(cur))
+						acc.push(createSalesReturn(cur, place))
 						return acc
 					},
 					[]
@@ -84,7 +84,7 @@ export const prepareSalesReturn = (
 
 				return addPositionsToDemands.reduce(
 					(acc: SalesReturn[], cur: Demand) => {
-						acc.push(createSalesReturn(cur))
+						acc.push(createSalesReturn(cur, place))
 						return acc
 					},
 					[]
@@ -103,7 +103,7 @@ export const prepareSalesReturn = (
 					(acc: SalesReturn[], cur: Demand) => {
 						salesreturn.forEach((returns: SalesReturn) => {
 							if (returns.name === cur.name) {
-								const updated = createSalesReturn(cur)
+								const updated = createSalesReturn(cur, place)
 								acc.push({
 									...returns,
 									...updated,
@@ -139,7 +139,7 @@ export const prepareSalesReturn = (
 				)
 
 				addPositionsToDemands.forEach(demand => {
-					updatedSalesreturn.push(createSalesReturn(demand))
+					updatedSalesreturn.push(createSalesReturn(demand, place))
 				})
 
 				return updatedSalesreturn
@@ -156,7 +156,7 @@ export const prepareSalesReturn = (
 					(acc: SalesReturn[], cur: Demand) => {
 						salesreturn.forEach((returns: SalesReturn) => {
 							if (returns.name === cur.name) {
-								const updated = createSalesReturn(cur)
+								const updated = createSalesReturn(cur, place)
 								acc.push({
 									...returns,
 									...updated,
@@ -192,7 +192,7 @@ export const prepareSalesReturn = (
 				)
 
 				addPositionsToDemands.forEach(demand => {
-					updatedSalesreturn.push(createSalesReturn(demand))
+					updatedSalesreturn.push(createSalesReturn(demand, place))
 				})
 
 				return updatedSalesreturn
