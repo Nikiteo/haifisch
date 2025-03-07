@@ -1,21 +1,9 @@
-import { consignee, ozonAgent, carrier, sberAgent } from '../../database'
-import { Attribute, Meta, CustomerOrder, Demand } from '../../types/ms-types'
+import { consignee, carrier } from '../../database'
+import { Attribute, CustomerOrder, Demand } from '../../types/ms-types'
 
-export const createOverhadSum = (
-	attributes: Attribute[],
-	place?: string
-): number => {
+export const createOverhadSum = (attributes: Attribute[]): number => {
 	if (!attributes.some(attribute => attribute.type === 'double')) {
 		return 0
-	}
-
-	if (place === 'OZON') {
-		const ozonValue =
-			attributes.find(
-				attribute =>
-					attribute.id === '279ba9fa-9d67-11ee-0a80-09f500178da3'
-			)?.value || 0
-		return parseFloat((ozonValue * 100).toFixed(2))
 	}
 
 	const sumOfCommissions = attributes
@@ -30,7 +18,7 @@ export const createOverhadSum = (
 	return parseFloat((sumOfCommissions * 100).toFixed(2))
 }
 
-export const createDemand = (order: CustomerOrder, place?: string): Demand => {
+export const createDemand = (order: CustomerOrder): Demand => {
 	const {
 		meta,
 		attributes,
@@ -43,26 +31,7 @@ export const createDemand = (order: CustomerOrder, place?: string): Demand => {
 		...rest
 	} = order
 
-	const overheadSum = attributes ? createOverhadSum(attributes, place) : 0
-
-	const additionalAttribute =
-		place === 'OZON' &&
-		attributes?.find(
-			attribute => attribute.id === 'cd289eaa-eacf-11ef-0a80-016f000e54c2'
-		)
-	const newAttribute = additionalAttribute
-		? {
-				meta: {
-					href: 'https://api.moysklad.ru/api/remap/1.2/entity/demand/metadata/attributes/807c3874-9100-11ef-0a80-0de10004c634',
-					type: 'attributemetadata',
-					mediaType: 'application/json',
-				},
-				id: '807c3874-9100-11ef-0a80-0de10004c634',
-				name: 'Дата получения возврата',
-				type: 'string',
-				value: additionalAttribute.value,
-			}
-		: undefined
+	const overheadSum = attributes ? createOverhadSum(attributes) : 0
 
 	return {
 		...rest,
@@ -73,9 +42,8 @@ export const createDemand = (order: CustomerOrder, place?: string): Demand => {
 			sum: overheadSum,
 			distribution: 'price',
 		},
-		attributes: newAttribute ? [...(attributes || []), newAttribute] : [],
 		consignee,
-		carrier: place === 'OZON' ? ozonAgent : carrier,
+		carrier: carrier,
 		moment: deliveryPlannedMoment,
 	}
 }
