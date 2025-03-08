@@ -1726,6 +1726,20 @@ export interface DeactivateActionProductsResponse {
     }
 }
 
+export interface ProductPictureInfoRequest {
+    product_id: number[]
+}
+
+export interface ProductPictureInfoResponse {
+    items: {
+        product_id?: number
+        primary_photo?: string[]
+        photo?: string[]
+        color_photo?: string[]
+        photo_360?: string[]
+    }[]
+}
+
 /** @example "ASC" */
 export enum ListPostingsFboRequestDirEnum {
     ASC = 'ASC',

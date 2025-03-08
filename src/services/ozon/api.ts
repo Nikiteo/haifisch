@@ -45,6 +45,8 @@ import {
 	ActionCandidatesProduct,
 	GetProductPrice,
 	Operation,
+	ProductPictureInfoResponse,
+	ProductPictureInfoRequest,
 } from '../../types/ozon/ozon-types'
 import { logOzonError } from '../../utils/log-ozon-error'
 
@@ -298,4 +300,18 @@ export const deleteOzonPromosOffers = async ({
 		...props,
 	})
 	return response?.result
+}
+
+export const getOzonImages = async ({
+	...props
+}: ProductPictureInfoRequest): Promise<
+	ProductPictureInfoResponse | undefined
+> => {
+	const response = await postRequest<
+		ProductPictureInfoRequest,
+		ProductPictureInfoResponse
+	>('v2/product/pictures/info', {
+		...props,
+	})
+	return response
 }

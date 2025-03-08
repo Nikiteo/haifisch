@@ -2371,6 +2371,43 @@ components:
               items:
                 type: object
                 properties: {}
+    ProductPictureInfoRequest:
+      type: object
+      properties:
+        product_id:
+          type: array
+          items:
+            type: string
+      required:
+      - product_id
+    ProductPictureInfoResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            type: object
+            properties:
+              product_id:
+                type: integer
+              primary_photo:
+                type: array
+                items:
+                  type: string
+              photo:
+                type: array
+                items:
+                  type: string
+              color_photo:
+                type: array
+                items:
+                  type: string
+              photo_360:
+                type: array
+                items:
+                  type: string
+      required:
+      - items
 paths:
   /v1/posting/carriage-available/list:
     post:
@@ -3307,3 +3344,26 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+  /v2/product/pictures/info:
+    post:
+      summary: Получить информацию о фотографиях продукта
+      operationId: getProductPicturesInfo
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductPictureInfoRequest'
+      responses:
+        '200':
+          description: Успешный ответ с информацией о фотографиях
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductPictureInfoResponse'
+        '400':
+          description: Неверный запрос
+        '404':
+          description: Продукт не найден
+        '500':
+          description: Внутренняя ошибка сервера

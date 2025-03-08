@@ -81,7 +81,7 @@ const handleOrderStatusUpdate = async (
 			positions: positions,
 		}
 		const createdDemand = await createDemand(newCustomerOrder)
-		sendTelegramMessage(
+		await sendTelegramMessage(
 			`Отгрузка: \`\`\`json\n${JSON.stringify(newCustomerOrder, null, 2)}\n\`\`\``
 		)
 		Logger.info(JSON.stringify(newCustomerOrder))
