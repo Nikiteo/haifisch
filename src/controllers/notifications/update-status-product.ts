@@ -1,5 +1,4 @@
 import { states } from '../../database'
-import { Logger } from '../../lib'
 import {
 	getOrderById,
 	NotificationType,
@@ -7,6 +6,7 @@ import {
 	OrderStatusType,
 	OrderStatusUpdatedNotificationDTO,
 } from '../../services'
+import { postDemand } from '../../services/moysklad/demandController'
 import {
 	getCustomerOrderByName,
 	updateCustomerOrder,
@@ -15,7 +15,7 @@ import { getProducts } from '../../services/moysklad/productController'
 import { CustomerOrder, Product } from '../../types/ms-types'
 import { OrderDTO, OrderItemDTO } from '../../types/yandex/api'
 import {
-	createDemand,
+	createNewDemand,
 	preparePositions,
 	prepareStatusesForCustomerOrders,
 	sendTelegramMessage,
@@ -68,7 +68,6 @@ const handleOrderStatusUpdate = async (
 		...customerOrder,
 		state: prepareStatusesForCustomerOrders(order.status, order.substatus),
 	}
-
 	if (order.status === OrderStatusType.DELIVERY) {
 		const products = await getProducts()
 		const boughtProducts = filterBoughtProducts(
@@ -80,15 +79,15 @@ const handleOrderStatusUpdate = async (
 			...customerOrder,
 			positions: positions,
 		}
-		const createdDemand = await createDemand(newCustomerOrder)
+		const newDemand = await createNewDemand(newCustomerOrder)
+		const createdDemand = await postDemand(newDemand)
 		await sendTelegramMessage(
-			`Отгрузка: \`\`\`json\n${JSON.stringify(createdDemand.meta?.uuidHref, null, 2)}\n\`\`\``
+			`Отгрузка: \`\`\`json\n${JSON.stringify(createdDemand?.meta?.uuidHref, null, 2)}\n\`\`\``
 		)
-		Logger.info(JSON.stringify(newCustomerOrder))
-		Logger.info(JSON.stringify(createdDemand))
+		return await updateCustomerOrder(updatedCustomerOrder)
+	} else {
 		return await updateCustomerOrder(updatedCustomerOrder)
 	}
-	return await updateCustomerOrder(updatedCustomerOrder)
 }
 
 const filterBoughtProducts = (items: OrderItemDTO[], products?: Product[]) => {

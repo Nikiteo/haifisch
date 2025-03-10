@@ -18,7 +18,7 @@ export const createOverhadSum = (attributes: Attribute[]): number => {
 	return parseFloat((sumOfCommissions * 100).toFixed(2))
 }
 
-export const createDemand = (order: CustomerOrder): Demand => {
+export const createNewDemand = (order: CustomerOrder): Demand => {
 	const {
 		meta,
 		attributes,

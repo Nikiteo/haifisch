@@ -79,3 +79,24 @@ export const createDemand = async (
 		}
 	}
 }
+
+export const postDemand = async (
+	demand: Demand
+): Promise<Demand | undefined> => {
+	try {
+		const response = await apiService.post<Demand>('entity/demand', demand)
+		return response.data
+	} catch (error: unknown) {
+		Logger.warn(error)
+		const err = error as ErrorResponse
+		if (axios.isAxiosError(err)) {
+			if (err?.response == null || err.code === null) {
+				Logger.error('No response')
+			} else {
+				Logger.error(err.response.data)
+			}
+		} else {
+			Logger.error('Different error than axios')
+		}
+	}
+}

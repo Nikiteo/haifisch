@@ -54,7 +54,10 @@ const notificationHandlers: {
 		await sendTelegramMessage(
 			`Запрос: \`\`\`json\n${JSON.stringify(req.body, null, 2)}\n\`\`\``
 		)
-		await createProduct(orderCreatedNotification)
+		const createdProduct = await createProduct(orderCreatedNotification)
+		await sendTelegramMessage(
+			`Отгрузка: \`\`\`json\n${JSON.stringify(createdProduct?.meta?.uuidHref, null, 2)}\n\`\`\``
+		)
 	},
 	[NotificationType.ORDER_CANCELLED]: async (req, res) => {
 		const orderCancelledNotification: OrderCancelledNotificationDTO =
@@ -76,6 +79,9 @@ const notificationHandlers: {
 			time: new Date().toISOString(),
 		}
 		handleResponse(res, response)
+		await sendTelegramMessage(
+			`Запрос: \`\`\`json\n${JSON.stringify(req.body, null, 2)}\n\`\`\``
+		)
 		await updateProduct(orderStatusUpdatedNotification)
 	},
 	[NotificationType.ORDER_RETURN_CREATED]: async (req, res) => {

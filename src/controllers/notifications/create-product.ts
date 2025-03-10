@@ -7,6 +7,7 @@ import {
 import { getProducts } from '../../services/moysklad/productController'
 import { Product } from '../../types/ms-types'
 import { OrderItemDTO } from '../../types/yandex/api'
+import { sendTelegramMessage } from '../../utils'
 import { createCustomerOrder } from '../../utils/notifications/create-customer-order'
 
 export const createProduct = async (order: OrderCreatedNotificationDTO) => {
