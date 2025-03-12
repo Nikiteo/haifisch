@@ -32,6 +32,7 @@ import {
 } from '../../utils'
 import { createNewPaymentin } from '../../utils/notifications/create-paymentin'
 import { createPaymentin } from '../../services/moysklad/paymentinController'
+import { Logger } from '../../lib'
 
 export const updateProduct = async (
 	order: OrderStatusUpdatedNotificationDTO | OrderCancelledNotificationDTO
@@ -149,6 +150,7 @@ const handleOrderStatusUpdate = async (
 			if (preparedPayments.length > 0) {
 				const createdPaymentins =
 					await createPaymentin(preparedPayments)
+				Logger.info(JSON.stringify(createdPaymentins))
 				if (createdPaymentins) {
 					for (const item of createdPaymentins) {
 						try {
@@ -158,7 +160,8 @@ const handleOrderStatusUpdate = async (
 							)
 						} catch (error) {
 							await sendTelegramMessage(
-								'Ошибка при отправке сообщения', false
+								'Ошибка при отправке сообщения',
+								false
 							)
 						}
 					}
