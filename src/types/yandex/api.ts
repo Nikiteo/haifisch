@@ -6555,7 +6555,7 @@ export interface GetWarehouseStocksRequest {
 	 * @type {Set<string>}
 	 * @memberof GetWarehouseStocksRequest
 	 */
-	offerIds?: Set<string> | null
+	offerIds?: Array<string> | null
 }
 /**
  *
@@ -15502,10 +15502,10 @@ export interface UpdateStockItemDTO {
 export interface UpdateStocksRequest {
 	/**
 	 * Данные об остатках товаров.
-	 * @type {Set<UpdateStockDTO>}
+	 * @type {Array<UpdateStockDTO>}
 	 * @memberof UpdateStocksRequest
 	 */
-	skus: Set<UpdateStockDTO>
+	skus: Array<UpdateStockDTO>
 }
 /**
  * Время последнего обновления.

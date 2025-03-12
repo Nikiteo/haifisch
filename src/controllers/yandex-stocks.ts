@@ -27,7 +27,7 @@ export const updateYandexStocks = async (
 
 			if (campaignIds?.FBS && campaigns) {
 				const stocks = await getStocks(store, campaignIds.FBS, {
-					offerIds: new Set(articlesFromMS),
+					offerIds: articlesFromMS,
 				})
 
 				Logger.info(
@@ -41,7 +41,7 @@ export const updateYandexStocks = async (
 						)
 						if (
 							available &&
-							available.count < 10 &&
+							available.count < 20 &&
 							available.count !== 0
 						) {
 							acc.push(cur)
@@ -53,7 +53,7 @@ export const updateYandexStocks = async (
 
 				const stocksForSend = stocksLessTen?.reduce(
 					(acc, cur) => {
-						acc.skus.add({
+						acc.skus.push({
 							sku: cur.offerId,
 							items: [
 								{
@@ -65,11 +65,11 @@ export const updateYandexStocks = async (
 						return acc
 					},
 					{
-						skus: new Set<UpdateStockDTO>(),
+						skus: [],
 					} as unknown as UpdateStocksRequest
 				)
 
-				if (stocksForSend && stocksForSend.skus.size > 0) {
+				if (stocksForSend && stocksForSend.skus.length > 0) {
 					Logger.info(`[${store}]: Отправляю новые остатки...`)
 
 					const response = await sendStocks(
