@@ -8,6 +8,7 @@
 		"start": "npm run build && node --env-file=.env build/src/index.js",
 		"pm2:start": "npm run build && sudo pm2 start ./ecosystem.config.js",
 		"pm2:stop": "pm2 stop 'all' && pm2 kill && pm2 flush",
+		"pm2": "pm2 stop 'all' && pm2 kill && pm2 flush && npm run build && sudo pm2 start ./ecosystem.config.js",
 		"dev": "npx tsx ./src/index.ts",
 		"build": "rm -rf ./build && tsc --project tsconfig.build.json",
 		"prepare": "npm run build",
