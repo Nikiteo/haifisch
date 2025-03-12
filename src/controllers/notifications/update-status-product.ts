@@ -149,7 +149,7 @@ const handleOrderStatusUpdate = async (
 				const createdPaymentins =
 					await createPaymentin(preparedPayments)
 				Logger.info(JSON.stringify(createdPaymentins))
-				createdPaymentins?.rows.forEach(async item => {
+				createdPaymentins?.forEach(async item => {
 					await sendTelegramMessage(
 						`Входящие платежи: ${item?.meta?.uuidHref}`
 					)
