@@ -1,4 +1,3 @@
-import { Logger } from '../../lib'
 import { OrderCreatedNotificationDTO, getOrderById } from '../../services'
 import {
 	createNewCustomerOrder,
@@ -7,11 +6,10 @@ import {
 import { getProducts } from '../../services/moysklad/productController'
 import { Product } from '../../types/ms-types'
 import { OrderItemDTO } from '../../types/yandex/api'
-import { sendTelegramMessage } from '../../utils'
 import { createCustomerOrder } from '../../utils/notifications/create-customer-order'
 
 export const createProduct = async (order: OrderCreatedNotificationDTO) => {
-	const { campaignId, orderId } = order
+	const { campaignId, orderId, createdAt } = order
 	const store = campaignId === 23726642 ? 'Haifisch' : 'Top'
 
 	const newOrder = await getOrderById({ campaignId, orderId })
@@ -29,6 +27,7 @@ export const createProduct = async (order: OrderCreatedNotificationDTO) => {
 			const newCustomerOrder = await createCustomerOrder(
 				store,
 				newOrder,
+				createdAt,
 				boughtProducts
 			)
 			return await createNewCustomerOrder(newCustomerOrder)

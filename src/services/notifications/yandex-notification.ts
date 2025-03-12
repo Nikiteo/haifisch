@@ -56,7 +56,7 @@ const notificationHandlers: {
 		)
 		const createdProduct = await createProduct(orderCreatedNotification)
 		await sendTelegramMessage(
-			`Создан заказ покупателя: \`\`\`json\n${JSON.stringify(createdProduct?.meta?.uuidHref, null, 2)}\n\`\`\``
+			`Создан заказ покупателя: ${createdProduct?.meta?.uuidHref}`
 		)
 	},
 	[NotificationType.ORDER_CANCELLED]: async (req, res) => {

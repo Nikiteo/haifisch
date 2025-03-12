@@ -1,5 +1,7 @@
 import { consignee, carrier } from '../../database'
 import { Attribute, CustomerOrder, Demand } from '../../types/ms-types'
+import dayjs from 'dayjs'
+import customParseFormat from 'dayjs/plugin/customParseFormat'
 
 export const createOverhadSum = (attributes: Attribute[]): number => {
 	if (!attributes.some(attribute => attribute.type === 'double')) {
@@ -18,7 +20,7 @@ export const createOverhadSum = (attributes: Attribute[]): number => {
 	return parseFloat((sumOfCommissions * 100).toFixed(2))
 }
 
-export const createNewDemand = (order: CustomerOrder): Demand => {
+export const createNewDemand = (order: CustomerOrder, date: string): Demand => {
 	const {
 		meta,
 		attributes,
@@ -44,6 +46,8 @@ export const createNewDemand = (order: CustomerOrder): Demand => {
 		},
 		consignee,
 		carrier: carrier,
-		moment: deliveryPlannedMoment,
+		moment: dayjs(date, 'DD-MM-YYYY HH:mm:ss').format(
+			'YYYY-MM-DD HH:mm:ss.SSS'
+		),
 	}
 }

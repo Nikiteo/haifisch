@@ -1,31 +1,45 @@
+import dayjs from 'dayjs'
 import { states } from '../../database'
 import {
 	getOrderById,
+	getOrdersStats,
 	NotificationType,
 	OrderCancelledNotificationDTO,
 	OrderStatusType,
 	OrderStatusUpdatedNotificationDTO,
 } from '../../services'
-import { postDemand } from '../../services/moysklad/demandController'
+import {
+	getDemandByName,
+	postDemand,
+} from '../../services/moysklad/demandController'
 import {
 	getCustomerOrderByName,
 	updateCustomerOrder,
 } from '../../services/moysklad/ordersController'
 import { getProducts } from '../../services/moysklad/productController'
-import { CustomerOrder, Product } from '../../types/ms-types'
-import { OrderDTO, OrderItemDTO } from '../../types/yandex/api'
+import { CustomerOrder, Paymentin, Product } from '../../types/ms-types'
+import {
+	OrderDTO,
+	OrderItemDTO,
+	OrdersStatsPaymentDTO,
+	OrdersStatsPaymentSourceType,
+} from '../../types/yandex/api'
 import {
 	createNewDemand,
 	preparePositions,
 	prepareStatusesForCustomerOrders,
 	sendTelegramMessage,
 } from '../../utils'
+import { createNewPaymentin } from '../../utils/notifications/create-paymentin'
+import { createPaymentin } from '../../services/moysklad/paymentinController'
+import { Logger } from '../../lib'
 
 export const updateProduct = async (
 	order: OrderStatusUpdatedNotificationDTO | OrderCancelledNotificationDTO
 ) => {
 	const { campaignId, orderId } = order
 	const yandexOrder = await getOrderById({ campaignId, orderId })
+	const store = campaignId === 23726642 ? 'Haifisch' : 'Top'
 
 	if (yandexOrder) {
 		const yandexOrderId = yandexOrder.id.toString()
@@ -41,6 +55,7 @@ export const updateProduct = async (
 			) {
 				return await handleOrderStatusUpdate(
 					order,
+					store,
 					yandexOrder,
 					customerOrder[0]
 				)
@@ -61,6 +76,7 @@ const handleOrderCancellation = async (customerOrder: CustomerOrder) => {
 
 const handleOrderStatusUpdate = async (
 	order: OrderStatusUpdatedNotificationDTO,
+	store: 'Haifisch' | 'Top',
 	yandexOrder: OrderDTO,
 	customerOrder: CustomerOrder
 ) => {
@@ -79,12 +95,63 @@ const handleOrderStatusUpdate = async (
 			...customerOrder,
 			positions: positions,
 		}
-		const newDemand = await createNewDemand(newCustomerOrder)
-		const createdDemand = await postDemand(newDemand)
-		await sendTelegramMessage(
-			`Отгрузка: \`\`\`json\n${JSON.stringify(createdDemand?.meta?.uuidHref, null, 2)}\n\`\`\``
+		const newDemand = await createNewDemand(
+			newCustomerOrder,
+			order.updatedAt
 		)
+		const createdDemand = await postDemand(newDemand)
+		await sendTelegramMessage(`Отгрузка: ${createdDemand?.meta?.uuidHref}`)
 		return await updateCustomerOrder(updatedCustomerOrder)
+	} else if (order.status === OrderStatusType.DELIVERED) {
+		const demands = (await getDemandByName(order.orderId.toString())) ?? []
+		if (demands.length > 0) {
+			const demand = demands[0]
+			const ordersStats =
+				(await getOrdersStats(store, order.campaignId, {
+					orders: [order.orderId],
+				})) ?? []
+			const orderStat = ordersStats[0]
+			const preparedPayments: Paymentin[] = []
+			const payments = orderStat.payments.filter(
+				payment => payment.type === 'PAYMENT'
+			)
+			preparedPayments.push(
+				...payments.map(payment => {
+					return createNewPaymentin(demand, payment, order.updatedAt)
+				})
+			)
+			const subsidies = orderStat.subsidies?.filter(
+				subsidy => subsidy.operationType === 'ACCRUAL'
+			)
+			if (subsidies && subsidies.length > 0) {
+				preparedPayments.push(
+					...subsidies.map(subsidy => {
+						const uniqueId = `${order.orderId}_${subsidy.type}_${subsidy.amount}`
+						const paymentDTO: OrdersStatsPaymentDTO = {
+							id: uniqueId,
+							total: subsidy.amount,
+							source: subsidy.type as OrdersStatsPaymentSourceType,
+							date: dayjs(order.updatedAt).format(
+								'YYYY-MM-DD HH:mm:ss.SSS'
+							),
+						}
+						return createNewPaymentin(
+							demand,
+							paymentDTO,
+							order.updatedAt
+						)
+					})
+				)
+			}
+			const createdPaymentins = await createPaymentin(preparedPayments)
+			Logger.info(JSON.stringify(createdPaymentins))
+			createdPaymentins?.rows.forEach(async item => {
+				await sendTelegramMessage(
+					`Входящие платежи: ${item?.meta?.uuidHref}`
+				)
+			})
+			return await updateCustomerOrder(updatedCustomerOrder)
+		}
 	} else {
 		return await updateCustomerOrder(updatedCustomerOrder)
 	}

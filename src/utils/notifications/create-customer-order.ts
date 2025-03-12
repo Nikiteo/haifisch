@@ -26,13 +26,14 @@ dayjs.extend(customParseFormat)
 export const createCustomerOrder = (
 	store: string,
 	order: OrderDTO,
+	date: string,
 	boughtProducts?: Product[]
 ): CustomerOrder => {
 	return {
 		shared: true,
 		group,
 		name: order.id?.toString(),
-		moment: dayjs(order.creationDate, 'DD-MM-YYYY HH:mm:ss').format(
+		moment: dayjs(date, 'DD-MM-YYYY HH:mm:ss').format(
 			'YYYY-MM-DD HH:mm:ss.SSS'
 		),
 		applicable: true,
