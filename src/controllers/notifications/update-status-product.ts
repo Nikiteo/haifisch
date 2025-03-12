@@ -143,13 +143,18 @@ const handleOrderStatusUpdate = async (
 					})
 				)
 			}
-			const createdPaymentins = await createPaymentin(preparedPayments)
-			Logger.info(JSON.stringify(createdPaymentins))
-			createdPaymentins?.rows.forEach(async item => {
-				await sendTelegramMessage(
-					`Входящие платежи: ${item?.meta?.uuidHref}`
-				)
-			})
+			Logger.info(JSON.stringify(preparedPayments))
+
+			if (preparedPayments.length > 0) {
+				const createdPaymentins =
+					await createPaymentin(preparedPayments)
+				Logger.info(JSON.stringify(createdPaymentins))
+				createdPaymentins?.rows.forEach(async item => {
+					await sendTelegramMessage(
+						`Входящие платежи: ${item?.meta?.uuidHref}`
+					)
+				})
+			}
 			return await updateCustomerOrder(updatedCustomerOrder)
 		}
 	} else {
