@@ -46,7 +46,7 @@ export const createNewDemand = (order: CustomerOrder, date: string): Demand => {
 		},
 		consignee,
 		carrier: carrier,
-		moment: dayjs(date, 'DD-MM-YYYY HH:mm:ss').format(
+		moment: dayjs(date).format(
 			'YYYY-MM-DD HH:mm:ss.SSS'
 		),
 	}
