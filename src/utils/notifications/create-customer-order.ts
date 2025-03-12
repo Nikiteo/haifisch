@@ -33,7 +33,7 @@ export const createCustomerOrder = (
 		shared: true,
 		group,
 		name: order.id?.toString(),
-		moment: dayjs(date, 'DD-MM-YYYY HH:mm:ss').format(
+		moment: dayjs(date).format(
 			'YYYY-MM-DD HH:mm:ss.SSS'
 		),
 		applicable: true,
