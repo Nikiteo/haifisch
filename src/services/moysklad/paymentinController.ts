@@ -47,11 +47,11 @@ export const createPaymentin = async (
 	paymentins: Paymentin[]
 ): Promise<Paymentin[] | undefined> => {
 	try {
-		const response = await apiService.post<ResponseMS<Paymentin>>(
+		const response = await apiService.post<Paymentin[]>(
 			'entity/paymentin',
 			paymentins
 		)
-		return response.data.rows
+		return response.data
 	} catch (error: unknown) {
 		const err = error as ErrorResponse
 		if (axios.isAxiosError(err)) {

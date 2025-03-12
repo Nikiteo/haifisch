@@ -147,12 +147,9 @@ const handleOrderStatusUpdate = async (
 				)
 			}
 
-			Logger.info(JSON.stringify(preparedPayments))
-
 			if (preparedPayments.length > 0) {
 				const createdPaymentins =
 					await createPaymentin(preparedPayments)
-				Logger.info(JSON.stringify(createdPaymentins))
 				if (createdPaymentins) {
 					for (const item of createdPaymentins) {
 						try {
