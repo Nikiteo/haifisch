@@ -32,7 +32,6 @@ import {
 } from '../../utils'
 import { createNewPaymentin } from '../../utils/notifications/create-paymentin'
 import { createPaymentin } from '../../services/moysklad/paymentinController'
-import { Logger } from '../../lib'
 
 export const updateProduct = async (
 	order: OrderStatusUpdatedNotificationDTO | OrderCancelledNotificationDTO
@@ -100,7 +99,10 @@ const handleOrderStatusUpdate = async (
 			order.updatedAt
 		)
 		const createdDemand = await postDemand(newDemand)
-		await sendTelegramMessage(`Отгрузка: ${createdDemand?.meta?.uuidHref}`)
+		await sendTelegramMessage(
+			`Отгрузка: ${createdDemand?.meta?.uuidHref}`,
+			false
+		)
 		return await updateCustomerOrder(updatedCustomerOrder)
 	} else if (order.status === OrderStatusType.DELIVERED) {
 		const demands = (await getDemandByName(order.orderId.toString())) ?? []
@@ -151,11 +153,12 @@ const handleOrderStatusUpdate = async (
 					for (const item of createdPaymentins) {
 						try {
 							await sendTelegramMessage(
-								`Входящие платежи: ${item?.meta?.uuidHref}`
+								`Входящие платежи: ${item?.meta?.uuidHref}`,
+								false
 							)
 						} catch (error) {
 							await sendTelegramMessage(
-								'Ошибка при отправке сообщения'
+								'Ошибка при отправке сообщения', false
 							)
 						}
 					}

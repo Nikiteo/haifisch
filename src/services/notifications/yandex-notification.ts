@@ -27,7 +27,8 @@ const handleError = async (res: Response, reqBody: any) => {
 	}
 	Logger.error(`Error processing notification: ${JSON.stringify(reqBody)}`)
 	await sendTelegramMessage(
-		`Ошибка: \`\`\`json\n${JSON.stringify(reqBody, null, 2)}\n\`\`\``
+		`Ошибка: \`\`\`json\n${JSON.stringify(reqBody, null, 2)}\n\`\`\``,
+		true
 	)
 	res.status(500).json(errorResponse)
 }
@@ -51,12 +52,10 @@ const notificationHandlers: {
 			time: new Date().toISOString(),
 		}
 		handleResponse(res, response)
-		await sendTelegramMessage(
-			`Запрос: \`\`\`json\n${JSON.stringify(req.body, null, 2)}\n\`\`\``
-		)
 		const createdProduct = await createProduct(orderCreatedNotification)
 		await sendTelegramMessage(
-			`Создан заказ покупателя: ${createdProduct?.meta?.uuidHref}`
+			`Создан заказ покупателя: ${createdProduct?.meta?.uuidHref}`,
+			false
 		)
 	},
 	[NotificationType.ORDER_CANCELLED]: async (req, res) => {
@@ -79,9 +78,6 @@ const notificationHandlers: {
 			time: new Date().toISOString(),
 		}
 		handleResponse(res, response)
-		await sendTelegramMessage(
-			`Запрос: \`\`\`json\n${JSON.stringify(req.body, null, 2)}\n\`\`\``
-		)
 		await updateProduct(orderStatusUpdatedNotification)
 	},
 	[NotificationType.ORDER_RETURN_CREATED]: async (req, res) => {
@@ -93,9 +89,6 @@ const notificationHandlers: {
 			time: new Date().toISOString(),
 		}
 		handleResponse(res, response)
-		await sendTelegramMessage(
-			`Запрос: \`\`\`json\n${JSON.stringify(req.body, null, 2)}\n\`\`\``
-		)
 	},
 }
 
@@ -103,6 +96,10 @@ yandexRouter.post('/notification', async (req: Request, res: Response) => {
 	const { notificationType } = req.body as {
 		notificationType: NotificationType
 	}
+	await sendTelegramMessage(
+		`Запрос: \`\`\`json\n${JSON.stringify(req.body, null, 2)}\n\`\`\``,
+		true
+	)
 	const handler = notificationHandlers[notificationType]
 
 	if (handler) {
