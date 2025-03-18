@@ -98,7 +98,8 @@ export const prepareSalesReturn = (
 				const filteredOrders = orders.filter(
 					order =>
 						order.state?.meta === states.RETURNED.meta ||
-						order.state?.meta === states.PARTIALLY_RETURNED.meta
+						order.state?.meta === states.PARTIALLY_RETURNED.meta ||
+						order.state?.meta === states.PICKED_REFUND.meta
 				)
 				const updatedSalesreturn = demands.reduce(
 					(acc: SalesReturn[], cur: Demand) => {
