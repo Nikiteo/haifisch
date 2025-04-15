@@ -52,7 +52,7 @@ export const howMuchMoney = async ({
 					.join('\n')
 
 				await sendMessage(
-					`На всех счетах: ${totalBalance} рублей\n\nБалансы по счетам:\n${balancesMessage}`
+					`На всех счетах: ${totalBalance.toFixed(2)} рублей\n\nБалансы по счетам:\n${balancesMessage}`
 				)
 			} else {
 				await sendMessage('Не удалось получить информацию о счетах.')

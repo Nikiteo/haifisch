@@ -1,77 +1,75 @@
-import dayjs from 'dayjs'
 import { states } from '../../database'
 import {
 	getOrderById,
-	getOrdersStats,
 	NotificationType,
 	OrderCancelledNotificationDTO,
 	OrderStatusType,
 	OrderStatusUpdatedNotificationDTO,
 } from '../../services'
-import {
-	getDemandByName,
-	postDemand,
-} from '../../services/moysklad/demandController'
+
 import {
 	getCustomerOrderByName,
 	updateCustomerOrder,
 } from '../../services/moysklad/ordersController'
-import { getProducts } from '../../services/moysklad/productController'
-import { CustomerOrder, Paymentin, Product } from '../../types/ms-types'
-import {
-	OrderDTO,
-	OrderItemDTO,
-	OrdersStatsPaymentDTO,
-	OrdersStatsPaymentSourceType,
-} from '../../types/yandex/api'
-import {
-	createNewDemand,
-	preparePositions,
-	prepareStatusesForCustomerOrders,
-	sendTelegramMessage,
-} from '../../utils'
-import { createNewPaymentin } from '../../utils/notifications/create-paymentin'
-import { createPaymentin } from '../../services/moysklad/paymentinController'
+import { CustomerOrder } from '../../types/ms-types'
+import { OrderDTO } from '../../types/yandex/api'
+import { prepareStatusesForCustomerOrders } from '../../utils'
 import { Logger } from '../../lib'
+import {
+	getStoreName,
+	handleDeliveredStatus,
+	handleDeliveryStatus,
+} from './utils'
 
 export const updateProduct = async (
 	order: OrderStatusUpdatedNotificationDTO | OrderCancelledNotificationDTO
-) => {
-	const { campaignId, orderId } = order
-	const yandexOrder = await getOrderById({ campaignId, orderId })
-	const store = campaignId === 23726642 ? 'Haifisch' : 'Top'
+): Promise<void> => {
+	try {
+		const { campaignId, orderId } = order
+		const store = getStoreName(campaignId)
+		const yandexOrder = await getOrderById({ campaignId, orderId })
 
-	if (yandexOrder) {
+		if (!yandexOrder) return
+
 		const yandexOrderId = yandexOrder.id.toString()
 		const customerOrder = await getCustomerOrderByName(yandexOrderId)
 
-		if (customerOrder && customerOrder.length > 0) {
-			if (order.notificationType === NotificationType.ORDER_CANCELLED) {
-				return await handleOrderCancellation(customerOrder[0])
-			} else if (
-				order.notificationType ===
-					NotificationType.ORDER_STATUS_UPDATED &&
-				order.status !== OrderStatusType.CANCELLED
-			) {
-				return await handleOrderStatusUpdate(
-					order,
-					store,
-					yandexOrder,
-					customerOrder[0]
-				)
-			}
+		if (!customerOrder) return
+
+		switch (order.notificationType) {
+			case NotificationType.ORDER_CANCELLED:
+				await handleOrderCancellation(customerOrder[0])
+				break
+			case NotificationType.ORDER_STATUS_UPDATED:
+				if (order.status !== OrderStatusType.CANCELLED) {
+					await handleOrderStatusUpdate(
+						order,
+						store,
+						yandexOrder,
+						customerOrder[0]
+					)
+				}
+				break
 		}
+	} catch (error) {
+		Logger.error('Error in updateProduct:', error)
+		throw error
 	}
 }
 
-const handleOrderCancellation = async (customerOrder: CustomerOrder) => {
-	const updatedCustomerOrder = {
-		...customerOrder,
-		state: {
-			...states.CANCELLED,
-		},
+const handleOrderCancellation = async (
+	customerOrder: CustomerOrder
+): Promise<void> => {
+	try {
+		const updatedCustomerOrder = {
+			...customerOrder,
+			state: { ...states.CANCELLED },
+		}
+		await updateCustomerOrder(updatedCustomerOrder)
+	} catch (error) {
+		Logger.error('Error in handleOrderCancellation:', error)
+		throw error
 	}
-	return await updateCustomerOrder(updatedCustomerOrder)
 }
 
 const handleOrderStatusUpdate = async (
@@ -79,102 +77,33 @@ const handleOrderStatusUpdate = async (
 	store: 'Haifisch' | 'Top',
 	yandexOrder: OrderDTO,
 	customerOrder: CustomerOrder
-) => {
-	const updatedCustomerOrder = {
-		...customerOrder,
-		state: prepareStatusesForCustomerOrders(order.status, order.substatus),
-	}
-	if (order.status === OrderStatusType.DELIVERY) {
-		const products = await getProducts()
-		const boughtProducts = filterBoughtProducts(
-			yandexOrder.items,
-			products?.rows
-		)
-		const positions = preparePositions(yandexOrder, boughtProducts)
-		const newCustomerOrder = {
+): Promise<void> => {
+	try {
+		const updatedCustomerOrder = {
 			...customerOrder,
-			positions: positions,
+			state: prepareStatusesForCustomerOrders(
+				order.status,
+				order.substatus
+			),
 		}
-		const newDemand = await createNewDemand(
-			newCustomerOrder,
-			order.updatedAt
-		)
-		const createdDemand = await postDemand(newDemand)
-		await sendTelegramMessage(
-			`Отгрузка: ${createdDemand?.meta?.uuidHref}`,
-			false
-		)
-		return await updateCustomerOrder(updatedCustomerOrder)
-	} else if (order.status === OrderStatusType.DELIVERED) {
-		const demands = (await getDemandByName(order.orderId.toString())) ?? []
-		if (demands.length > 0) {
-			const demand = demands[0]
-			const ordersStats =
-				(await getOrdersStats(store, order.campaignId, {
-					orders: [order.orderId],
-				})) ?? []
-			const orderStat = ordersStats[0]
-			const preparedPayments: Paymentin[] = []
-			const payments = orderStat.payments.filter(
-				payment => payment.type === 'PAYMENT'
-			)
-			preparedPayments.push(
-				...payments.map(payment => {
-					return createNewPaymentin(demand, payment, order.updatedAt)
-				})
-			)
-			const subsidies = orderStat.subsidies?.filter(
-				subsidy => subsidy.operationType === 'ACCRUAL'
-			)
-			if (subsidies && subsidies.length > 0) {
-				preparedPayments.push(
-					...subsidies.map(subsidy => {
-						const uniqueId = `${order.orderId}_${subsidy.type}_${subsidy.amount}`
-						const paymentDTO: OrdersStatsPaymentDTO = {
-							id: uniqueId,
-							total: subsidy.amount,
-							source: subsidy.type as OrdersStatsPaymentSourceType,
-							date: dayjs(order.updatedAt).format(
-								'YYYY-MM-DD HH:mm:ss.SSS'
-							),
-						}
-						return createNewPaymentin(
-							demand,
-							paymentDTO,
-							order.updatedAt
-						)
-					})
+
+		switch (order.status) {
+			case OrderStatusType.DELIVERY:
+				await handleDeliveryStatus(
+					yandexOrder,
+					customerOrder,
+					updatedCustomerOrder,
+					order
 				)
-			}
-
-			if (preparedPayments.length > 0) {
-				const createdPaymentins =
-					await createPaymentin(preparedPayments)
-				if (createdPaymentins) {
-					for (const item of createdPaymentins) {
-						try {
-							await sendTelegramMessage(
-								`Входящие платежи: ${item?.meta?.uuidHref}`,
-								false
-							)
-						} catch (error) {
-							await sendTelegramMessage(
-								'Ошибка при отправке сообщения',
-								false
-							)
-						}
-					}
-				}
-			}
-			return await updateCustomerOrder(updatedCustomerOrder)
+				break
+			case OrderStatusType.DELIVERED:
+				await handleDeliveredStatus(order, store, updatedCustomerOrder)
+				break
+			default:
+				await updateCustomerOrder(updatedCustomerOrder)
 		}
-	} else {
-		return await updateCustomerOrder(updatedCustomerOrder)
+	} catch (error) {
+		Logger.error('Error in handleOrderStatusUpdate:', error)
+		throw error
 	}
-}
-
-const filterBoughtProducts = (items: OrderItemDTO[], products?: Product[]) => {
-	return products?.filter(product =>
-		items.some(item => item.offerId === product.article)
-	)
 }
