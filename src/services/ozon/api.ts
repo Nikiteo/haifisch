@@ -315,3 +315,13 @@ export const getOzonImages = async ({
 	})
 	return response
 }
+
+export const isEnabledGetReturns = async (): Promise<
+	{ enabled: boolean } | undefined
+> => {
+	const response = await postRequest<{}, { enabled: boolean }>(
+		'v1/return/giveout/is-enabled',
+		{}
+	)
+	return response
+}

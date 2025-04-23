@@ -1,5 +1,10 @@
 import { Logger } from '../lib'
-import { createAct, getActs, getReturnPng } from '../services'
+import {
+	createAct,
+	getActs,
+	getReturnPng,
+	isEnabledGetReturns,
+} from '../services'
 import { createCanvas, loadImage } from 'canvas'
 
 async function createEnhancedQRImage(
@@ -46,13 +51,15 @@ export const createActOzon = async (
 	try {
 		await sendMessage('Начинаю формирование отгрузки...')
 		const acts = await getActs({})
+		const isEnableQr = await isEnabledGetReturns()
 
 		if (acts && acts[0].carriage_status !== 'sended') {
-			if (
-				acts[0].errors &&
-				acts[0].errors.length > 0 &&
-				acts[0].errors[0].code === 'has_seller_returns_in_stock'
-			) {
+			// if (
+			// 	acts[0].errors &&
+			// 	acts[0].errors.length > 0 &&
+			// 	acts[0].errors[0].code === 'has_seller_returns_in_stock'
+			// ) {
+			if (isEnableQr?.enabled) {
 				const returnPng = await getReturnPng({})
 
 				if (returnPng) {
