@@ -161,7 +161,6 @@ export async function processFeedbackAndReply(
 	GoodsFeedbackCommentDTO | UpdateGoodsFeedbackCommentRequest | undefined
 > {
 	try {
-		// Получаем полную информацию об отзыве
 		const feedbackInfo = await getFeedbackInfo(
 			store,
 			notification.businessId,
@@ -173,7 +172,6 @@ export async function processFeedbackAndReply(
 			return undefined
 		}
 
-		// Генерируем ответ с учетом всех параметров
 		const generatedResponse = await generateResponse(feedbackInfo)
 
 		if (!generatedResponse) {
@@ -183,7 +181,6 @@ export async function processFeedbackAndReply(
 			return undefined
 		}
 
-		// Отправляем ответ
 		const commentData: UpdateGoodsFeedbackCommentRequest = {
 			feedbackId: notification.feedbackId,
 			comment: {
@@ -197,14 +194,8 @@ export async function processFeedbackAndReply(
 			commentData
 		)
 
-		Logger.info('Ответ на отзыв успешно отправлен', {
-			feedbackId: notification.feedbackId,
-			rating: feedbackInfo.rating,
-			responseLength: generatedResponse.length,
-		})
-
-		Logger.warn(commentData)
-		return commentData
+		Logger.info('Ответ на отзыв успешно отправлен')
+		return response
 	} catch (error) {
 		Logger.error('Ошибка при обработке отзыва:', {
 			error,

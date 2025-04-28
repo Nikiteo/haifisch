@@ -106,7 +106,14 @@ const notificationHandlers: {
 			time: new Date().toISOString(),
 		}
 		handleResponse(res, response)
-		await processFeedbackAndReply(feedbackCreatedNotification, store)
+		const feedbackResponse = await processFeedbackAndReply(
+			feedbackCreatedNotification,
+			store
+		)
+		await sendTelegramMessage(
+			`Ответ: \`\`\`json\n${JSON.stringify(feedbackResponse, null, 2)}\n\`\`\``,
+			true
+		)
 	},
 }
 
