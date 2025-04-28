@@ -2,6 +2,7 @@ import { GigaChat } from 'gigachat'
 import { Agent } from 'node:https'
 import {
 	GoodsFeedbackCreatedNotificationDTO,
+	addFeedback,
 	getFeedbacks,
 } from '../../services'
 import {
@@ -167,10 +168,7 @@ export async function processFeedbackAndReply(
 			notification.feedbackId
 		)
 
-		if (
-			!feedbackInfo
-			// || !feedbackInfo.needReaction
-		) {
+		if (!feedbackInfo || !feedbackInfo.needReaction) {
 			Logger.warn('Отзыв не требует ответа или не найден')
 			return undefined
 		}
@@ -193,11 +191,11 @@ export async function processFeedbackAndReply(
 			},
 		}
 
-		// const response = await addFeedback(
-		// 	store,
-		// 	notification.businessId,
-		// 	commentData
-		// )
+		const response = await addFeedback(
+			store,
+			notification.businessId,
+			commentData
+		)
 
 		Logger.info('Ответ на отзыв успешно отправлен', {
 			feedbackId: notification.feedbackId,
