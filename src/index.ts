@@ -17,7 +17,7 @@ import {
 } from './lib'
 import https from 'https'
 import fs from 'fs'
-import { ozonRouter, yandexRouter } from './services'
+import { ozonRouter, yandexRouter, tbankRouter } from './services'
 
 const app = express()
 
@@ -25,6 +25,7 @@ app.use(bodyParser.json())
 
 app.use(yandexRouter)
 app.use(ozonRouter)
+app.use(tbankRouter)
 
 const options = {
 	key: fs.readFileSync('/etc/letsencrypt/live/haifisch.ru/privkey.pem'),
