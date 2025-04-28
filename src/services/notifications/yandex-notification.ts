@@ -8,9 +8,11 @@ import {
 	Integration,
 	ErrorResponse,
 	NotificationType,
+	GoodsFeedbackCreatedNotificationDTO,
 } from './types'
 import { createProduct, updateProduct } from '../../controllers'
 import { sendTelegramMessage } from '../../utils'
+import { processFeedbackAndReply } from '../../controllers/notifications/feedback-controller'
 
 export const yandexRouter = Router()
 
@@ -89,6 +91,22 @@ const notificationHandlers: {
 			time: new Date().toISOString(),
 		}
 		handleResponse(res, response)
+	},
+	[NotificationType.GOODS_FEEDBACK_CREATED]: async (req, res) => {
+		const feedbackCreatedNotification: GoodsFeedbackCreatedNotificationDTO =
+			req.body
+		const store =
+			feedbackCreatedNotification.businessId === 6328344
+				? 'Haifisch'
+				: 'Top'
+
+		const response: Integration = {
+			version: '1.0.0',
+			name: 'Haifisch',
+			time: new Date().toISOString(),
+		}
+		handleResponse(res, response)
+		await processFeedbackAndReply(feedbackCreatedNotification, store)
 	},
 }
 

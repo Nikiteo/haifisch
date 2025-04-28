@@ -5,6 +5,7 @@ export enum NotificationType {
 	ORDER_CANCELLED = 'ORDER_CANCELLED', // Заказ отменен
 	ORDER_STATUS_UPDATED = 'ORDER_STATUS_UPDATED', // Статус заказа изменен
 	ORDER_RETURN_CREATED = 'ORDER_RETURN_CREATED', // Создан новый возврат или невыкуп
+	GOODS_FEEDBACK_CREATED = 'GOODS_FEEDBACK_CREATED',
 }
 
 // Интерфейсы для уведомлений
@@ -187,4 +188,40 @@ export interface StateChangedEvent {
 	changed_state_date: string // Дата и время изменения статуса отправления в формате UTC
 	warehouse_id: number // Идентификатор склада
 	seller_id: number // Идентификатор продавца
+}
+
+export interface GoodsFeedbackCreatedNotificationDTO {
+	/**
+	 * Идентификатор кабинета
+	 * Тип: integer<int64>
+	 */
+	businessId: number
+
+	/**
+	 * Дата и время создания отзыва.
+	 * Может отличаться от информации в publishedAt, так как некоторое время отзыв проходит модерацию.
+	 * Формат даты: ISO 8601 со смещением относительно UTC. Например, 2017-11-21T00:00:00.213Z.
+	 * Тип: string<date-time>
+	 */
+	createdAt: string
+
+	/**
+	 * Идентификатор отзыва
+	 * Тип: integer<int64>
+	 */
+	feedbackId: number
+
+	/**
+	 * Тип уведомления:
+	 * GOODS_FEEDBACK_CREATED — создан новый отзыв о товаре
+	 */
+	notificationType: 'GOODS_FEEDBACK_CREATED'
+
+	/**
+	 * Дата и время публикации отзыва.
+	 * Может отличаться от информации в createdAt, так как некоторое время отзыв проходит модерацию.
+	 * Формат даты: ISO 8601 со смещением относительно UTC. Например, 2017-11-21T00:00:00.213Z.
+	 * Тип: string<date-time>
+	 */
+	publishedAt: string
 }
