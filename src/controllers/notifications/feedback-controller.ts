@@ -20,6 +20,7 @@ const httpsAgent = new Agent({
 const client = new GigaChat({
 	credentials: GIGA_TOKEN,
 	scope: 'GIGACHAT_API_PERS',
+	httpsAgent,
 })
 
 interface ExtendedFeedbackInfo {
