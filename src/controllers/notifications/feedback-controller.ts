@@ -166,11 +166,11 @@ export async function processFeedbackAndReply(
 			notification.feedbackId
 		)
 
-		if (!feedbackInfo || !feedbackInfo.needReaction) {
-			Logger.warn('Отзыв не требует ответа или не найден', {
-				feedbackId: notification.feedbackId,
-				needReaction: feedbackInfo?.needReaction,
-			})
+		if (
+			!feedbackInfo
+			// || !feedbackInfo.needReaction
+		) {
+			Logger.warn('Отзыв не требует ответа или не найден')
 			return undefined
 		}
 
@@ -204,6 +204,7 @@ export async function processFeedbackAndReply(
 			responseLength: generatedResponse.length,
 		})
 
+		Logger.warn(commentData)
 		return commentData
 	} catch (error) {
 		Logger.error('Ошибка при обработке отзыва:', {
