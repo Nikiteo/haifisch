@@ -193,7 +193,7 @@ export const tbankOperations = async (operation: TbankNotification) => {
 					mediaType: 'application/json',
 				},
 			},
-			description: `Контрагент: ${operation.merch.name}\n\nОплата: ${operation.payer.name}`,
+			description: `Получатель: ${operation.counterParty.name}\n\nПлательщик: ${operation.payer.name}`,
 		}
 
 		const createdCashout = await createCashout(cashoutData)
@@ -204,7 +204,7 @@ export const tbankOperations = async (operation: TbankNotification) => {
 				`📝 Описание: ${operation.description || 'Нет описания'}\n` +
 				`💰 Сумма: ${sum} руб.\n` +
 				`🏷️ Статья: ${expenseItem?.name || 'Не определена'}\n` +
-				`🔗 Ссылка: ${createdCashout?.meta?.uuidHref || ''}` +
+				`🔗 Ссылка: ${createdCashout?.meta?.uuidHref || ''}\n` +
 				`${getEmojii(operation.payer.inn)} Плательщик: ${operation.payer.name}`,
 			undefined,
 			-1002457683199
