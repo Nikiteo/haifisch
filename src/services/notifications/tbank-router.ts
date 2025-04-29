@@ -1,26 +1,24 @@
 import { Router, Request, Response } from 'express'
 import { Logger } from '../../lib'
 import { sendTelegramMessage } from '../../utils'
+import { OperationType, TbankNotification } from '../../types/tbank/tbank'
+import { createCashout, getCashoutByName } from '../moysklad/cashoutController'
+import { createCashoutObject } from '../../utils/create-cashout'
+import { tbankOperations } from '../../controllers'
 
 export const tbankRouter = Router()
 
 tbankRouter.post('/operations', async (req: Request, res: Response) => {
 	try {
-		const operation = req.body
+		res.status(200).send('OK')
+		const operation: TbankNotification = req.body
 
-		// Логируем полученное уведомление
 		Logger.info(`Получена операция от TBank: ${JSON.stringify(operation)}`)
 		await sendTelegramMessage(
 			`Новая операция TBank: \`\`\`json\n${JSON.stringify(operation, null, 2)}\n\`\`\``,
 			true
 		)
-
-		// Здесь можно добавить обработку операции (сохранение в БД, интеграция с МойСклад и т.д.)
-		// Например:
-		// await processTBankOperation(operation)
-
-		// Отправляем успешный ответ
-		res.status(200).send('OK')
+		// await tbankOperations(operation)
 	} catch (error) {
 		Logger.error(`Ошибка обработки операции TBank: ${error}`)
 		await sendTelegramMessage(

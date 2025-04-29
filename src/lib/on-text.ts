@@ -45,6 +45,8 @@ export const onText = (): void => {
 				text.toLocaleLowerCase().includes('трата') &&
 				ctx.message.chat.id === -1002457683199
 			) {
+				await ctx.sendMessage('Твой chatID: ' + chatId)
+
 				const setReaction = async (
 					reaction: ReactionType[]
 				): Promise<void> => {

@@ -5,9 +5,9 @@ import { generateApi } from 'swagger-typescript-api'
 const prefix = '/** THIS FILE WAS GENERATED */\n'
 const eslintDisable = `
 /* eslint-disable @typescript-eslint/array-type, @typescript-eslint/ban-types, max-lines, @typescript-eslint/no-namespace, @typescript-eslint/indent, @typescript-eslint/no-invalid-void-type */\n\n`
-const NAME = 'ozon-types.ts'
-const PATH = './scripts/openapi.yaml'
-const OUTPUT = 'src/types/ozon'
+const NAME = 'tbank-types.ts'
+const PATH = './scripts/tbank.yaml'
+const OUTPUT = 'src/types/tbank'
 
 generateApi({
 	name: NAME,

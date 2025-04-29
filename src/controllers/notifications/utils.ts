@@ -9,7 +9,13 @@ import {
 } from '../../services/moysklad/demandController'
 import { updateCustomerOrder } from '../../services/moysklad/ordersController'
 import { getProducts } from '../../services/moysklad/productController'
-import { CustomerOrder, Demand, Paymentin, Product } from '../../types/ms-types'
+import {
+	CustomerOrder,
+	Demand,
+	Owner,
+	Paymentin,
+	Product,
+} from '../../types/ms-types'
 import {
 	OrderDTO,
 	OrderItemDTO,
@@ -25,6 +31,7 @@ import {
 import { createNewPaymentin } from '../../utils/notifications/create-paymentin'
 import { createPaymentin } from '../../services/moysklad/paymentinController'
 import { Logger } from '../../lib'
+import { owner, anyaOwner, mishaOwner } from '../../database'
 
 const STORE_NAMES = {
 	23726642: 'Haifisch',
@@ -139,4 +146,17 @@ export const filterBoughtProducts = (
 	return products?.filter(product =>
 		items.some(item => item.offerId === product.article)
 	)
+}
+
+export const getOwnerByInn = (inn: string): Owner => {
+	switch (inn) {
+		case '622909830629':
+			return owner
+		case '711810955831':
+			return anyaOwner
+		case '482110871775':
+			return mishaOwner
+		default:
+			return owner
+	}
 }

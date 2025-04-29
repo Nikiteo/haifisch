@@ -3,12 +3,13 @@ import { bot } from '../../../bot'
 
 export const sendTelegramMessage = async (
 	message: string,
-	markdown?: boolean
+	markdown?: boolean,
+	chatId?: number
 ) => {
 	const data = markdown
 		? ({
 				parse_mode: 'MarkdownV2',
 			} as ExtraReplyMessage)
 		: undefined
-	await bot.telegram.sendMessage(838975962, message, data)
+	await bot.telegram.sendMessage(chatId || 838975962, message, data)
 }

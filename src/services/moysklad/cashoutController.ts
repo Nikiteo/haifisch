@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 import axios from 'axios'
-import { type Cashout, type ErrorResponse } from '../../types/ms-types'
+import { ResponseMS, type Cashout, type ErrorResponse } from '../../types/ms-types'
 import { apiService } from './service'
 import { Logger } from '../../lib'
 
@@ -32,6 +32,29 @@ export const createCashout = async (
 		} else {
 			Logger.error('Different error than axios')
 			throw new Error('An unexpected error occurred')
+		}
+	}
+}
+
+export const getCashoutByName = async (
+	name: string
+): Promise<Cashout[] | undefined> => {
+	try {
+		const response = await apiService.get<ResponseMS<Cashout>>(
+			`entity/cashout?filter=name=${name}`
+		)
+		return response.data.rows
+	} catch (error: unknown) {
+		Logger.warn(error)
+		const err = error as ErrorResponse
+		if (axios.isAxiosError(err)) {
+			if (err?.response == null || err.code === null) {
+				Logger.error('No response')
+			} else {
+				Logger.error(err.response.data)
+			}
+		} else {
+			Logger.error('Different error than axios')
 		}
 	}
 }

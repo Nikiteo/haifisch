@@ -471,6 +471,22 @@ export interface ExpenseItem {
 	meta?: Meta
 }
 
+export interface IExpenseItem {
+	meta: Meta
+	id: string
+	accountId: string
+	owner?: Employee
+	shared: boolean
+	group?: Group
+	version: number
+	updated: string
+	name: string
+	description?: string
+	code?: string
+	externalCode: string
+	archived: boolean
+}
+
 export interface Move {
 	meta?: Meta
 	agent?: Agent
