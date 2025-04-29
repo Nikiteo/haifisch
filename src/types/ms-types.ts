@@ -472,19 +472,19 @@ export interface ExpenseItem {
 }
 
 export interface IExpenseItem {
-	meta: Meta
-	id: string
-	accountId: string
+	meta?: Meta
+	id?: string
+	accountId?: string
 	owner?: Employee
-	shared: boolean
+	shared?: boolean
 	group?: Group
-	version: number
-	updated: string
+	version?: number
+	updated?: string
 	name: string
 	description?: string
 	code?: string
-	externalCode: string
-	archived: boolean
+	externalCode?: string
+	archived?: boolean
 }
 
 export interface Move {

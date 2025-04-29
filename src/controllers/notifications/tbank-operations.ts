@@ -5,7 +5,10 @@ import {
 	getCashoutByName,
 	createCashout,
 } from '../../services/moysklad/cashoutController'
-import { getExpenseItems } from '../../services/moysklad/expenseItemController'
+import {
+	getExpenseItems,
+	postExpenseItem,
+} from '../../services/moysklad/expenseItemController'
 import { TbankNotification, OperationType } from '../../types/tbank/tbank'
 import { sendTelegramMessage } from '../../utils'
 import { getOwnerByInn } from './utils'
@@ -48,7 +51,30 @@ const findExpenseItem = (name: string): IExpenseItem | undefined => {
 	)
 }
 
-export const getExpenseItemName = async (
+const createNewExpenseItem = async (
+	name: string,
+	description?: string
+): Promise<IExpenseItem | undefined> => {
+	try {
+		const newItem = {
+			name,
+			description:
+				description || `Автоматически создана для: ${description}`,
+		}
+
+		const createdItem = await postExpenseItem(newItem)
+		if (createdItem) {
+			await updateExpenseItemsCache()
+			Logger.info(`Создана новая статья расходов: ${name}`)
+			return createdItem
+		}
+	} catch (error) {
+		Logger.error('Ошибка при создании статьи расходов:', error)
+	}
+	return undefined
+}
+
+export const getExpenseItemForOperation = async (
 	operation: TbankNotification
 ): Promise<IExpenseItem | undefined> => {
 	try {
@@ -73,14 +99,15 @@ export const getExpenseItemName = async (
 
 		const prompt = `Определи наиболее подходящую статью расходов для транзакции: "${operation.description}".
         Выбери только из этого списка: ${categoriesList}.
-        Ответ должен содержать только точное название статьи из списка без дополнительных пояснений.`
+        Если ни одна статья не подходит, предложи новую (только название).
+        Ответ должен содержать только название статьи без дополнительных пояснений.`
 
 		const response = await client.chat({
 			messages: [
 				{
 					role: 'system',
 					content:
-						'Ты помогаешь классифицировать финансовые транзакции по статьям расходов. Отвечай только точным названием статьи из предоставленного списка.',
+						'Ты помогаешь классифицировать финансовые транзакции. Отвечай только названием статьи. Если подходящей статьи нет - предложи новую.',
 				},
 				{ role: 'user', content: prompt },
 			],
@@ -95,15 +122,24 @@ export const getExpenseItemName = async (
 			return undefined
 		}
 
-		const matchedItem = findExpenseItem(predictedCategory)
+		let matchedItem = findExpenseItem(predictedCategory)
 
-		if (matchedItem) {
-			Logger.info(`Определена статья расходов: ${matchedItem.name}`)
-			return matchedItem
+		if (!matchedItem) {
+			Logger.info(
+				`Статья "${predictedCategory}" не найдена, создаем новую`
+			)
+			matchedItem = await createNewExpenseItem(
+				predictedCategory,
+				operation.description
+			)
+
+			if (!matchedItem) {
+				Logger.warn(`Не удалось создать статью "${predictedCategory}"`)
+				matchedItem = findExpenseItem('Прочие')
+			}
 		}
 
-		Logger.warn(`Статья "${predictedCategory}" не найдена в списке`)
-		return undefined
+		return matchedItem
 	} catch (error) {
 		Logger.error('Ошибка при определении статьи расходов:', error)
 		return undefined
@@ -126,7 +162,7 @@ export const tbankOperations = async (operation: TbankNotification) => {
 				parseFloat(operation.rubleAmount) ||
 				parseFloat(operation.operationAmount)
 
-			const expenseItem = await getExpenseItemName(operation)
+			const expenseItem = await getExpenseItemForOperation(operation)
 
 			const cashoutData = {
 				name: operation.operationId,
@@ -164,7 +200,9 @@ export const tbankOperations = async (operation: TbankNotification) => {
 					`📝 Описание: ${operation.description || 'Нет описания'}\n` +
 					`💰 Сумма: ${sum} руб.\n` +
 					`🏷️ Статья: ${expenseItem?.name || 'Не определена'}\n` +
-					`🔗 Ссылка: ${createdCashout?.meta?.uuidHref || ''}`, true, 
+					`🔗 Ссылка: ${createdCashout?.meta?.uuidHref || ''}`,
+				true,
+				-1002457683199
 			)
 		} catch (error) {
 			Logger.error(
@@ -173,7 +211,9 @@ export const tbankOperations = async (operation: TbankNotification) => {
 			)
 			await sendTelegramMessage(
 				`❌ Ошибка обработки операции ${operation.operationId}:\n` +
-					`\`\`\`${error instanceof Error ? error.message : JSON.stringify(error)}\`\`\``
+					`\`\`\`${error instanceof Error ? error.message : JSON.stringify(error)}\`\`\``,
+				true,
+				-1002457683199
 			)
 		}
 	}

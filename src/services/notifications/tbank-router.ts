@@ -18,7 +18,7 @@ tbankRouter.post('/operations', async (req: Request, res: Response) => {
 			`Новая операция TBank: \`\`\`json\n${JSON.stringify(operation, null, 2)}\n\`\`\``,
 			true
 		)
-		// await tbankOperations(operation)
+		await tbankOperations(operation)
 	} catch (error) {
 		Logger.error(`Ошибка обработки операции TBank: ${error}`)
 		await sendTelegramMessage(
