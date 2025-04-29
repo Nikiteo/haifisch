@@ -147,74 +147,76 @@ export const getExpenseItemForOperation = async (
 }
 
 export const tbankOperations = async (operation: TbankNotification) => {
-	if (operation.typeOfOperation === OperationType.Debit) {
-		try {
-			const existingCashouts = await getCashoutByName(
-				operation.operationId
-			)
+	if (operation.typeOfOperation !== OperationType.Debit) return
 
-			if (existingCashouts && existingCashouts.length > 0) {
-				Logger.warn(`Дубликат операции: ${operation.operationId}`)
-				return
-			}
-
-			const sum =
-				parseFloat(operation.rubleAmount) ||
-				parseFloat(operation.operationAmount)
-
-			const expenseItem = await getExpenseItemForOperation(operation)
-
-			const cashoutData = {
-				name: operation.operationId,
-				owner: getOwnerByInn(operation.payer.inn),
-				applicable: true,
-				shared: true,
-				rate: {
-					currency,
-				},
-				organization,
-				agent: retailer,
-				sum: parseFloat((sum * 100).toFixed(2)),
-				paymentPurpose: operation.description,
-				expenseItem: expenseItem
-					? { meta: expenseItem.meta }
-					: undefined,
-				state: {
-					meta: {
-						href: 'https://api.moysklad.ru/api/remap/1.2/entity/cashout/metadata/states/a833cd42-c5c1-11ee-0a80-0669002e69ef',
-						metadataHref:
-							'https://api.moysklad.ru/api/remap/1.2/entity/cashout/metadata',
-						type: 'state',
-						mediaType: 'application/json',
-					},
-				},
-			}
-
-			const createdCashout = await createCashout(cashoutData)
-			Logger.info(
-				`Создан расходный ордер: ${JSON.stringify(createdCashout)}`
-			)
-
-			await sendTelegramMessage(
-				`✅ Создан расходный ордер в МойСклад\n` +
-					`📝 Описание: ${operation.description || 'Нет описания'}\n` +
-					`💰 Сумма: ${sum} руб.\n` +
-					`🏷️ Статья: ${expenseItem?.name || 'Не определена'}\n` +
-					`🔗 Ссылка: ${createdCashout?.meta?.uuidHref || ''}`,
-				undefined,
-				-1002457683199
-			)
-		} catch (error) {
-			Logger.error(
-				`Ошибка обработки операции ${operation.operationId}:`,
-				error
-			)
-			await sendTelegramMessage(
-				`❌ Ошибка обработки операции ${operation.operationId}:\n` +
-					`\`\`\`${error instanceof Error ? error.message : JSON.stringify(error)}\`\`\``,
-				undefined,
-				-1002457683199
-			)
+	try {
+		const existingCashouts = await getCashoutByName(operation.operationId)
+		if (existingCashouts?.length) {
+			Logger.warn(`Дубликат операции: ${operation.operationId}`)
+			return
 		}
+
+		const sum =
+			parseFloat(operation.rubleAmount) ||
+			parseFloat(operation.operationAmount)
+
+		const expenseItem =
+			(await getExpenseItemForOperation(operation)) ||
+			(await createNewExpenseItem(
+				'Прочие',
+				'Автоматически созданная статья'
+			))
+
+		if (!expenseItem) {
+			throw new Error('Не удалось определить или создать статью расходов')
+		}
+
+		const cashoutData = {
+			name: operation.operationId,
+			owner: getOwnerByInn(operation.payer.inn),
+			applicable: true,
+			shared: true,
+			rate: {
+				currency,
+			},
+			organization,
+			agent: retailer,
+			sum: parseFloat((sum * 100).toFixed(2)),
+			paymentPurpose: operation.description,
+			expenseItem: expenseItem ? { meta: expenseItem.meta } : undefined,
+			state: {
+				meta: {
+					href: 'https://api.moysklad.ru/api/remap/1.2/entity/cashout/metadata/states/a833cd42-c5c1-11ee-0a80-0669002e69ef',
+					metadataHref:
+						'https://api.moysklad.ru/api/remap/1.2/entity/cashout/metadata',
+					type: 'state',
+					mediaType: 'application/json',
+				},
+			},
+		}
+
+		const createdCashout = await createCashout(cashoutData)
+		Logger.info(`Создан расходный ордер: ${JSON.stringify(createdCashout)}`)
+
+		await sendTelegramMessage(
+			`✅ Создан расходный ордер в МойСклад\n` +
+				`📝 Описание: ${operation.description || 'Нет описания'}\n` +
+				`💰 Сумма: ${sum} руб.\n` +
+				`🏷️ Статья: ${expenseItem?.name || 'Не определена'}\n` +
+				`🔗 Ссылка: ${createdCashout?.meta?.uuidHref || ''}`,
+			undefined,
+			-1002457683199
+		)
+	} catch (error) {
+		Logger.error(
+			`Ошибка обработки операции ${operation.operationId}:`,
+			error
+		)
+		await sendTelegramMessage(
+			`❌ Ошибка обработки операции ${operation.operationId}:\n` +
+				`\`\`\`${error instanceof Error ? error.message : JSON.stringify(error)}\`\`\``,
+			undefined,
+			-1002457683199
+		)
 	}
 }
