@@ -11,7 +11,7 @@ import {
 } from '../../services/moysklad/expenseItemController'
 import { TbankNotification, OperationType } from '../../types/tbank/tbank'
 import { sendTelegramMessage } from '../../utils'
-import { getOwnerByInn } from './utils'
+import { getEmojii, getOwnerByInn } from './utils'
 import GigaChat from 'gigachat'
 import { IExpenseItem } from '../../types/ms-types'
 
@@ -193,6 +193,7 @@ export const tbankOperations = async (operation: TbankNotification) => {
 					mediaType: 'application/json',
 				},
 			},
+			description: `Контрагент: ${operation.merch.name}\n\nОплата: ${operation.payer.name}`,
 		}
 
 		const createdCashout = await createCashout(cashoutData)
@@ -203,7 +204,8 @@ export const tbankOperations = async (operation: TbankNotification) => {
 				`📝 Описание: ${operation.description || 'Нет описания'}\n` +
 				`💰 Сумма: ${sum} руб.\n` +
 				`🏷️ Статья: ${expenseItem?.name || 'Не определена'}\n` +
-				`🔗 Ссылка: ${createdCashout?.meta?.uuidHref || ''}`,
+				`🔗 Ссылка: ${createdCashout?.meta?.uuidHref || ''}` +
+				`${getEmojii(operation.payer.inn)} Плательщик: ${operation.payer.name}`,
 			undefined,
 			-1002457683199
 		)

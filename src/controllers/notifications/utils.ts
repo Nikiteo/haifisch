@@ -160,3 +160,16 @@ export const getOwnerByInn = (inn: string): Owner => {
 			return owner
 	}
 }
+
+export const getEmojii = (inn: string) => {
+	switch (inn) {
+		case '622909830629':
+			return '👨'
+		case '711810955831':
+			return '👩'
+		case '482110871775':
+			return '👨'
+		default:
+			return '👨'
+	}
+}
