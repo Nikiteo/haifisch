@@ -201,7 +201,7 @@ export const tbankOperations = async (operation: TbankNotification) => {
 					`💰 Сумма: ${sum} руб.\n` +
 					`🏷️ Статья: ${expenseItem?.name || 'Не определена'}\n` +
 					`🔗 Ссылка: ${createdCashout?.meta?.uuidHref || ''}`,
-				true,
+				undefined,
 				-1002457683199
 			)
 		} catch (error) {
@@ -212,7 +212,7 @@ export const tbankOperations = async (operation: TbankNotification) => {
 			await sendTelegramMessage(
 				`❌ Ошибка обработки операции ${operation.operationId}:\n` +
 					`\`\`\`${error instanceof Error ? error.message : JSON.stringify(error)}\`\`\``,
-				true,
+				undefined,
 				-1002457683199
 			)
 		}
