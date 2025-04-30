@@ -1,8 +1,6 @@
 import { Router, Request, Response } from 'express'
 import { Logger } from '../../lib'
 import {
-	Integration,
-	ErrorResponse,
 	MessageType,
 	Ping,
 	NewPostingEvent,
@@ -10,6 +8,11 @@ import {
 	StateChangedEvent,
 } from './types'
 import { bot } from '../../bot'
+import {
+	NotificationApiErrorType,
+	SendNotificationErrorResponse,
+	SendNotificationResponse,
+} from '../../types/yandex/notification-types'
 
 export const ozonRouter = Router()
 
@@ -17,7 +20,7 @@ ozonRouter.post('/', async (req: Request, res: Response) => {
 	const { message_type } = req.body
 
 	const currentTime = new Date().toISOString()
-	const pingResponse: Integration = {
+	const pingResponse: SendNotificationResponse = {
 		version: '1.0.0',
 		name: 'Haifisch',
 		time: currentTime,
@@ -82,9 +85,9 @@ ozonRouter.post('/', async (req: Request, res: Response) => {
 			break
 
 		default:
-			const errorResponse: ErrorResponse = {
+			const errorResponse: SendNotificationErrorResponse = {
 				error: {
-					type: 'UNKNOWN',
+					type: NotificationApiErrorType.UNKNOWN,
 					message: 'UNKNOWN error',
 					details: null,
 				},
