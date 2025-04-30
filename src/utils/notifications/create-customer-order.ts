@@ -33,9 +33,7 @@ export const createCustomerOrder = (
 		shared: true,
 		group,
 		name: order.id?.toString(),
-		moment: dayjs(date).format(
-			'YYYY-MM-DD HH:mm:ss.SSS'
-		),
+		moment: dayjs(date).format('YYYY-MM-DD HH:mm:ss.SSS'),
 		applicable: true,
 		rate: {
 			currency,
@@ -45,6 +43,7 @@ export const createCustomerOrder = (
 		agent,
 		attributes: prepareCustomerOrdersAttributes(order, boughtProducts),
 		organization,
+		//@ts-ignore
 		state: prepareStatusesForCustomerOrders(order.status, order.substatus),
 		printed: false,
 		published: false,

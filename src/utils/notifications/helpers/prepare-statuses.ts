@@ -16,7 +16,7 @@ const prepareSubstatuses = (substatus?: OrderSubstatusType): State => {
 }
 
 export const prepareStatusesForCustomerOrders = (
-	status?: OrderStatusType,
+	status: OrderStatusType,
 	substatus?: OrderSubstatusType
 ): State => {
 	switch (status) {
