@@ -9,6 +9,7 @@ import {
 	ErrorResponse,
 	NotificationType,
 	GoodsFeedbackCreatedNotificationDTO,
+	OrderReturnStatusUpdatedNotificationDTO,
 } from './types'
 import { createProduct, updateProduct } from '../../controllers'
 import { sendTelegramMessage } from '../../utils'
@@ -112,6 +113,20 @@ const notificationHandlers: {
 		)
 		await sendTelegramMessage(
 			`Ответ: \`\`\`json\n${JSON.stringify(feedbackResponse, null, 2)}\n\`\`\``,
+			true
+		)
+	},
+	[NotificationType.ORDER_RETURN_STATUS_UPDATED]: async (req, res) => {
+		const orderReturnUpdated: OrderReturnStatusUpdatedNotificationDTO =
+			req.body
+		const response: Integration = {
+			version: '1.0.0',
+			name: 'Haifisch',
+			time: new Date().toISOString(),
+		}
+		handleResponse(res, response)
+		await sendTelegramMessage(
+			`Обновлен статус возврата или невыкупа: \`\`\`json\n${JSON.stringify(orderReturnUpdated, null, 2)}\n\`\`\``,
 			true
 		)
 	},

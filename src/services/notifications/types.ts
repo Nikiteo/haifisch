@@ -5,7 +5,8 @@ export enum NotificationType {
 	ORDER_CANCELLED = 'ORDER_CANCELLED', // Заказ отменен
 	ORDER_STATUS_UPDATED = 'ORDER_STATUS_UPDATED', // Статус заказа изменен
 	ORDER_RETURN_CREATED = 'ORDER_RETURN_CREATED', // Создан новый возврат или невыкуп
-	GOODS_FEEDBACK_CREATED = 'GOODS_FEEDBACK_CREATED',
+	GOODS_FEEDBACK_CREATED = 'GOODS_FEEDBACK_CREATED', // Создан новый отзыв
+	ORDER_RETURN_STATUS_UPDATED = 'ORDER_RETURN_STATUS_UPDATED', // Статус возврата или невыкупа изменен
 }
 
 // Интерфейсы для уведомлений
@@ -224,4 +225,65 @@ export interface GoodsFeedbackCreatedNotificationDTO {
 	 * Тип: string<date-time>
 	 */
 	publishedAt: string
+}
+
+export interface OrderReturnStatusUpdatedNotificationDTO {
+	campaignId: number // Идентификатор кампании
+	notificationType: NotificationType.ORDER_RETURN_STATUS_UPDATED // Тип уведомления
+	orderId: number // Идентификатор заказа
+	returnId: number // Идентификатор возврата или невыкупа
+	statuses: NotificationUpdatedReturnStatusesDTO
+	updateAt: string // Дата и время обновления статуса возврата или невыкупа (ISO 8601)
+}
+
+export enum RefundStatusType {
+	STARTED_BY_USER = 'STARTED_BY_USER',
+	REFUND_IN_PROGRESS = 'REFUND_IN_PROGRESS',
+	REFUNDED = 'REFUNDED',
+	FAILED = 'FAILED',
+	WAITING_FOR_DECISION = 'WAITING_FOR_DECISION',
+	DECISION_MADE = 'DECISION_MADE',
+	REFUNDED_WITH_BONUSES = 'REFUNDED_WITH_BONUSES',
+	REFUNDED_BY_SHOP = 'REFUNDED_BY_SHOP',
+	COMPLETE_WITHOUT_REFUND = 'COMPLETE_WITHOUT_REFUND',
+	CANCELLED = 'CANCELLED',
+	UNKNOWN = 'UNKNOWN',
+}
+
+export enum ReturnShipmentStatusType {
+	CREATED = 'CREATED',
+	RECEIVED = 'RECEIVED',
+	IN_TRANSIT = 'IN_TRANSIT',
+	READY_FOR_PICKUP = 'READY_FOR_PICKUP',
+	PICKED = 'PICKED',
+	LOST = 'LOST',
+	EXPIRED = 'EXPIRED',
+	CANCELLED = 'CANCELLED',
+	FULFILMENT_RECEIVED = 'FULFILMENT_RECEIVED',
+	PREPARED_FOR_UTILIZATION = 'PREPARED_FOR_UTILIZATION',
+	NOT_IN_DEMAND = 'NOT_IN_DEMAND',
+	UTILIZED = 'UTILIZED',
+	READY_FOR_EXPROPRIATION = 'READY_FOR_EXPROPRIATION',
+	RECEIVED_FOR_EXPROPRIATION = 'RECEIVED_FOR_EXPROPRIATION',
+	UNKNOWN = 'UNKNOWN',
+}
+
+export interface NotificationUpdatedReturnStatusesDTO {
+	/**
+	 * Статус возврата денег
+	 *
+	 * Примечание: Не приходит для невыкупов
+	 * Не приходит для возвратов с опцией "Быстрый возврат денег за дешевый брак",
+	 * когда товар остается у покупателя
+	 */
+	refundStatus?: RefundStatusType
+
+	/**
+	 * Статус передачи возврата
+	 *
+	 * Примечание: Приходит только для невыкупов
+	 * Не приходит для возвратов с опцией "Быстрый возврат денег за дешевый брак",
+	 * когда товар остается у покупателя
+	 */
+	shipmentStatus?: ReturnShipmentStatusType
 }

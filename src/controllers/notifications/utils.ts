@@ -1,5 +1,6 @@
 import dayjs from 'dayjs'
 import {
+	getFeedbacks,
 	getOrdersStats,
 	OrderStatusUpdatedNotificationDTO,
 } from '../../services'
@@ -17,6 +18,7 @@ import {
 	Product,
 } from '../../types/ms-types'
 import {
+	GoodsFeedbackDescriptionDTO,
 	OrderDTO,
 	OrderItemDTO,
 	OrdersStatsOrderDTO,
@@ -172,4 +174,71 @@ export const getEmojii = (inn: string) => {
 		default:
 			return '👨'
 	}
+}
+
+export interface ExtendedFeedbackInfo {
+	id: number
+	rating?: number
+	author?: string
+	needReaction: boolean
+	advantages?: string
+	disadvantages?: string
+	comment?: string
+	hasMedia: boolean
+	createdAt: string
+}
+
+/**
+ * Получает полную информацию об отзыве по его ID
+ */
+export async function getFeedbackInfo(
+	store: string,
+	businessId: number,
+	feedbackId: number
+): Promise<ExtendedFeedbackInfo | undefined> {
+	try {
+		const feedbacks = await getFeedbacks(store, businessId)
+		if (!feedbacks) return undefined
+
+		const targetFeedback = feedbacks.find(f => f.feedbackId === feedbackId)
+		if (!targetFeedback) return undefined
+
+		return {
+			id: targetFeedback.feedbackId,
+			rating: targetFeedback.statistics?.rating,
+			author: targetFeedback.author,
+			needReaction: targetFeedback.needReaction,
+			advantages: targetFeedback.description?.advantages,
+			disadvantages: targetFeedback.description?.disadvantages,
+			comment: targetFeedback.description?.comment,
+			hasMedia:
+				!!targetFeedback.media?.photos?.length ||
+				!!targetFeedback.media?.videos?.length,
+			createdAt: targetFeedback.createdAt,
+		}
+	} catch (error) {
+		Logger.warn('Ошибка при получении отзыва:', error)
+		return undefined
+	}
+}
+
+/**
+ * Формирует полный текст отзыва из его компонентов
+ */
+export function composeFeedbackText(
+	description: GoodsFeedbackDescriptionDTO
+): string {
+	const parts: string[] = []
+
+	if (description.advantages) {
+		parts.push(`Достоинства: ${description.advantages}`)
+	}
+	if (description.disadvantages) {
+		parts.push(`Недостатки: ${description.disadvantages}`)
+	}
+	if (description.comment) {
+		parts.push(`Комментарий: ${description.comment}`)
+	}
+
+	return parts.join('\n\n') || 'Без текстового описания'
 }
