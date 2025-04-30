@@ -1,4 +1,4 @@
-import { OrderCreatedNotificationDTO, getOrderById } from '../../services'
+import { getOrderById } from '../../services'
 import {
 	createNewCustomerOrder,
 	getCustomerOrderByName,
@@ -6,6 +6,7 @@ import {
 import { getProducts } from '../../services/moysklad/productController'
 import { Product } from '../../types/ms-types'
 import { OrderItemDTO } from '../../types/yandex/api'
+import { OrderCreatedNotificationDTO } from '../../types/yandex/notification-types'
 import { createCustomerOrder } from '../../utils/notifications/create-customer-order'
 
 export const createProduct = async (order: OrderCreatedNotificationDTO) => {

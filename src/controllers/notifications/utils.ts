@@ -1,9 +1,5 @@
 import dayjs from 'dayjs'
-import {
-	getFeedbacks,
-	getOrdersStats,
-	OrderStatusUpdatedNotificationDTO,
-} from '../../services'
+import { getFeedbacks, getOrdersStats } from '../../services'
 import {
 	getDemandByName,
 	postDemand,
@@ -34,6 +30,11 @@ import { createNewPaymentin } from '../../utils/notifications/create-paymentin'
 import { createPaymentin } from '../../services/moysklad/paymentinController'
 import { Logger } from '../../lib'
 import { owner, anyaOwner, mishaOwner } from '../../database'
+import {
+	NotificationType,
+	OrderCancelledNotificationDTO,
+	OrderStatusUpdatedNotificationDTO,
+} from '../../types/yandex/notification-types'
 
 const STORE_NAMES = {
 	23726642: 'Haifisch',
@@ -241,4 +242,10 @@ export function composeFeedbackText(
 	}
 
 	return parts.join('\n\n') || 'Без текстового описания'
+}
+
+export function isStatusUpdatedNotification(
+	order: OrderStatusUpdatedNotificationDTO | OrderCancelledNotificationDTO
+): order is OrderStatusUpdatedNotificationDTO {
+	return order.notificationType === NotificationType.ORDER_STATUS_UPDATED
 }

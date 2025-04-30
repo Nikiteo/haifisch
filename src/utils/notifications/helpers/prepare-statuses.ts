@@ -1,6 +1,9 @@
 import { states } from '../../../database'
 import { State } from '../../../types/ms-types'
-import { OrderStatusType, OrderSubstatusType } from '../../../types/yandex/api'
+import {
+	OrderSubstatusType,
+	OrderStatusType,
+} from '../../../types/yandex/notification-types'
 
 const prepareSubstatuses = (substatus?: OrderSubstatusType): State => {
 	if (substatus === 'READY_TO_SHIP') {
@@ -17,23 +20,23 @@ export const prepareStatusesForCustomerOrders = (
 	substatus?: OrderSubstatusType
 ): State => {
 	switch (status) {
-		case OrderStatusType.Cancelled:
+		case OrderStatusType.CANCELLED:
 			return states.CANCELLED
-		case OrderStatusType.Delivered:
+		case OrderStatusType.DELIVERED:
 			return states.DELIVERED
-		case OrderStatusType.Delivery:
-		case OrderStatusType.Pickup:
+		case OrderStatusType.DELIVERY:
+		case OrderStatusType.PICKUP:
 			return states.DELIVERY
-		case OrderStatusType.Reserved:
-		case OrderStatusType.Placing:
-		case OrderStatusType.Pending:
-		case OrderStatusType.Unpaid:
+		case OrderStatusType.RESERVED:
+		case OrderStatusType.PLACING:
+		case OrderStatusType.PENDING:
+		case OrderStatusType.UNPAID:
 			return states.NEW
-		case OrderStatusType.Processing:
+		case OrderStatusType.PROCESSING:
 			return prepareSubstatuses(substatus)
-		case OrderStatusType.PartiallyReturned:
+		case OrderStatusType.PARTIALLY_RETURNED:
 			return states.PARTIALLY_RETURNED
-		case OrderStatusType.Returned:
+		case OrderStatusType.RETURNED:
 			return states.RETURNED
 		default:
 			return states.UNKNOWN

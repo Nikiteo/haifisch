@@ -1,7 +1,4 @@
-import {
-	GoodsFeedbackCreatedNotificationDTO,
-	addFeedback,
-} from '../../services'
+import { addFeedback } from '../../services'
 import {
 	GoodsFeedbackCommentDTO,
 	UpdateGoodsFeedbackCommentRequest,
@@ -9,6 +6,7 @@ import {
 import { Logger } from '../../lib'
 import { getFeedbackInfo } from './utils'
 import { generateResponse } from './gigachat'
+import { GoodsFeedbackCreatedNotificationDTO } from '../../types/yandex/notification-types'
 
 /**
  * Обрабатывает уведомление о новом отзыве и формирует персонализированный ответ

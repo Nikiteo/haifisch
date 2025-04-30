@@ -1,30 +1,31 @@
 import { Router, Request, Response } from 'express'
 import { Logger } from '../../lib'
-import {
-	OrderCreatedNotificationDTO,
-	OrderCancelledNotificationDTO,
-	OrderStatusUpdatedNotificationDTO,
-	OrderReturnCreatedNotificationDTO,
-	Integration,
-	ErrorResponse,
-	NotificationType,
-	GoodsFeedbackCreatedNotificationDTO,
-	OrderReturnStatusUpdatedNotificationDTO,
-} from './types'
 import { createProduct, updateProduct } from '../../controllers'
 import { sendTelegramMessage } from '../../utils'
 import { processFeedbackAndReply } from '../../controllers/notifications/feedback-controller'
+import {
+	GoodsFeedbackCreatedNotificationDTO,
+	NotificationApiErrorType,
+	NotificationType,
+	OrderCancelledNotificationDTO,
+	OrderCreatedNotificationDTO,
+	OrderReturnCreatedNotificationDTO,
+	OrderReturnStatusUpdatedNotificationDTO,
+	OrderStatusUpdatedNotificationDTO,
+	SendNotificationErrorResponse,
+	SendNotificationResponse,
+} from '../../types/yandex/notification-types'
 
 export const yandexRouter = Router()
 
-const handleResponse = (res: Response, response: Integration) => {
+const handleResponse = (res: Response, response: SendNotificationResponse) => {
 	res.json(response)
 }
 
 const handleError = async (res: Response, reqBody: any) => {
-	const errorResponse: ErrorResponse = {
+	const errorResponse: SendNotificationErrorResponse = {
 		error: {
-			type: 'UNKNOWN',
+			type: NotificationApiErrorType.UNKNOWN,
 			message: 'UNKNOWN error',
 		},
 	}
@@ -40,21 +41,19 @@ const notificationHandlers: {
 	[key in NotificationType]: (req: Request, res: Response) => Promise<void>
 } = {
 	[NotificationType.PING]: async (req, res) => {
-		const response: Integration = {
+		handleResponse(res, {
 			version: '1.0.0',
 			name: 'Haifisch',
 			time: new Date().toISOString(),
-		}
-		handleResponse(res, response)
+		})
 	},
 	[NotificationType.ORDER_CREATED]: async (req, res) => {
 		const orderCreatedNotification: OrderCreatedNotificationDTO = req.body
-		const response: Integration = {
+		handleResponse(res, {
 			version: '1.0.0',
 			name: 'Haifisch',
 			time: new Date().toISOString(),
-		}
-		handleResponse(res, response)
+		})
 		const createdProduct = await createProduct(orderCreatedNotification)
 		await sendTelegramMessage(
 			`Создан заказ покупателя: ${createdProduct?.meta?.uuidHref}`,
@@ -64,34 +63,31 @@ const notificationHandlers: {
 	[NotificationType.ORDER_CANCELLED]: async (req, res) => {
 		const orderCancelledNotification: OrderCancelledNotificationDTO =
 			req.body
-		const response: Integration = {
+		handleResponse(res, {
 			version: '1.0.0',
 			name: 'Haifisch',
 			time: new Date().toISOString(),
-		}
-		handleResponse(res, response)
+		})
 		await updateProduct(orderCancelledNotification)
 	},
 	[NotificationType.ORDER_STATUS_UPDATED]: async (req, res) => {
 		const orderStatusUpdatedNotification: OrderStatusUpdatedNotificationDTO =
 			req.body
-		const response: Integration = {
+		handleResponse(res, {
 			version: '1.0.0',
 			name: 'Haifisch',
 			time: new Date().toISOString(),
-		}
-		handleResponse(res, response)
+		})
 		await updateProduct(orderStatusUpdatedNotification)
 	},
 	[NotificationType.ORDER_RETURN_CREATED]: async (req, res) => {
 		const orderReturnCreatedNotification: OrderReturnCreatedNotificationDTO =
 			req.body
-		const response: Integration = {
+		handleResponse(res, {
 			version: '1.0.0',
 			name: 'Haifisch',
 			time: new Date().toISOString(),
-		}
-		handleResponse(res, response)
+		})
 	},
 	[NotificationType.GOODS_FEEDBACK_CREATED]: async (req, res) => {
 		const feedbackCreatedNotification: GoodsFeedbackCreatedNotificationDTO =
@@ -100,13 +96,11 @@ const notificationHandlers: {
 			feedbackCreatedNotification.businessId === 6328344
 				? 'Haifisch'
 				: 'Top'
-
-		const response: Integration = {
+		handleResponse(res, {
 			version: '1.0.0',
 			name: 'Haifisch',
 			time: new Date().toISOString(),
-		}
-		handleResponse(res, response)
+		})
 		const feedbackResponse = await processFeedbackAndReply(
 			feedbackCreatedNotification,
 			store
@@ -119,16 +113,57 @@ const notificationHandlers: {
 	[NotificationType.ORDER_RETURN_STATUS_UPDATED]: async (req, res) => {
 		const orderReturnUpdated: OrderReturnStatusUpdatedNotificationDTO =
 			req.body
-		const response: Integration = {
+		handleResponse(res, {
 			version: '1.0.0',
 			name: 'Haifisch',
 			time: new Date().toISOString(),
-		}
-		handleResponse(res, response)
+		})
 		await sendTelegramMessage(
 			`Обновлен статус возврата или невыкупа: \`\`\`json\n${JSON.stringify(orderReturnUpdated, null, 2)}\n\`\`\``,
 			true
 		)
+	},
+	[NotificationType.CHAT_CREATED]: async (req, res) => {
+		handleResponse(res, {
+			version: '1.0.0',
+			name: 'Haifisch',
+			time: new Date().toISOString(),
+		})
+	},
+	[NotificationType.CHAT_MESSAGE_SENT]: async (req, res) => {
+		handleResponse(res, {
+			version: '1.0.0',
+			name: 'Haifisch',
+			time: new Date().toISOString(),
+		})
+	},
+	[NotificationType.GOODS_FEEDBACK_COMMENT_CREATED]: async (req, res) => {
+		handleResponse(res, {
+			version: '1.0.0',
+			name: 'Haifisch',
+			time: new Date().toISOString(),
+		})
+	},
+	[NotificationType.CHAT_ARBITRAGE_STARTED]: async (req, res) => {
+		handleResponse(res, {
+			version: '1.0.0',
+			name: 'Haifisch',
+			time: new Date().toISOString(),
+		})
+	},
+	[NotificationType.CHAT_ARBITRAGE_FINISHED]: async (req, res) => {
+		handleResponse(res, {
+			version: '1.0.0',
+			name: 'Haifisch',
+			time: new Date().toISOString(),
+		})
+	},
+	[NotificationType.ORDER_CANCELLATION_REQUEST]: async (req, res) => {
+		handleResponse(res, {
+			version: '1.0.0',
+			name: 'Haifisch',
+			time: new Date().toISOString(),
+		})
 	},
 }
 

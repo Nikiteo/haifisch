@@ -1,11 +1,5 @@
 import { states } from '../../database'
-import {
-	getOrderById,
-	NotificationType,
-	OrderCancelledNotificationDTO,
-	OrderStatusType,
-	OrderStatusUpdatedNotificationDTO,
-} from '../../services'
+import { getOrderById } from '../../services'
 
 import {
 	getCustomerOrderByName,
@@ -19,7 +13,14 @@ import {
 	getStoreName,
 	handleDeliveredStatus,
 	handleDeliveryStatus,
+	isStatusUpdatedNotification,
 } from './utils'
+import {
+	OrderStatusUpdatedNotificationDTO,
+	OrderCancelledNotificationDTO,
+	NotificationType,
+	OrderStatusType,
+} from '../../types/yandex/notification-types'
 
 export const updateProduct = async (
 	order: OrderStatusUpdatedNotificationDTO | OrderCancelledNotificationDTO
@@ -36,20 +37,22 @@ export const updateProduct = async (
 
 		if (!customerOrder) return
 
-		switch (order.notificationType) {
-			case NotificationType.ORDER_CANCELLED:
-				await handleOrderCancellation(customerOrder[0])
-				break
-			case NotificationType.ORDER_STATUS_UPDATED:
-				if (order.status !== OrderStatusType.CANCELLED) {
-					await handleOrderStatusUpdate(
-						order,
-						store,
-						yandexOrder,
-						customerOrder[0]
-					)
-				}
-				break
+		if (order.notificationType === NotificationType.ORDER_CANCELLED) {
+			await handleOrderCancellation(customerOrder[0])
+		} else if (
+			order.notificationType === NotificationType.ORDER_STATUS_UPDATED
+		) {
+			if (
+				isStatusUpdatedNotification(order) &&
+				order.status !== OrderStatusType.CANCELLED
+			) {
+				await handleOrderStatusUpdate(
+					order,
+					store,
+					yandexOrder,
+					customerOrder[0]
+				)
+			}
 		}
 	} catch (error) {
 		Logger.error('Error in updateProduct:', error)

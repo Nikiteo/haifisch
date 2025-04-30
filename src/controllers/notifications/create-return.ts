@@ -1,15 +1,12 @@
 import { Logger } from '../../lib'
 import { states } from '../../database'
-import {
-	OrderReturnCreatedNotificationDTO,
-	getOrderById,
-	getReturnById,
-} from '../../services'
+import { getOrderById, getReturnById } from '../../services'
 import {
 	getCustomerOrderByName,
 	updateCustomerOrder,
 } from '../../services/moysklad/ordersController'
 import { getSaleReturnByName } from '../../services/moysklad/salesreturnController'
+import { OrderReturnCreatedNotificationDTO } from '../../types/yandex/notification-types'
 
 export const createReturn = async (
 	order: OrderReturnCreatedNotificationDTO
