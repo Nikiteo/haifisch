@@ -40,13 +40,7 @@ import {
 import { getService } from '../../utils/get-service'
 import { logError } from '../../utils/log-error'
 import { getRequest, postRequest } from './service'
-import {
-	OrderCancelledNotificationDTO,
-	OrderCreatedNotificationDTO,
-	OrderReturnCreatedNotificationDTO,
-	OrderStatusUpdatedNotificationDTO,
-} from '../notifications'
-import { Logger } from '../../lib'
+import { OrderCreatedNotificationDTO, OrderReturnCreatedNotificationDTO } from '../../types/yandex/notification-types'
 
 export const getCampaigns = async (
 	store: string
