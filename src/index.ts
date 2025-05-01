@@ -66,21 +66,15 @@ addYandexCofinance()
 feedbacks()
 onText()
 
-try {
-	Logger.info('Trying to create HTTPS server...')
-	const httpsServer = https.createServer(options, app)
+const httpsServer = https.createServer(options, app)
 
-	httpsServer.on('error', err => {
-		Logger.error(`HTTPS server error: ${err.stack}`)
-	})
-
-	httpsServer.listen(443, () => {
+httpsServer
+	.listen(443, () => {
 		Logger.info('HTTPS сервер запущен на порту 443')
 	})
-} catch (err) {
-	//@ts-ignore
-	Logger.error(`HTTPS creation error: ${err.stack}`)
-}
+	.on('error', err => {
+		Logger.error(`Ошибка при запуске сервера: ${err.message}`)
+	})
 
 void bot.launch({
 	dropPendingUpdates: true,
