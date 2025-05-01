@@ -19,9 +19,8 @@ import https from 'https'
 import fs from 'fs'
 import { ozonRouter, yandexRouter, tbankRouter } from './services'
 import path from 'path'
-import { fileURLToPath } from 'url'
-//@ts-ignore
-const __dirname = path.dirname(fileURLToPath(import.meta.url))
+
+const __dirname = path.resolve()
 
 const app = express()
 
