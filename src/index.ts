@@ -19,27 +19,24 @@ import https from 'https'
 import fs from 'fs'
 import { ozonRouter, yandexRouter, tbankRouter } from './services'
 import path from 'path'
+import { fileURLToPath } from 'url'
 
-const __dirname = path.resolve()
+//@ts-ignore
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 const app = express()
 
 app.use(bodyParser.json())
-
-// Обслуживание статического контента из директории frontend'a
-app.use(express.static(path.join(__dirname, '../haifisch-front/dist')))
-
-// Маршрутизация всех остальных запросов на главный файл index.html
+app.use(express.static(path.join(__dirname, '../../haifisch-front/dist')))
 app.get('*', (req, res) => {
-	res.sendFile(path.join(__dirname, '../haifisch-front/dist/index.html'))
+	res.sendFile(path.join(__dirname, '../../haifisch-front/dist/index.html'))
 })
 
-// Подключение роутов API
 app.use(yandexRouter)
 app.use(ozonRouter)
 app.use(tbankRouter)
 
-// Настройки SSL
 const options = {
 	key: fs.readFileSync('/etc/letsencrypt/live/haifisch.ru/privkey.pem'),
 	cert: fs.readFileSync('/etc/letsencrypt/live/haifisch.ru/fullchain.pem'),
