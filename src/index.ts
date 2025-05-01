@@ -22,8 +22,11 @@ import path from 'path'
 
 const __dirname = path.resolve()
 const frontendPath = path.join(__dirname, '../haifisch-front/dist')
-Logger.info(`Frontend path: ${frontendPath}`)
-
+try {
+	Logger.info(`Frontend directory contents: ${fs.readdirSync(frontendPath)}`)
+} catch (err) {
+	Logger.error(`Cannot read frontend directory: ${err}`)
+}
 const app = express()
 
 app.use(bodyParser.json())
@@ -81,17 +84,19 @@ feedbacks()
 onText()
 
 try {
+	Logger.info('Trying to create HTTPS server...')
 	const httpsServer = https.createServer(options, app)
-	httpsServer
-		.listen(443, () => {
-			Logger.info('HTTPS сервер запущен на порту 443')
-		})
-		.on('error', err => {
-			Logger.error(`Ошибка при запуске сервера: ${err.message}`)
-		})
+
+	httpsServer.on('error', err => {
+		Logger.error(`HTTPS server error: ${err.stack}`)
+	})
+
+	httpsServer.listen(443, () => {
+		Logger.info('HTTPS сервер запущен на порту 443')
+	})
 } catch (err) {
 	//@ts-ignore
-	Logger.error(`Критическая ошибка при создании сервера: ${err.message}`)
+	Logger.error(`HTTPS creation error: ${err.stack}`)
 }
 
 void bot.launch({
