@@ -18,17 +18,17 @@ import {
 import https from 'https'
 import fs from 'fs'
 import { ozonRouter, yandexRouter, tbankRouter } from './services'
-import path from 'path'
+// import path from 'path'
 
-const __dirname = path.resolve()
+// const __dirname = path.resolve()
 
 const app = express()
 
 app.use(bodyParser.json())
-app.use(express.static(path.join(__dirname, '../haifisch-front/dist')))
-app.get('*', (req, res) => {
-	res.sendFile(path.join(__dirname, '../haifisch-front/dist/index.html'))
-})
+// app.use(express.static(path.join(__dirname, '../haifisch-front/dist')))
+// app.get('*', (req, res) => {
+// 	res.sendFile(path.join(__dirname, '../haifisch-front/dist/index.html'))
+// })
 app.use(yandexRouter)
 app.use(ozonRouter)
 app.use(tbankRouter)
