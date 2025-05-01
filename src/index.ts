@@ -18,6 +18,11 @@ import {
 import https from 'https'
 import fs from 'fs'
 import { ozonRouter, yandexRouter, tbankRouter } from './services'
+import path from 'path'
+
+const __dirname = path.resolve()
+const frontendPath = path.join(__dirname, '../haifisch-front/dist')
+Logger.info(`Frontend path: ${frontendPath}`)
 
 const app = express()
 
@@ -26,6 +31,15 @@ app.use(bodyParser.json())
 app.use(yandexRouter)
 app.use(ozonRouter)
 app.use(tbankRouter)
+
+app.use(express.static(frontendPath))
+app.use((req, res, next) => {
+	Logger.info(`Static file request: ${req.path}`)
+	next()
+})
+app.get('*', (req, res) => {
+	res.sendFile(path.join(frontendPath, 'index.html'))
+})
 
 const options = {
 	key: fs.readFileSync('/etc/letsencrypt/live/haifisch.ru/privkey.pem'),
