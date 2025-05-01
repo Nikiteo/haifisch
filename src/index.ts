@@ -18,21 +18,28 @@ import {
 import https from 'https'
 import fs from 'fs'
 import { ozonRouter, yandexRouter, tbankRouter } from './services'
-// import path from 'path'
+import path from 'path'
 
-// const __dirname = path.resolve()
+const __dirname = path.resolve()
 
 const app = express()
 
 app.use(bodyParser.json())
-// app.use(express.static(path.join(__dirname, '../haifisch-front/dist')))
-// app.get('*', (req, res) => {
-// 	res.sendFile(path.join(__dirname, '../haifisch-front/dist/index.html'))
-// })
+
+// Обслуживание статического контента из директории frontend'a
+app.use(express.static(path.join(__dirname, '../haifisch-front/dist')))
+
+// Маршрутизация всех остальных запросов на главный файл index.html
+app.get('*', (req, res) => {
+	res.sendFile(path.join(__dirname, '../haifisch-front/dist/index.html'))
+})
+
+// Подключение роутов API
 app.use(yandexRouter)
 app.use(ozonRouter)
 app.use(tbankRouter)
 
+// Настройки SSL
 const options = {
 	key: fs.readFileSync('/etc/letsencrypt/live/haifisch.ru/privkey.pem'),
 	cert: fs.readFileSync('/etc/letsencrypt/live/haifisch.ru/fullchain.pem'),
