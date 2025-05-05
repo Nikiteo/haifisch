@@ -4,7 +4,7 @@ import {
 	UpdateGoodsFeedbackCommentRequest,
 } from '../../types/yandex/api'
 import { Logger } from '../../lib'
-import { getFeedbackInfo } from './utils'
+import { ExtendedFeedbackInfo, getFeedbackInfo } from './utils'
 import { generateResponse } from './gigachat'
 import { GoodsFeedbackCreatedNotificationDTO } from '../../types/yandex/notification-types'
 
@@ -15,7 +15,13 @@ export async function processFeedbackAndReply(
 	notification: GoodsFeedbackCreatedNotificationDTO,
 	store: string
 ): Promise<
-	GoodsFeedbackCommentDTO | UpdateGoodsFeedbackCommentRequest | undefined
+	| {
+			response?:
+				| GoodsFeedbackCommentDTO
+				| UpdateGoodsFeedbackCommentRequest
+			feedbackInfo?: ExtendedFeedbackInfo
+	  }
+	| undefined
 > {
 	try {
 		const feedbackInfo = await getFeedbackInfo(
@@ -52,7 +58,10 @@ export async function processFeedbackAndReply(
 		)
 
 		Logger.info('Ответ на отзыв успешно отправлен')
-		return response
+		return {
+			response,
+			feedbackInfo,
+		}
 	} catch (error) {
 		Logger.error('Ошибка при обработке отзыва:', {
 			error,

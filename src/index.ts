@@ -15,8 +15,7 @@ import {
 	feedbacks,
 	onText,
 } from './lib'
-import https from 'https'
-import fs from 'fs'
+
 import { ozonRouter, yandexRouter, tbankRouter } from './services'
 
 const app = express()
@@ -26,11 +25,6 @@ app.use(bodyParser.json())
 app.use(yandexRouter)
 app.use(ozonRouter)
 app.use(tbankRouter)
-
-// const options = {
-// 	key: fs.readFileSync('/etc/letsencrypt/live/haifisch.ru/privkey.pem'),
-// 	cert: fs.readFileSync('/etc/letsencrypt/live/haifisch.ru/fullchain.pem'),
-// }
 
 void bot.telegram.setMyCommands([
 	{ command: '/sync', description: 'Синхронизировать' },
@@ -66,7 +60,6 @@ addYandexCofinance()
 feedbacks()
 onText()
 
-// const httpsServer = https.createServer(options, app)
 
 app.listen(3000, () => {
 	Logger.info('Сервер запущен на порту 3000')

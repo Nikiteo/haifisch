@@ -106,7 +106,11 @@ const notificationHandlers: {
 			store
 		)
 		await sendTelegramMessage(
-			`Ответ: \`\`\`json\n${JSON.stringify(feedbackResponse, null, 2)}\n\`\`\``,
+			`Ответ на отзыв:\n
+			${feedbackResponse?.feedbackInfo?.advantages}\n
+			${feedbackResponse?.feedbackInfo?.disadvantages}\n
+			${feedbackResponse?.feedbackInfo?.comment}\n
+			\`\`\`json\n${JSON.stringify(feedbackResponse?.response, null, 2)}\n\`\`\``,
 			true
 		)
 	},
