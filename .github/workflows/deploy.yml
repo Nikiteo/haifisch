@@ -32,13 +32,13 @@ jobs:
     # ======================
     # 3. СБОРКА
     # ======================
-    - name: Install dependencies and build
+    - name: Install dependencies
       run: |
-        echo "Installing dependencies..."
         npm ci
-        echo "Building project..."
-        npm run build
         echo "BUILD_DATE=$(date +'%Y.%m.%d-%H:%M')" >> $GITHUB_ENV
+
+    - name: Build project
+      run: npm run build
 
     # ======================
     # 4. ДЕПЛОЙ
@@ -50,8 +50,11 @@ jobs:
         username: nikiteo
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
-          echo "🛑 Stopping PM2..."
           cd ~/haifisch
+          echo "🛑 Stopping all Node processes..."
+          # Полная остановка всех Node процессов
+          sudo pkill -f "node" || true
+          sudo pkill -f "pm2" || true
           pm2 delete all || true
           pm2 kill || true
           echo "🧹 Cleaning old files..."
@@ -76,23 +79,33 @@ jobs:
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
           cd ~/haifisch
-          echo "📦 Installing dependencies (production only)..."
+          echo "📦 Installing dependencies..."
           npm ci --omit=dev
 
-          echo "🔧 Installing TypeScript locally..."
+          echo "🔧 Installing build tools..."
           npm install typescript --save-dev
 
-          echo "🏗️ Building project on server..."
+          echo "🏗️ Building project..."
           npm run build
 
-          echo "🚀 Starting application..."
+          echo "🔍 Checking for running processes on port 3000..."
+          sudo lsof -i :3000 || echo "No processes running on port 3000"
+
+          echo "🚀 Starting application with PM2..."
           pm2 start ecosystem.config.js
+          sleep 5 # Даем время для инициализации
+
+          echo "📝 Checking logs..."
+          pm2 logs Haifisch --lines 20
+
+          echo "💾 Saving PM2 state..."
           pm2 save --force
 
           echo "🔄 PM2 status:"
           pm2 list
 
-          echo "✅ Application started successfully"
+          echo "🌐 Checking application health..."
+          curl -I http://localhost:3000 || echo "Health check failed"
 
     # ======================
     # 5. УВЕДОМЛЕНИЯ
