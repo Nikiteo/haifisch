@@ -61,27 +61,11 @@ feedbacks()
 onText()
 
 
-const server = app
-	.listen(3000, () => {
-		Logger.info('Сервер запущен на порту 3000')
-		Logger.info(`Текущее время: ${new Date().toISOString()}`)
-	})
-	.on('error', err => {
-		Logger.error(`Ошибка при запуске сервера: ${err.message}`)
-	})
-
-process.on('SIGINT', () => {
-	server.close(() => {
-		Logger.info('Сервер остановлен (SIGINT)')
-		process.exit(0)
-	})
-})
-
-process.on('SIGTERM', () => {
-	server.close(() => {
-		Logger.info('Сервер остановлен (SIGTERM)')
-		process.exit(0)
-	})
+app.listen(3000, () => {
+	Logger.info('Сервер запущен на порту 3000')
+	Logger.info(`Текущее время: ${new Date().toISOString()}`)
+}).on('error', err => {
+	Logger.error(`Ошибка при запуске сервера: ${err.message}`)
 })
 
 void bot.launch({

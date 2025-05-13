@@ -36,6 +36,7 @@ jobs:
       run: |
         npm ci
         echo "BUILD_DATE=$(date +'%Y.%m.%d-%H:%M')" >> $GITHUB_ENV
+        echo "COMMIT_SHA=${GITHUB_SHA}" >> $GITHUB_ENV
 
     - name: Build project
       run: npm run build
@@ -51,14 +52,17 @@ jobs:
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
           cd ~/haifisch
-          echo "🛑 Stopping all Node processes..."
-          # Полная остановка всех Node процессов
-          sudo pkill -f "node" || true
-          sudo pkill -f "pm2" || true
+          echo "🛑 Stopping application on port 3000..."
+          # Надежное освобождение порта
+          sudo ss -tulpn | grep ':3000' | awk '{print $7}' | cut -d\" -f2 | xargs -r kill || true
+          sudo fuser -k 3000/tcp || echo "Could not kill process on port 3000 - maybe none running?"
+
+          echo "🛑 Stopping PM2 processes..."
           pm2 delete all || true
           pm2 kill || true
+
           echo "🧹 Cleaning old files..."
-          rm -rf build node_modules
+          rm -rf build node_modules .cache
           echo "✅ Server cleaned"
 
     - name: Upload project files
@@ -78,12 +82,11 @@ jobs:
         username: nikiteo
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
+          set -e # Прерывать при ошибках
+
           cd ~/haifisch
           echo "📦 Installing dependencies..."
-          npm ci --omit=dev
-
-          echo "🔧 Installing build tools..."
-          npm install typescript --save-dev
+          npm install
 
           echo "🏗️ Building project..."
           npm run build
@@ -93,19 +96,39 @@ jobs:
 
           echo "🚀 Starting application with PM2..."
           pm2 start ecosystem.config.js
-          sleep 5 # Даем время для инициализации
+
+          echo "⏳ Waiting for application to start (15 seconds)..."
+          sleep 15
 
           echo "📝 Checking logs..."
-          pm2 logs Haifisch --lines 20
+          pm2 logs Haifisch --lines 20 --nostream
 
           echo "💾 Saving PM2 state..."
           pm2 save --force
 
-          echo "🔄 PM2 status:"
+          echo "📊 PM2 status:"
           pm2 list
 
-          echo "🌐 Checking application health..."
-          curl -I http://localhost:3000 || echo "Health check failed"
+          echo "🌐 Checking application availability..."
+          MAX_RETRIES=5
+          RETRY_DELAY=5
+          for i in $(seq 1 $MAX_RETRIES); do
+            if curl -sSf http://localhost:3000 >/dev/null; then
+              echo "✅ Application is responding"
+              RESPONSE_CODE=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3000)
+              echo "HTTP Response Code: $RESPONSE_CODE"
+              break
+            else
+              echo "⚠️ Attempt $i/$MAX_RETRIES: Application not responding, retrying in $RETRY_DELAY seconds..."
+              sleep $RETRY_DELAY
+            fi
+          done
+
+          if [ $i -eq $MAX_RETRIES ]; then
+            echo "❌ Application failed to start after $MAX_RETRIES attempts"
+            pm2 logs Haifisch --lines 50
+            exit 1
+          fi
 
     # ======================
     # 5. УВЕДОМЛЕНИЯ
@@ -122,7 +145,8 @@ jobs:
           *Project*: ${{ github.repository }}
           *Branch*: ${{ github.ref_name }}
           *Version*: ${{ env.BUILD_DATE }}
-          *Commit*: `${{ github.sha }}`
+          *Commit*: `${{ env.COMMIT_SHA }}`
+          *Commit Message*: ${{ github.event.head_commit.message }}
           ==================
           [View logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
         format: markdown
