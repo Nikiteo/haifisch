@@ -1,8 +1,8 @@
-name: 🚀 Deploy Backend
+name: 🚀 Production Deployment
 
 on:
   push:
-    branches: [ add-service ]
+    branches: [ main ]
 
 jobs:
   deploy:
@@ -43,29 +43,45 @@ jobs:
     # ======================
     # 4. ДЕПЛОЙ
     # ======================
-    - name: Stop and clean server
+    - name: Force stop existing processes
       uses: appleboy/ssh-action@v0.1.7
       with:
-        host: 87.242.119.108
-        username: nikiteo
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USER }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |
+          echo "💀 Force stopping all Node processes..."
+          sudo pkill -9 -f "node" || true
+          sudo pkill -9 -f "pm2" || true
+          sudo pkill -9 -f "index.js" || true
+          sudo fuser -k 3000/tcp || true
+
+          echo "🧹 Cleaning PM2 state..."
+          pm2 delete all || true
+          pm2 kill || true
+          rm -rf ~/.pm2
+          mkdir -p ~/.pm2
+
+          echo "🔍 Verifying processes:"
+          ps aux | grep -E 'node|pm2' || echo "No running processes found"
+
+    - name: Clean server directory
+      uses: appleboy/ssh-action@v0.1.7
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USER }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
           cd ~/haifisch
-          echo "🛑 Stopping all Node processes..."
-          # Полная остановка всех Node процессов
-          sudo pkill -f "node" || true
-          sudo pkill -f "pm2" || true
-          pm2 delete all || true
-          pm2 kill || true
-          echo "🧹 Cleaning old files..."
-          rm -rf build node_modules
-          echo "✅ Server cleaned"
+          echo "🧼 Cleaning project files..."
+          rm -rf * .[^.]* || true
+          echo "✅ Directory cleaned"
 
     - name: Upload project files
       uses: appleboy/scp-action@v0.1.4
       with:
-        host: 87.242.119.108
-        username: nikiteo
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USER }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         source: "."
         target: "~/haifisch"
@@ -74,37 +90,37 @@ jobs:
     - name: Install and start application
       uses: appleboy/ssh-action@v0.1.7
       with:
-        host: 87.242.119.108
-        username: nikiteo
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USER }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
           cd ~/haifisch
-          echo "📦 Installing dependencies..."
+          echo "📦 Installing production dependencies..."
           npm ci --omit=dev
 
           echo "🔧 Installing build tools..."
           npm install typescript --save-dev
 
-          echo "🏗️ Building project..."
+          echo "🏗️ Rebuilding project..."
           npm run build
 
-          echo "🔍 Checking for running processes on port 3000..."
-          sudo lsof -i :3000 || echo "No processes running on port 3000"
+          echo "🌐 Checking port 3000..."
+          sudo lsof -i :3000 || echo "Port 3000 is free"
 
-          echo "🚀 Starting application with PM2..."
+          echo "🚀 Starting application..."
           pm2 start ecosystem.config.js
-          sleep 5 # Даем время для инициализации
+          sleep 10
 
-          echo "📝 Checking logs..."
-          pm2 logs Haifisch --lines 20
+          echo "📜 Application logs:"
+          pm2 logs --lines 20
 
           echo "💾 Saving PM2 state..."
           pm2 save --force
 
-          echo "🔄 PM2 status:"
+          echo "📊 Deployment status:"
           pm2 list
 
-          echo "🌐 Checking application health..."
+          echo "🩺 Health check:"
           curl -I http://localhost:3000 || echo "Health check failed"
 
     # ======================
@@ -126,3 +142,18 @@ jobs:
           ==================
           [View logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
         format: markdown
+
+    # ======================
+    # 6. ОТЧЁТ
+    # ======================
+    - name: Create deployment summary
+      if: always()
+      run: |
+        echo "### 🚀 Deployment Report" >> $GITHUB_STEP_SUMMARY
+        echo "| Stage | Status | Time |" >> $GITHUB_STEP_SUMMARY
+        echo "|-------|--------|------|" >> $GITHUB_STEP_SUMMARY
+        echo "| Build | ✅ Success | $(date +'%H:%M:%S') |" >> $GITHUB_STEP_SUMMARY
+        echo "| Deploy | ${{ job.status == 'success' && '✅ Success' || '❌ Failed' }} | $(date +'%H:%M:%S') |" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "**Version:** ${{ env.BUILD_DATE }}" >> $GITHUB_STEP_SUMMARY
+        echo "**Commit:** [${{ github.sha }}](${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }})" >> $GITHUB_STEP_SUMMARY
