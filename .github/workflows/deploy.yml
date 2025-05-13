@@ -14,7 +14,7 @@ jobs:
     # ======================
     # 1. ИНИЦИАЛИЗАЦИЯ
     # ======================
-    - name: "▛▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▜"
+    - name: "▛ START DEPLOYMENT ▜"
       run: echo "▌🚀 Starting deployment process ▌"
 
     - name: Show ASCII banner
@@ -23,7 +23,7 @@ jobs:
         echo " |  _  |  |  |   __|     |   __|  _  |     |   __| "
         echo " |   __|  |  |  |  |  |  |  |  |     | | | |   __| "
         echo " |__|  |_____|_____|_____|_____|__|__|_|_|_|_____| "
-        echo "                  DEPLOYMENT v1.0                   "
+        echo "                  DEPLOYMENT v2.0                   "
 
     # ======================
     # 2. ПОДГОТОВКА
@@ -47,41 +47,40 @@ jobs:
         echo "::group::📦 Installing dependencies"
         npm ci
         echo "::endgroup::"
-        echo "::notice::Dependencies installed successfully"
 
     - name: Build project
       run: |
-        echo "::group::🔨 Running build"
+        echo "::group::🔨 Building project"
         npm run build
         echo "BUILD_DATE=$(date +'%Y.%m.%d-%H:%M')" >> $GITHUB_ENV
         echo "::endgroup::"
-        echo "::notice title=Build::Production build completed"
 
     # ======================
     # 4. ДЕПЛОЙ
     # ======================
     - name: Prepare deployment
       run: |
-        echo "::group::📡 Connecting to VM"
+        echo "::group::🔌 Deployment target"
         echo "Target: 87.242.119.108"
         echo "User: nikiteo"
+        echo "Path: ~/haifisch"
         echo "::endgroup::"
 
-    - name: Stop PM2 and clean project
+    - name: Clean remote server
       uses: appleboy/ssh-action@v0.1.7
       with:
         host: 87.242.119.108
         username: nikiteo
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
+          echo "🛑 Stopping application..."
           cd ~/haifisch
-          echo "🛑 Stopping PM2 processes..."
-          pm2 stop 'all' || true
-          pm2 kill || true
+          pm2 stop all || true
           pm2 flush || true
-          echo "🧹 Cleaning project files..."
-          rm -rf build node_modules
-          echo "🗑️ Old files removed"
+          pm2 kill || true
+          echo "🧹 Cleaning old files..."
+          rm -rf build node_modules .env scripts src
+          echo "✅ Server cleaned"
 
     - name: Upload project files
       uses: appleboy/scp-action@v0.1.4
@@ -92,8 +91,9 @@ jobs:
         source: "."
         target: "~/haifisch"
         strip_components: 0
+        overwrite: true
 
-    - name: Install dependencies and start app
+    - name: Restart application
       uses: appleboy/ssh-action@v0.1.7
       with:
         host: 87.242.119.108
@@ -103,11 +103,16 @@ jobs:
           cd ~/haifisch
           echo "📦 Installing dependencies..."
           npm ci --production
+
           echo "🚀 Starting application..."
           pm2 start ecosystem.config.js
-          echo "✅ Application deployed successfully"
           pm2 save
+
+          echo "🔄 Listing processes..."
           pm2 list
+
+          echo "🔍 Application status:"
+          pm2 status
 
     # ======================
     # 5. УВЕДОМЛЕНИЯ
@@ -132,21 +137,18 @@ jobs:
     # ======================
     # 6. ОТЧЁТ
     # ======================
-    - name: Create summary
+    - name: Create deployment summary
       if: always()
       run: |
-        echo "### 🚀 Deployment Summary" >> $GITHUB_STEP_SUMMARY
-        echo "| Stage | Status | Time |" >> $GITHUB_STEP_SUMMARY
-        echo "|-------|--------|------|" >> $GITHUB_STEP_SUMMARY
-        echo "| Setup | ✅ Success | $(date +'%T') |" >> $GITHUB_STEP_SUMMARY
-        echo "| Build | ✅ Success | $(date +'%T') |" >> $GITHUB_STEP_SUMMARY
-        echo "| Deploy | ${{ job.status == 'success' && '✅ Success' || '❌ Failed' }} | $(date +'%T') |" >> $GITHUB_STEP_SUMMARY
+        echo "### 🚀 Deployment Report" >> $GITHUB_STEP_SUMMARY
+        echo "| Stage | Status | Details |" >> $GITHUB_STEP_SUMMARY
+        echo "|-------|--------|---------|" >> $GITHUB_STEP_SUMMARY
+        echo "| Build | ✅ Success | ${{ env.BUILD_DATE }} |" >> $GITHUB_STEP_SUMMARY
+        echo "| Deploy | ${{ job.status == 'success' && '✅ Success' || '❌ Failed' }} | $(date +'%H:%M:%S') |" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
-        echo "**Build version:** ${{ env.BUILD_DATE }}" >> $GITHUB_STEP_SUMMARY
         echo "**Commit:** [${{ github.sha }}](${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }})" >> $GITHUB_STEP_SUMMARY
-        echo "" >> $GITHUB_STEP_SUMMARY
-        echo "![Deploy](https://media.giphy.com/media/3o7TKSjRrfIPjeiVyM/giphy.gif)" >> $GITHUB_STEP_SUMMARY
+        echo "**Duration:** ${{ github.run_duration }}" >> $GITHUB_STEP_SUMMARY
 
-    - name: "▙▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▟"
+    - name: "▙ END DEPLOYMENT ▟"
       if: always()
       run: echo "▌🏁 Deployment ${{ job.status }} ▌"

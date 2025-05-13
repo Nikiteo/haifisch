@@ -25,13 +25,25 @@ export const onText = (): void => {
 				await ctx.telegram.sendMessage(chatId, text, extra)
 			}
 
+			if (text.toLocaleLowerCase() === 'мой id') {
+				Logger.info(
+					`Бот пытался запустить: ${username} с текстом ${text}`
+				)
+				if (checkUser(username)) {
+					await ctx.sendMessage('Твой chatID: ' + chatId)
+				} else {
+					return await sendMessage(
+						'Прости, но ты не можешь использовать меня'
+					)
+				}
+			}
+
 			if (text.toLocaleLowerCase() === 'логи') {
 				Logger.info(
 					`Бот пытался запустить: ${username} с текстом ${text}`
 				)
 
 				if (checkUser(username)) {
-					await ctx.sendMessage('Твой chatID: ' + chatId)
 					await ctx.sendDocument({ source: 'logs/all.log' })
 					await ctx.sendDocument({ source: 'logs/error.log' })
 				} else {
