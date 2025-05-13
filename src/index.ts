@@ -63,6 +63,8 @@ onText()
 
 app.listen(3000, () => {
 	Logger.info('Сервер запущен на порту 3000')
+	Logger.info(`Текущее время: ${new Date().toISOString()}`)
+
 }).on('error', err => {
 	Logger.error(`Ошибка при запуске сервера: ${err.message}`)
 })
