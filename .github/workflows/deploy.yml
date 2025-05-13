@@ -32,15 +32,10 @@ jobs:
     # ======================
     # 3. СБОРКА
     # ======================
-    - name: Install build dependencies
+    - name: Install dependencies and build
       run: |
-        echo "Installing TypeScript globally..."
-        npm install -g typescript
-        echo "Installing project dependencies..."
+        echo "Installing dependencies..."
         npm ci
-
-    - name: Build project
-      run: |
         echo "Building project..."
         npm run build
         echo "BUILD_DATE=$(date +'%Y.%m.%d-%H:%M')" >> $GITHUB_ENV
@@ -81,11 +76,14 @@ jobs:
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
           cd ~/haifisch
-          echo "📦 Installing dependencies..."
+          echo "📦 Installing dependencies (production only)..."
           npm ci --omit=dev
 
-          echo "🔧 Installing TypeScript..."
-          npm install -g typescript
+          echo "🔧 Installing TypeScript locally..."
+          npm install typescript --save-dev
+
+          echo "🏗️ Building project on server..."
+          npm run build
 
           echo "🚀 Starting application..."
           pm2 start ecosystem.config.js
