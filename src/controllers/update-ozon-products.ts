@@ -68,6 +68,7 @@ export const updateOzonProducts = async (
 							dimension_unit: att.dimension_unit,
 							weight: att.weight,
 							weight_unit: att.weight_unit,
+							attributes: att.attributes
 						})
 					}
 				})

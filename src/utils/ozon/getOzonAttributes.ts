@@ -1,4 +1,5 @@
 import { type Attribute } from '../../types/ms-types'
+import { ProductAttribute } from '../../types/ozon/ozon-types'
 import { ProductInfoWithAttributes } from '../../types/ozon/types'
 
 const prepareVolume = (
@@ -10,6 +11,23 @@ const prepareVolume = (
 		return `${parseFloat((depth / 10).toFixed(2))}x${parseFloat(
 			(width / 10).toFixed(2)
 		)}x${parseFloat((height / 10).toFixed(2))}`
+	}
+	return ''
+}
+
+const prepareOfferDimensions = (
+	attributes: ProductAttribute['attributes'] = []
+): string => {
+	const lengthAttr = attributes.find(att => att.id === 8415)
+	const widthAttr = attributes.find(att => att.id === 8416)
+	const heightAttr = attributes.find(att => att.id === 8414)
+
+	const length = lengthAttr?.values?.[0]?.value
+	const width = widthAttr?.values?.[0]?.value
+	const height = heightAttr?.values?.[0]?.value
+
+	if (length && width && height) {
+		return `${length}x${width}x${height}`
 	}
 	return ''
 }
@@ -61,6 +79,17 @@ export const getAttributes = (
 			name: 'ID Озон',
 			type: 'string',
 			value: offer?.id?.toString(),
+		},
+		{
+			meta: {
+				href: 'https://api.moysklad.ru/api/remap/1.2/entity/product/metadata/attributes/dbc80b8c-30d5-11f0-0a80-153200137985',
+				type: 'attributemetadata',
+				mediaType: 'application/json',
+			},
+			id: 'dbc80b8c-30d5-11f0-0a80-153200137985',
+			name: 'Размеры изделия (ДШВ) Озон',
+			type: 'string',
+			value: prepareOfferDimensions(offer.attributes),
 		},
 	]
 }

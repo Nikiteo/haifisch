@@ -14,6 +14,7 @@ export interface ProductInfoWithAttributes
 			| 'dimension_unit'
 			| 'weight'
 			| 'weight_unit'
+			| 'attributes'
 		> {}
 
 export type PromoOffersById = Record<
