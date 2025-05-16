@@ -34,12 +34,17 @@ export const addCofinance = async (
 								)
 
 								if (product) {
-									// const hfName =
+									// const box:string =
 									// 	product.attributes.find(
 									// 		item =>
 									// 			item.id ===
-									// 			'47e81023-9269-11ee-0a80-022f00336d0c'
+									// 			'19d7f9fa-13a5-11f0-0a80-146400324e7f'
 									// 	)?.value ?? ''
+									// const boxArray = box.split('х')
+
+									// const boxLength = boxArray[0]
+									// const boxWidth = boxArray[1]
+									// const boxHeigth = boxArray[2]
 
 									const minPrice =
 										product.salePrices?.find(
