@@ -90,6 +90,8 @@ export const deleteOzonPromos = async (
 						} as DeactivateActionProductsRequest
 					)
 
+				Logger.warn(JSON.stringify(promoForSend))
+
 				if (
 					promoForSend.product_ids &&
 					promoForSend?.product_ids?.length > 0
