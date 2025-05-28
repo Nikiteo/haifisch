@@ -22,6 +22,7 @@ const createPriceEntry = (cur: GetProductPrice, product?: Product) => {
 		old_price: cur.price?.old_price?.toString(),
 		min_price: (minPrice / 100).toString(),
 		min_price_for_auto_actions_enabled: true,
+		auto_add_to_ozon_actions_list_enabled: 'DISABLED',
 		auto_action_enabled:
 			'ENABLED' as ImportProductPricesRequestAutoActionEnabledEnum,
 	}
