@@ -3,6 +3,7 @@ import {
 	deleteOzonPromosOffers,
 	getOzonPromos,
 	getOzonPromosOffers,
+	getPromosProducts,
 } from '../services'
 import { getProducts } from '../services/moysklad/productController'
 
@@ -37,11 +38,11 @@ export const deleteOzonPromos = async (
 				const offersById: PromoOffersById = {}
 				await Promise.all(
 					ids.map(async id => {
-						const offer = await getOzonPromosOffers({
+						const offer = await getPromosProducts({
 							action_id: id,
 							limit: 1000,
 						})
-						if (offer) offersById[id] = offer
+						if (offer) offersById[id] = offer.products
 					})
 				)
 				return offersById
