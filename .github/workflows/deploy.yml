@@ -53,14 +53,10 @@ jobs:
         script: |
           cd ~/haifisch
 
-          echo "🛑 Stopping PM2 processes..."
-          pm2 stop 'all' || true
+          echo "🛑 Stopping PM2 processes (user-level)..."
+          pm2 stop all || true
+          pm2 delete all || true
           pm2 kill || true
-
-          echo "🛑 Stopping application on port 3000..."
-          # Надежное освобождение порта
-          sudo ss -tulpn | grep ':3000' | awk '{print $7}' | cut -d\" -f2 | xargs -r kill || true
-          sudo fuser -k 3000/tcp || echo "Could not kill process on port 3000 - maybe none running?"
 
           echo "🧹 Cleaning old files..."
           rm -rf build node_modules .cache
@@ -83,7 +79,7 @@ jobs:
         username: nikiteo
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
-          set -e # Прерывать при ошибках
+          set -e
 
           cd ~/haifisch
           echo "📦 Installing dependencies..."
@@ -92,20 +88,14 @@ jobs:
           echo "🏗️ Building project..."
           npm run build
 
-          echo "🔍 Checking for running processes on port 3000..."
-          sudo lsof -i :3000 || echo "No processes running on port 3000"
-
           echo "🚀 Starting application with PM2..."
           pm2 start ecosystem.config.js
-
-          echo "⏳ Waiting for application to start (5 seconds)..."
           sleep 5
-
-          echo "💾 Saving PM2 state..."
           pm2 save --force
 
           echo "📊 PM2 status:"
           pm2 list
+
     # ======================
     # 5. УВЕДОМЛЕНИЯ
     # ======================
