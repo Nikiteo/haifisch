@@ -208,7 +208,7 @@ export const tbankOperations = async (operation: TbankNotification) => {
 				`${getEmojii(operation.payer.inn)} Плательщик: ${operation.payer.name}`,
 			undefined,
 			-1001563706410,
-			undefined
+			26789
 		)
 	} catch (error) {
 		Logger.error(
@@ -220,7 +220,7 @@ export const tbankOperations = async (operation: TbankNotification) => {
 				`\`\`\`${error instanceof Error ? error.message : JSON.stringify(error)}\`\`\``,
 			undefined,
 			-1001563706410,
-			undefined
+			26789
 		)
 	}
 }
