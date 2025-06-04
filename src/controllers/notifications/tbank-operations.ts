@@ -207,7 +207,7 @@ export const tbankOperations = async (operation: TbankNotification) => {
 				`🔗 Ссылка: ${createdCashout?.meta?.uuidHref || ''}\n` +
 				`${getEmojii(operation.payer.inn)} Плательщик: ${operation.payer.name}`,
 			undefined,
-			-1002457683199
+			-1001563706410
 		)
 	} catch (error) {
 		Logger.error(
@@ -218,7 +218,7 @@ export const tbankOperations = async (operation: TbankNotification) => {
 			`❌ Ошибка обработки операции ${operation.operationId}:\n` +
 				`\`\`\`${error instanceof Error ? error.message : JSON.stringify(error)}\`\`\``,
 			undefined,
-			-1002457683199
+			-1001563706410
 		)
 	}
 }
