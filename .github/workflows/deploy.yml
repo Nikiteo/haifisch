@@ -120,7 +120,7 @@ jobs:
           ==================
           *Project*: ${{ github.repository }}
           *Branch*: ${{ github.ref_name }}
-          *Version*: ${{ env.BUILD_DATE }}
+          *Date*: ${{ env.BUILD_DATE }}
           *Commit*: `${{ env.COMMIT_SHA }}`
           *Commit Message*: ${{ github.event.head_commit.message }}
           ==================

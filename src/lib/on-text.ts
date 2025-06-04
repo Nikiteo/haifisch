@@ -26,7 +26,7 @@ export const onText = (): void => {
 				await ctx.telegram.sendMessage(chatId, text, extra)
 			}
 
-			if (text.toLocaleLowerCase() === 'мой id') {
+			if (text.toLocaleLowerCase() === 'chatid') {
 				Logger.info(
 					`Бот пытался запустить: ${username} с текстом ${text}`
 				)
@@ -39,7 +39,7 @@ export const onText = (): void => {
 				}
 			}
 
-			if (text.toLocaleLowerCase() === 'topicId') {
+			if (text.toLocaleLowerCase() === 'topicid') {
 				Logger.info(
 					`Бот пытался запустить: ${username} с текстом ${text}`
 				)
