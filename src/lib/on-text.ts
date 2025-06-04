@@ -14,6 +14,7 @@ export const onText = (): void => {
 			const text = ctx.message.text
 			const chatId = ctx.chat.id
 			const messageId = ctx.message.message_id
+			const messageThreadId = ctx.message.message_thread_id
 			const sendMessage = async (
 				text: string,
 				extra?: {
@@ -31,6 +32,19 @@ export const onText = (): void => {
 				)
 				if (checkUser(username)) {
 					await ctx.sendMessage('Твой chatID: ' + chatId)
+				} else {
+					return await sendMessage(
+						'Прости, но ты не можешь использовать меня'
+					)
+				}
+			}
+
+			if (text.toLocaleLowerCase() === 'topicId') {
+				Logger.info(
+					`Бот пытался запустить: ${username} с текстом ${text}`
+				)
+				if (checkUser(username)) {
+					await ctx.sendMessage('Твой topicId: ' + messageThreadId)
 				} else {
 					return await sendMessage(
 						'Прости, но ты не можешь использовать меня'
