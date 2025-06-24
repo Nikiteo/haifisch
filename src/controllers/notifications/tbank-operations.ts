@@ -205,7 +205,7 @@ export const tbankOperations = async (operation: TbankNotification) => {
 				`💰 Сумма: ${sum} руб.\n` +
 				`🏷️ Статья: ${expenseItem?.name || 'Не определена'}\n` +
 				`🔗 Ссылка: ${createdCashout?.meta?.uuidHref || ''}\n` +
-				`${getEmojii(operation.payer.inn)} Плательщик: ${operation.payer.name}`,
+				`${getEmojii(operation?.payer?.inn)} Плательщик: ${operation?.payer?.name}`,
 			undefined,
 			-1001563706410,
 			26789
