@@ -197,7 +197,7 @@ export const tbankOperations = async (operation: TbankNotification) => {
 					mediaType: 'application/json',
 				},
 			},
-			description: `Получатель: ${operation?.counterParty?.name ?? ''} - ${operation?.merch?.name ?? ''}\n\nПлательщик: ${payerName}`,
+			description: `Получатель: ${operation?.counterParty?.name || ''} - ${operation?.merch?.name || ''}\n\nПлательщик: ${payerName}`,
 		}
 
 		const createdCashout = await createCashout(cashoutData)
