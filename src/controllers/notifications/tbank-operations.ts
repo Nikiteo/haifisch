@@ -173,7 +173,7 @@ export const tbankOperations = async (operation: TbankNotification) => {
 
 		const cashoutData = {
 			name: operation.operationId,
-			owner: getOwnerByInn(operation.payer.inn),
+			owner: getOwnerByInn(operation?.payer?.inn),
 			applicable: true,
 			shared: true,
 			rate: {
@@ -193,7 +193,7 @@ export const tbankOperations = async (operation: TbankNotification) => {
 					mediaType: 'application/json',
 				},
 			},
-			description: `Получатель: ${operation.counterParty.name} - ${operation?.merch?.name ?? ''}\n\nПлательщик: ${operation.payer.name}`,
+			description: `Получатель: ${operation.counterParty.name} - ${operation?.merch?.name ?? ''}\n\nПлательщик: ${operation?.payer?.name}`,
 		}
 
 		const createdCashout = await createCashout(cashoutData)
