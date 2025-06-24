@@ -160,6 +160,7 @@ export const getOwnerByInn = (inn: string): Owner => {
 		case '482110871775':
 			return mishaOwner
 		default:
+			Logger.warn(`ИНН "${inn}" не найден, используется default владелец`)
 			return owner
 	}
 }
@@ -173,7 +174,7 @@ export const getEmojii = (inn: string) => {
 		case '482110871775':
 			return '👨'
 		default:
-			return '👨'
+			return '👨' 
 	}
 }
 

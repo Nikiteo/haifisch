@@ -171,14 +171,18 @@ export const tbankOperations = async (operation: TbankNotification) => {
 			throw new Error('Не удалось определить или создать статью расходов')
 		}
 
+		const payerInn = operation?.payer?.inn || ''
+		const payerName = operation?.payer?.name || 'Неизвестный плательщик'
+
+		const owner = getOwnerByInn(payerInn)
+		const emoji = getEmojii(payerInn)
+
 		const cashoutData = {
 			name: operation.operationId,
-			owner: getOwnerByInn(operation?.payer?.inn ?? ''),
+			owner,
 			applicable: true,
 			shared: true,
-			rate: {
-				currency,
-			},
+			rate: { currency },
 			organization,
 			agent: retailer,
 			sum: parseFloat((sum * 100).toFixed(2)),
@@ -193,7 +197,7 @@ export const tbankOperations = async (operation: TbankNotification) => {
 					mediaType: 'application/json',
 				},
 			},
-			description: `Получатель: ${operation?.counterParty?.name ?? ''} - ${operation?.merch?.name ?? ''}\n\nПлательщик: ${operation?.payer?.name ?? ''}`,
+			description: `Получатель: ${operation?.counterParty?.name ?? ''} - ${operation?.merch?.name ?? ''}\n\nПлательщик: ${payerName}`,
 		}
 
 		const createdCashout = await createCashout(cashoutData)
@@ -205,7 +209,7 @@ export const tbankOperations = async (operation: TbankNotification) => {
 				`💰 Сумма: ${sum} руб.\n` +
 				`🏷️ Статья: ${expenseItem?.name || 'Не определена'}\n` +
 				`🔗 Ссылка: ${createdCashout?.meta?.uuidHref || ''}\n` +
-				`${getEmojii(operation?.payer?.inn ?? '')} Плательщик: ${operation?.payer?.name ?? ''}`,
+				`${emoji} Плательщик: ${payerName}`,
 			undefined,
 			-1001563706410,
 			26789
