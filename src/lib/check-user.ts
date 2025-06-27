@@ -4,7 +4,7 @@ export const checkUser = (username?: string): boolean => {
 		case 'chekannaa':
 		case 'Haifisch_store':
 		case 'tatitoto_tt':
-		case 'bot_3000':
+		case 'turbovzor252':
 			return true
 		default:
 			return false
