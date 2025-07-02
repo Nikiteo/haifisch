@@ -206,6 +206,8 @@ export const updateOzon = async (
 
 		Logger.info(`[${store}] Создаю заказы покупателей...`)
 
+		Logger.info(JSON.stringify(preparedCustomerOrders))
+
 		const createdCustomerOrders = await createCustomerOrder(
 			preparedCustomerOrders
 		)
