@@ -40,16 +40,16 @@ import { OrderFbsOzonStatus, OrderStatusEnum } from '../types/ozon/types'
 
 dayjs.extend(utc)
 
-const getDateRange = (months: number) => {
+const getDateRange = (days: number) => {
 	const dateFrom = dayjs()
-		.subtract(months, 'month')
+		.subtract(days, 'day')
 		.set('hour', 0)
 		.set('minute', 0)
 		.set('second', 0)
 		.set('milliseconds', 0)
 		.format('YYYY-MM-DD')
 	const dateTo = dayjs()
-		.add(months, 'month')
+		.add(days, 'day')
 		.set('hour', 23)
 		.set('minute', 59)
 		.set('second', 59)
@@ -81,7 +81,7 @@ export const updateOzon = async (
 	sendMessage: (text: string) => Promise<void>
 ): Promise<void> => {
 	try {
-		const { dateFrom, dateTo } = getDateRange(1)
+		const { dateFrom, dateTo } = getDateRange(15)
 		const filter = getFilterDates(1)
 
 		Logger.info(`[${store}]: ${dateFrom} - ${dateTo}`)
@@ -205,8 +205,6 @@ export const updateOzon = async (
 		)
 
 		Logger.info(`[${store}] Создаю заказы покупателей...`)
-
-		Logger.info(JSON.stringify(preparedCustomerOrders))
 
 		const createdCustomerOrders = await createCustomerOrder(
 			preparedCustomerOrders
