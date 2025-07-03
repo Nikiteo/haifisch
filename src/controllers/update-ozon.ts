@@ -58,9 +58,9 @@ const getDateRange = (days: number) => {
 	return { dateFrom, dateTo }
 }
 
-const getFilterDates = (months: number) => {
+const getFilterDates = (days: number) => {
 	const from = dayjs()
-		.subtract(months, 'month')
+		.subtract(days, 'day')
 		.set('hour', 0)
 		.set('minute', 0)
 		.set('second', 0)
@@ -82,7 +82,7 @@ export const updateOzon = async (
 ): Promise<void> => {
 	try {
 		const { dateFrom, dateTo } = getDateRange(15)
-		const filter = getFilterDates(1)
+		const filter = getFilterDates(15)
 
 		Logger.info(`[${store}]: ${dateFrom} - ${dateTo}`)
 
