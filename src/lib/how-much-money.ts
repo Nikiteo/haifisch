@@ -24,7 +24,8 @@ export const howMuchMoney = async ({
 	if (
 		username === 'Nikiteo' ||
 		username === 'Haifisch_store' ||
-		username === 'chekannaa'
+		username === 'chekannaa' ||
+		username === 'tatitoto_tt'
 	) {
 		try {
 			const haifisch = (await getBankAccounts('Haifisch')) || []
