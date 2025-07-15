@@ -81,8 +81,8 @@ export const updateOzon = async (
 	sendMessage: (text: string) => Promise<void>
 ): Promise<void> => {
 	try {
-		const { dateFrom, dateTo } = getDateRange(15)
-		const filter = getFilterDates(15)
+		const { dateFrom, dateTo } = getDateRange(45)
+		const filter = getFilterDates(45)
 
 		Logger.info(`[${store}]: ${dateFrom} - ${dateTo}`)
 
