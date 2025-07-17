@@ -50,21 +50,21 @@ export const addCofinance = async (
 										product.salePrices?.find(
 											item =>
 												item.priceType.id ===
-												'b4b53c4e-7cd3-11ef-0a80-0f350015a3b8'
+												'a5608f73-630f-11f0-0a80-197e00103deb'
 										)?.value ?? 0
 
 									const optPrice =
 										product.salePrices?.find(
 											item =>
 												item.priceType.id ===
-												'209bade1-8a19-11ef-0a80-156400730036'
+												'a5609083-630f-11f0-0a80-197e00103dec'
 										)?.value ?? 0
 
 									const basicPrice =
 										product.salePrices?.find(
 											item =>
 												item.priceType.id ===
-												'5f713df2-9981-11ee-0a80-0b5a00058c80'
+												'4f9e295d-f557-11ed-0a80-11cd001da711'
 										)?.value ?? 0
 
 									// if (hfName) {
