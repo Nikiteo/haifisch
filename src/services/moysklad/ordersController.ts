@@ -1,12 +1,12 @@
 import { apiService } from './service'
 
 import axios from 'axios'
+import { Logger } from '../../lib'
 import {
-	type ResponseMS,
 	type CustomerOrder,
 	type ErrorResponse,
+	type ResponseMS,
 } from '../../types/ms-types'
-import { Logger } from '../../lib'
 
 export const getCustomerOrders = async (
 	dates: {

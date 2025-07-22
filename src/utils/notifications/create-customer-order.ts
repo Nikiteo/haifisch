@@ -2,23 +2,23 @@ import dayjs from 'dayjs'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
 
 import {
-	group,
-	currency,
 	agent,
-	organization,
 	country,
-	salesChannels,
+	currency,
+	fbsHfProject,
 	fbsStore,
 	fbsTopProject,
-	fbsHfProject,
+	group,
+	organization,
+	salesChannels,
 } from '../../database'
-import { type Product, type CustomerOrder } from '../../types/ms-types'
+import { type CustomerOrder, type Product } from '../../types/ms-types'
 import { OrderDTO } from '../../types/yandex/api'
 import {
-	prepareCustomerOrdersAttributes,
-	prepareStatusesForCustomerOrders,
-	preparePositions,
 	createMoment,
+	prepareCustomerOrdersAttributes,
+	preparePositions,
+	prepareStatusesForCustomerOrders,
 } from './helpers'
 
 dayjs.extend(customParseFormat)

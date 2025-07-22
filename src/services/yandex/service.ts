@@ -1,7 +1,6 @@
 import axios from 'axios'
-import { logError } from '../../utils/log-error'
 import { getService } from '../../utils/get-service'
-import { Logger } from '../../lib'
+import { logError } from '../../utils/log-error'
 
 const TOP_TOKEN = process.env.TOP_TOKEN
 const HF_TOKEN = process.env.HF_TOKEN

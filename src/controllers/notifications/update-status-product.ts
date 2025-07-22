@@ -1,26 +1,26 @@
 import { states } from '../../database'
 import { getOrderById } from '../../services'
 
+import { Logger } from '../../lib'
 import {
 	getCustomerOrderByName,
 	updateCustomerOrder,
 } from '../../services/moysklad/ordersController'
 import { CustomerOrder } from '../../types/ms-types'
 import { OrderDTO } from '../../types/yandex/api'
+import {
+	NotificationType,
+	OrderCancelledNotificationDTO,
+	OrderStatusType,
+	OrderStatusUpdatedNotificationDTO,
+} from '../../types/yandex/notification-types'
 import { prepareStatusesForCustomerOrders } from '../../utils'
-import { Logger } from '../../lib'
 import {
 	getStoreName,
 	handleDeliveredStatus,
 	handleDeliveryStatus,
 	isStatusUpdatedNotification,
 } from './utils'
-import {
-	OrderStatusUpdatedNotificationDTO,
-	OrderCancelledNotificationDTO,
-	NotificationType,
-	OrderStatusType,
-} from '../../types/yandex/notification-types'
 
 export const updateProduct = async (
 	order: OrderStatusUpdatedNotificationDTO | OrderCancelledNotificationDTO

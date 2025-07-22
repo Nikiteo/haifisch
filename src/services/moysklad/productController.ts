@@ -1,11 +1,11 @@
 import axios from 'axios'
+import { Logger } from '../../lib'
 import {
 	type ErrorResponse,
-	type ResponseMS,
 	type Product,
+	type ResponseMS,
 } from '../../types/ms-types'
 import { apiService } from './service'
-import { Logger } from '../../lib'
 
 export const getProducts = async (): Promise<
 	ResponseMS<Product> | undefined

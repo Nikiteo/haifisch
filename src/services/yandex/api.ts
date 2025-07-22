@@ -37,10 +37,10 @@ import {
 	UpdateStocksRequest,
 	WarehouseOfferDTO,
 } from '../../types/yandex/api'
+import { OrderCreatedNotificationDTO, OrderReturnCreatedNotificationDTO } from '../../types/yandex/notification-types'
 import { getService } from '../../utils/get-service'
 import { logError } from '../../utils/log-error'
 import { getRequest, postRequest } from './service'
-import { OrderCreatedNotificationDTO, OrderReturnCreatedNotificationDTO } from '../../types/yandex/notification-types'
 
 export const getCampaigns = async (
 	store: string

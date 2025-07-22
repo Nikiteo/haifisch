@@ -1,18 +1,18 @@
-import { Router, Request, Response } from 'express'
-import { Logger } from '../../lib'
-import {
-	MessageType,
-	Ping,
-	NewPostingEvent,
-	PostingCancelledEvent,
-	StateChangedEvent,
-} from './types'
+import { Request, Response, Router } from 'express'
 import { bot } from '../../bot'
+import { Logger } from '../../lib'
 import {
 	NotificationApiErrorType,
 	SendNotificationErrorResponse,
 	SendNotificationResponse,
 } from '../../types/yandex/notification-types'
+import {
+	MessageType,
+	NewPostingEvent,
+	Ping,
+	PostingCancelledEvent,
+	StateChangedEvent,
+} from './types'
 
 export const ozonRouter = Router()
 

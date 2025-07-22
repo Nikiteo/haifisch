@@ -1,8 +1,8 @@
 import { states } from '../../../database'
 import { State } from '../../../types/ms-types'
 import {
-	OrderSubstatusType,
 	OrderStatusType,
+	OrderSubstatusType,
 } from '../../../types/yandex/notification-types'
 
 const prepareSubstatuses = (substatus?: OrderSubstatusType): State => {

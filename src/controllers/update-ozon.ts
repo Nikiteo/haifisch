@@ -1,10 +1,15 @@
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import { Logger } from '../lib'
+import {
+	getOzonFbsOrders,
+	getOzonReturns,
+	getTransactions
+} from '../services'
 import { createDemand, getDemands } from '../services/moysklad/demandController'
 import {
-	getCustomerOrders,
 	createCustomerOrder,
+	getCustomerOrders,
 } from '../services/moysklad/ordersController'
 import {
 	createPaymentin,
@@ -20,36 +25,29 @@ import {
 	getSalesReturn,
 } from '../services/moysklad/salesreturnController'
 import { SalesReturn, type CustomerOrder } from '../types/ms-types'
+import {
+	ListFinanceTransactionsRequestTransactionTypeEnum,
+	ListPostingsFbsRequestDirEnum
+} from '../types/ozon/ozon-types'
+import { OrderFbsOzonStatus } from '../types/ozon/types'
 import { prepareOzonCustomerOrders } from '../utils/ozon/prepareOzonCustomerOrder'
 import { prepareOzonPaymentin } from '../utils/ozon/prepareOzonPaymentin'
 import { prepareOzonPaymentout } from '../utils/ozon/prepareOzonPaymentout'
 import { prepareDemands } from '../utils/yandex/prepareDemands'
 import { prepareSalesReturn } from '../utils/yandex/prepareSalesreturn'
-import {
-	getOzonFboOrders,
-	getOzonFbsOrders,
-	getOzonReturns,
-	getTransactions,
-} from '../services'
-import {
-	ListFinanceTransactionsRequestTransactionTypeEnum,
-	ListPostingsFboRequestDirEnum,
-	ListPostingsFbsRequestDirEnum,
-} from '../types/ozon/ozon-types'
-import { OrderFbsOzonStatus, OrderStatusEnum } from '../types/ozon/types'
 
 dayjs.extend(utc)
 
-const getDateRange = (days: number) => {
+const getDateRange = (months: number) => {
 	const dateFrom = dayjs()
-		.subtract(days, 'day')
+		.subtract(months, 'month')
 		.set('hour', 0)
 		.set('minute', 0)
 		.set('second', 0)
 		.set('milliseconds', 0)
 		.format('YYYY-MM-DD')
 	const dateTo = dayjs()
-		.add(days, 'day')
+		.add(months, 'month')
 		.set('hour', 23)
 		.set('minute', 59)
 		.set('second', 59)
@@ -58,9 +56,9 @@ const getDateRange = (days: number) => {
 	return { dateFrom, dateTo }
 }
 
-const getFilterDates = (days: number) => {
+const getFilterDates = (months: number) => {
 	const from = dayjs()
-		.subtract(days, 'day')
+		.subtract(months, 'month')
 		.set('hour', 0)
 		.set('minute', 0)
 		.set('second', 0)
@@ -81,8 +79,8 @@ export const updateOzon = async (
 	sendMessage: (text: string) => Promise<void>
 ): Promise<void> => {
 	try {
-		const { dateFrom, dateTo } = getDateRange(20)
-		const filter = getFilterDates(20)
+		const { dateFrom, dateTo } = getDateRange(1)
+		const filter = getFilterDates(1)
 
 		Logger.info(`[${store}]: ${dateFrom} - ${dateTo}`)
 
@@ -205,6 +203,8 @@ export const updateOzon = async (
 		)
 
 		Logger.info(`[${store}] Создаю заказы покупателей...`)
+
+		Logger.info(JSON.stringify(preparedCustomerOrders))
 
 		const createdCustomerOrders = await createCustomerOrder(
 			preparedCustomerOrders

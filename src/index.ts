@@ -1,22 +1,22 @@
-import express from 'express'
 import bodyParser from 'body-parser'
+import express from 'express'
 import { bot } from './bot'
 import { remainingCommand } from './controllers'
 import {
+	actCreateOzon,
+	addPromos,
+	addYandexCofinance,
+	deletePromos,
+	feedbacks,
 	Logger,
+	onText,
+	stocksCommand,
 	syncCommand,
 	updateCommand,
-	stocksCommand,
-	addPromos,
-	deletePromos,
 	updatePrices,
-	actCreateOzon,
-	addYandexCofinance,
-	feedbacks,
-	onText,
 } from './lib'
 
-import { ozonRouter, yandexRouter, tbankRouter } from './services'
+import { ozonRouter, tbankRouter, yandexRouter } from './services'
 
 const app = express()
 
