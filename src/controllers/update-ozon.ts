@@ -24,7 +24,7 @@ import {
 	createSalesReturn,
 	getSalesReturn,
 } from '../services/moysklad/salesreturnController'
-import { Demand, SalesReturn, type CustomerOrder } from '../types/ms-types'
+import { Demand, Paymentin, Paymentout, SalesReturn, type CustomerOrder } from '../types/ms-types'
 import {
 	ListFinanceTransactionsRequestTransactionTypeEnum,
 	ListPostingsFbsRequestDirEnum
@@ -73,6 +73,8 @@ const getFilterDates = (months: number) => {
 		.toISOString()
 	return { since: from, to }
 }
+
+const batchNumber = 50
 
 export const updateOzon = async (
 	store: string,
@@ -206,8 +208,8 @@ export const updateOzon = async (
 
 		const createdCustomerOrders: CustomerOrder[] = []
 
-		for (let i = 0; i < preparedCustomerOrders.length; i += 200) {
-			const batch = preparedCustomerOrders.slice(i, i + 200)
+		for (let i = 0; i < preparedCustomerOrders.length; i += batchNumber) {
+			const batch = preparedCustomerOrders.slice(i, i + batchNumber)
 
 			try {
 				const created = await createCustomerOrder(batch)
@@ -216,7 +218,7 @@ export const updateOzon = async (
 					Logger.info(`[${store}] Создано заказов: ${created.length}`)
 				}
 			} catch (error) {
-				Logger.error(`[${store}] Ошибка при создании заказов в батче ${i / 200 + 1}: ${error}`)
+				Logger.error(`[${store}] Ошибка при создании заказов в батче ${i / batchNumber + 1}: ${error}`)
 			}
 		}
 
@@ -245,23 +247,23 @@ export const updateOzon = async (
 			'OZON'
 		)
 
+		Logger.info(`[${store}] Создаю документы отгрузок...`)
+
 		const createdDemands: Demand[] = []
 
-		for (let i = 0; i < preparedDemands.length; i += 200) {
-			const batch = preparedDemands.slice(i, i + 200)
+		for (let i = 0; i < preparedDemands.length; i += batchNumber) {
+			const batch = preparedDemands.slice(i, i + batchNumber)
 
 			try {
 				const created = await createDemand(batch)
 				if (created) {
 					createdDemands.push(...created)
-					Logger.info(`[${store}] Создано заказов: ${created.length}`)
+					Logger.info(`[${store}] Создано отгрузок: ${created.length}`)
 				}
 			} catch (error) {
-				Logger.error(`[${store}] Ошибка при создании заказов в батче ${i / 200 + 1}: ${error}`)
+				Logger.error(`[${store}] Ошибка при создании отгрузок в батче ${i / batchNumber + 1}: ${error}`)
 			}
 		}
-
-		Logger.info(`[${store}] Создаю документы отгрузок...`)
 
 		const paymentins = await getPaymentin({ dateFrom, dateTo })
 
@@ -274,8 +276,23 @@ export const updateOzon = async (
 			paymentins ?? []
 		)
 
-		await createPaymentin(preparedPaymentins)
 		Logger.info(`[${store}] Создаю документы входящих платежей...`)
+
+		const createdPaymentin: Paymentin[] = []
+
+		for (let i = 0; i < preparedPaymentins.length; i += batchNumber) {
+			const batch = preparedPaymentins.slice(i, i + batchNumber)
+
+			try {
+				const created = await createPaymentin(batch)
+				if (created) {
+					createdPaymentin.push(...created)
+					Logger.info(`[${store}] Создано входящих платежей: ${created.length}`)
+				}
+			} catch (error) {
+				Logger.error(`[${store}] Ошибка при создании входящих платежей в батче ${i / batchNumber + 1}: ${error}`)
+			}
+		}
 
 		const salesReturn = await getSalesReturn({ dateFrom, dateTo })
 		Logger.info(`[${store}] Получаю документы возвратов...`)
@@ -304,24 +321,54 @@ export const updateOzon = async (
 			}
 		).uniqReturns
 
-		const newSalesReturns = await createSalesReturn(uniqReturns)
 		Logger.info(`[${store}] Создаю документы возвратов...`)
+
+		const createdSalesReturns: SalesReturn[] = []
+
+		for (let i = 0; i < uniqReturns.length; i += batchNumber) {
+			const batch = uniqReturns.slice(i, i + batchNumber)
+
+			try {
+				const created = await createSalesReturn(batch)
+				if (created) {
+					createdSalesReturns.push(...created)
+					Logger.info(`[${store}] Создано возвратов: ${created.length}`)
+				}
+			} catch (error) {
+				Logger.error(`[${store}] Ошибка при создании возвратов в батче ${i / batchNumber + 1}: ${error}`)
+			}
+		}
 
 		const paymentouts = await getPaymentout({ dateFrom, dateTo })
 		Logger.info(`[${store}] Получаю документы исходящих платежей...`)
 
 		const preparedPaymentouts = prepareOzonPaymentout(
-			newSalesReturns ?? [],
+			createdSalesReturns ?? [],
 			[],
 			[...(filteredFbsOrders ?? []), ...(fbsAfterReturns ?? [])],
 			paymentouts ?? []
 		)
 
 		if (preparedPaymentouts.length > 0) {
+			Logger.info(`[${store}] Создаю документы исходящих платежей...`)
+
+			const createdPaymentouts: Paymentout[] = []
+
+			for (let i = 0; i < preparedPaymentouts.length; i += batchNumber) {
+				const batch = preparedPaymentouts.slice(i, i + batchNumber)
+
+				try {
+					const created = await createSalesReturn(batch)
+					if (created) {
+						createdPaymentouts.push(...created)
+						Logger.info(`[${store}] Создано исходящих платежей: ${created.length}`)
+					}
+				} catch (error) {
+					Logger.error(`[${store}] Ошибка при создании исходящих платежей в батче ${i / batchNumber + 1}: ${error}`)
+				}
+			}
 			await createPaymentout(preparedPaymentouts)
 		}
-
-		Logger.info(`[${store}] Создаю документы исходящих платежей...`)
 
 		await sendMessage(`[${store}]: Магазин синхронизирован`)
 		Logger.info(`[${store}] Магазин синхронизирован`)
