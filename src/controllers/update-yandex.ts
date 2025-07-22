@@ -1,9 +1,18 @@
 import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
+import { states } from '../database'
 import { Logger } from '../lib'
-import { createDemand, getDemands } from '../services/moysklad/demandController'
 import {
-	getCustomerOrders,
+	getCampaigns,
+	getOrders,
+	getOrdersStats,
+	getReturns,
+} from '../services'
+import { createDemand, getDemands } from '../services/moysklad/demandController'
+import { createMove, getMoves } from '../services/moysklad/moveController'
+import {
 	createCustomerOrder,
+	getCustomerOrders,
 } from '../services/moysklad/ordersController'
 import {
 	createPaymentin,
@@ -19,27 +28,18 @@ import {
 	getSalesReturn,
 } from '../services/moysklad/salesreturnController'
 import { type CustomerOrder } from '../types/ms-types'
+import {
+	type EnrichedOrdersStatsOrderDTO,
+	type OrderDTO,
+	type OrdersStatsOrderDTO,
+} from '../types/yandex/api'
 import { getCampaignIds } from '../utils/yandex/getCampaignIds'
 import { prepareCustomerOrders } from '../utils/yandex/prepareCustomerOrders'
 import { prepareDemands } from '../utils/yandex/prepareDemands'
+import { prepareMoves } from '../utils/yandex/prepareMoves'
 import { preparePaymentin } from '../utils/yandex/preparePaymentin'
 import { preparePaymentout } from '../utils/yandex/preparePaymentout'
 import { prepareSalesReturn } from '../utils/yandex/prepareSalesreturn'
-import utc from 'dayjs/plugin/utc'
-import { createMove, getMoves } from '../services/moysklad/moveController'
-import { prepareMoves } from '../utils/yandex/prepareMoves'
-import {
-	type OrdersStatsOrderDTO,
-	type OrderDTO,
-	type EnrichedOrdersStatsOrderDTO,
-} from '../types/yandex/api'
-import { states } from '../database'
-import {
-	getCampaigns,
-	getOrdersStats,
-	getOrders,
-	getReturns,
-} from '../services'
 
 dayjs.extend(utc)
 
@@ -54,14 +54,14 @@ export const updateYandex = async (
 				.set('minute', 0)
 				.set('second', 0)
 				.set('milliseconds', 0)
-				.subtract(20, 'day')
+				.subtract(30, 'day')
 				.format('YYYY-MM-DD'),
 			dateTo: dayjs()
 				.set('hour', 23)
 				.set('minute', 59)
 				.set('second', 59)
 				.set('milliseconds', 59)
-				.add(20, 'day')
+				.add(30, 'day')
 				.format('YYYY-MM-DD'),
 		}
 
