@@ -24,7 +24,7 @@ import {
 	createSalesReturn,
 	getSalesReturn,
 } from '../services/moysklad/salesreturnController'
-import { SalesReturn, type CustomerOrder } from '../types/ms-types'
+import { Demand, SalesReturn, type CustomerOrder } from '../types/ms-types'
 import {
 	ListFinanceTransactionsRequestTransactionTypeEnum,
 	ListPostingsFbsRequestDirEnum
@@ -204,11 +204,21 @@ export const updateOzon = async (
 
 		Logger.info(`[${store}] Создаю заказы покупателей...`)
 
-		Logger.info(JSON.stringify(preparedCustomerOrders))
+		const createdCustomerOrders: CustomerOrder[] = []
 
-		const createdCustomerOrders = await createCustomerOrder(
-			preparedCustomerOrders
-		)
+		for (let i = 0; i < preparedCustomerOrders.length; i += 200) {
+			const batch = preparedCustomerOrders.slice(i, i + 200)
+
+			try {
+				const created = await createCustomerOrder(batch)
+				if (created) {
+					createdCustomerOrders.push(...created)
+					Logger.info(`[${store}] Создано заказов: ${created.length}`)
+				}
+			} catch (error) {
+				Logger.error(`[${store}] Ошибка при создании заказов в батче ${i / 200 + 1}: ${error}`)
+			}
+		}
 
 		const demands = await getDemands({ dateFrom, dateTo })
 
@@ -235,7 +245,21 @@ export const updateOzon = async (
 			'OZON'
 		)
 
-		const newDemands = await createDemand(preparedDemands)
+		const createdDemands: Demand[] = []
+
+		for (let i = 0; i < preparedDemands.length; i += 200) {
+			const batch = preparedDemands.slice(i, i + 200)
+
+			try {
+				const created = await createDemand(batch)
+				if (created) {
+					createdDemands.push(...created)
+					Logger.info(`[${store}] Создано заказов: ${created.length}`)
+				}
+			} catch (error) {
+				Logger.error(`[${store}] Ошибка при создании заказов в батче ${i / 200 + 1}: ${error}`)
+			}
+		}
 
 		Logger.info(`[${store}] Создаю документы отгрузок...`)
 
@@ -244,7 +268,7 @@ export const updateOzon = async (
 		Logger.info(`[${store}] Получаю документы входящих платежей...`)
 
 		const preparedPaymentins = prepareOzonPaymentin(
-			newDemands ?? [],
+			createdDemands ?? [],
 			[],
 			[...(filteredFbsOrders ?? []), ...(fbsAfterReturns ?? [])],
 			paymentins ?? []
@@ -257,7 +281,7 @@ export const updateOzon = async (
 		Logger.info(`[${store}] Получаю документы возвратов...`)
 
 		const preparedSalesReturn = prepareSalesReturn(
-			newDemands ?? [],
+			createdDemands ?? [],
 			ordersForDemands ?? [],
 			salesReturn ?? [],
 			'OZON'
