@@ -16,13 +16,13 @@ import {
 	updatePrices,
 } from './lib'
 
-import { ozonRouter, tbankRouter, yandexRouter } from './services'
+import { ozonRouter, tbankRouter } from './services'
 
 const app = express()
 
 app.use(bodyParser.json())
 
-app.use(yandexRouter)
+// app.use(yandexRouter)
 app.use(ozonRouter)
 app.use(tbankRouter)
 

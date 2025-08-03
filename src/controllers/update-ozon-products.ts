@@ -1,9 +1,9 @@
 import { Logger } from '../lib'
+import { getOzonAttributes, getOzonOffers } from '../services'
 import {
 	createProducts,
 	getProducts,
 } from '../services/moysklad/productController'
-import { getOzonAttributes, getOzonOffers } from '../services'
 import { Product } from '../types/ms-types'
 import { ProductInfoWithAttributes } from '../types/ozon/types'
 

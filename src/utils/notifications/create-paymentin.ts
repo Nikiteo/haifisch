@@ -1,9 +1,9 @@
 import dayjs from 'dayjs'
 import { paymentinState } from '../../database'
-import { type State, type Demand, type Paymentin } from '../../types/ms-types'
+import { type Demand, type Paymentin, type State } from '../../types/ms-types'
 import {
-	type OrdersStatsPaymentSourceType,
 	type OrdersStatsPaymentDTO,
+	type OrdersStatsPaymentSourceType,
 	type OrdersStatsSubsidyType,
 } from '../../types/yandex/api'
 

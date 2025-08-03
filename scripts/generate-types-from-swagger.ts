@@ -1,5 +1,5 @@
-import path from 'path'
 import { writeFile } from 'fs'
+import path from 'path'
 import { generateApi } from 'swagger-typescript-api'
 
 const prefix = '/** THIS FILE WAS GENERATED */\n'

@@ -1,14 +1,14 @@
 import { Logger } from '../../lib'
 
-import { type SalesReturn, type Paymentout } from '../../types/ms-types'
+import dayjs from 'dayjs'
+import { type Paymentout, type SalesReturn } from '../../types/ms-types'
 import {
-	type OrdersStatsOrderDTO,
 	type EnrichedOrdersStatsOrderDTO,
-	type OrdersStatsPaymentSourceType,
+	type OrdersStatsOrderDTO,
 	type OrdersStatsPaymentDTO,
+	type OrdersStatsPaymentSourceType,
 } from '../../types/yandex/api'
 import { createPaymentout } from './createPaymentout'
-import dayjs from 'dayjs'
 
 const processReturns = (
 	returns: SalesReturn[],

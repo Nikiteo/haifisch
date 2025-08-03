@@ -1,5 +1,5 @@
-import { consignee, ozonAgent, carrier, sberAgent } from '../../database'
-import { Attribute, Meta, CustomerOrder, Demand } from '../../types/ms-types'
+import { carrier, consignee, ozonAgent, sberAgent } from '../../database'
+import { Attribute, CustomerOrder, Demand, Meta } from '../../types/ms-types'
 
 export const createOverhadSum = (
 	attributes: Attribute[],

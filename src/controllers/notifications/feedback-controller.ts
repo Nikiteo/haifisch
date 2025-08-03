@@ -1,12 +1,12 @@
+import { Logger } from '../../lib'
 import { addFeedback } from '../../services'
 import {
 	GoodsFeedbackCommentDTO,
 	UpdateGoodsFeedbackCommentRequest,
 } from '../../types/yandex/api'
-import { Logger } from '../../lib'
-import { ExtendedFeedbackInfo, getFeedbackInfo } from './utils'
-import { generateResponse } from './gigachat'
 import { GoodsFeedbackCreatedNotificationDTO } from '../../types/yandex/notification-types'
+import { generateResponse } from './gigachat'
+import { ExtendedFeedbackInfo, getFeedbackInfo } from './utils'
 
 /**
  * Обрабатывает уведомление о новом отзыве и формирует персонализированный ответ

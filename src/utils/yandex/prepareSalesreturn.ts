@@ -1,6 +1,6 @@
+import { country, states } from '../../database'
 import { Logger } from '../../lib'
-import { states, country } from '../../database'
-import { Demand, CustomerOrder, SalesReturn } from '../../types/ms-types'
+import { CustomerOrder, Demand, SalesReturn } from '../../types/ms-types'
 import { createSalesReturn } from './createSalesreturn'
 
 export const prepareSalesReturn = (

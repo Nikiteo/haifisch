@@ -54,9 +54,8 @@ jobs:
           cd ~/haifisch
 
           echo "🛑 Stopping PM2 processes (user-level)..."
-          pm2 stop all || true
-          pm2 delete all || true
-          pm2 kill || true
+          pm2 stop Haifisch || true
+          pm2 delete Haifisch || true
 
           echo "🧹 Cleaning old files..."
           rm -rf build node_modules .cache
