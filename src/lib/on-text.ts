@@ -1,11 +1,11 @@
-import { Logger } from '../lib'
-import { bot } from '../bot'
-import { checkUser } from './check-user'
 import { message } from 'telegraf/filters'
+import { bot } from '../bot'
+import { Logger } from '../lib'
+import { checkUser } from './check-user'
 
-import { howMuchMoney } from './how-much-money'
-import { addCashout } from './add-cashout'
 import { ReactionType } from 'telegraf/typings/core/types/typegram'
+import { addCashout } from './add-cashout'
+import { howMuchMoney } from './how-much-money'
 
 export const onText = (): void => {
 	bot.on(message('text'), async ctx => {

@@ -23,7 +23,7 @@ const app = express()
 app.use(bodyParser.json())
 
 // app.use(yandexRouter)
-app.use(ozonRouter)
+// app.use(ozonRouter)
 app.use(tbankRouter)
 
 void bot.telegram.setMyCommands([
