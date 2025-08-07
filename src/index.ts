@@ -16,7 +16,7 @@ import {
 	updatePrices,
 } from './lib'
 
-import { ozonRouter, tbankRouter } from './services'
+import { botRouter, tbankRouter } from './services'
 
 const app = express()
 
@@ -25,6 +25,7 @@ app.use(bodyParser.json())
 // app.use(yandexRouter)
 // app.use(ozonRouter)
 app.use(tbankRouter)
+app.use(botRouter)
 
 void bot.telegram.setMyCommands([
 	{ command: '/sync', description: 'Синхронизировать' },

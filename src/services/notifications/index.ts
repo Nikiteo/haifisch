@@ -1,4 +1,4 @@
-export * from './ozon-notification'
-export * from './tbank-router'
+export { botRouter } from './bot-router'
+export { tbankRouter } from './tbank-router'
 export * from './types'
-export * from './yandex-notification'
+
