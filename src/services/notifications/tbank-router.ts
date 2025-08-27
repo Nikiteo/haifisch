@@ -11,7 +11,6 @@ tbankRouter.post('/operations', async (req: Request, res: Response) => {
 		res.status(200).send('OK')
 		const operation: TbankNotification = req.body
 
-		Logger.info(`Получена операция от TBank: ${JSON.stringify(operation)}`)
 		await sendTelegramMessage(
 			`Новая операция TBank: \`\`\`json\n${JSON.stringify(operation, null, 2)}\n\`\`\``,
 			true

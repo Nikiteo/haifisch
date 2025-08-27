@@ -1,9 +1,9 @@
 import { Logger } from '../lib'
-import { getProducts } from '../services/moysklad/productController'
 import { getOzonStocks, sendOzonStocks } from '../services'
+import { getProducts } from '../services/moysklad/productController'
 import {
-	UpdateProductStocksRequest,
 	GetProductStocksRequestVisibilityEnum,
+	UpdateProductStocksRequest,
 } from '../types/ozon/ozon-types'
 
 export const updateOzonStocks = async (
