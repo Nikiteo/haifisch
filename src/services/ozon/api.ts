@@ -325,3 +325,18 @@ export const isEnabledGetReturns = async (): Promise<
 	)
 	return response
 }
+
+export const getOzonProducts = async ({
+	...props
+}: ProductAttributesRequest): Promise<
+	ProductPictureInfoResponse | undefined
+> => {
+	const response = await postRequest<
+		ProductAttributesRequest,
+		ProductPictureInfoResponse
+	>(
+		'/v3/product/list',
+		{...props}
+	)
+	return response
+}

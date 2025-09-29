@@ -24,8 +24,8 @@ app.use(bodyParser.json())
 
 // app.use(yandexRouter)
 // app.use(ozonRouter)
+// app.use(botRouter)
 app.use(tbankRouter)
-app.use(botRouter)
 
 void bot.telegram.setMyCommands([
 	{ command: '/sync', description: 'Синхронизировать' },

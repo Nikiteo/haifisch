@@ -2,8 +2,6 @@ import { Router } from 'express';
 import { Logger } from '../../lib';
 import { sendTelegramMessage } from '../../utils';
 
-Logger.info('/telegram');
-
 export const botRouter = Router()
 
 botRouter.post('/telegram', async (req, res) => {
