@@ -16,15 +16,11 @@ import {
 	updatePrices,
 } from './lib'
 
-import { botRouter, tbankRouter } from './services'
+import { tbankRouter } from './services'
 
 const app = express()
 
 app.use(bodyParser.json())
-
-// app.use(yandexRouter)
-// app.use(ozonRouter)
-// app.use(botRouter)
 app.use(tbankRouter)
 
 void bot.telegram.setMyCommands([

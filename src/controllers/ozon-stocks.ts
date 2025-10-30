@@ -35,7 +35,7 @@ export const updateOzonStocks = async (
 					if (
 						fbsStock &&
 						fbsStock.present !== undefined &&
-						fbsStock.present < 10 &&
+						fbsStock.present < 20 &&
 						fbsStock.present !== 0
 					) {
 						if (!acc.stocks) {
@@ -63,10 +63,10 @@ export const updateOzonStocks = async (
 				Logger.info(`[${store}]: Магазин синхронизирован`)
 			} else {
 				await sendMessage(
-					`[${store}]: Все остатки больше 10 - обновлять нечего`
+					`[${store}]: Все остатки больше 20 - обновлять нечего`
 				)
 				Logger.info(
-					`[${store}]: Все остатки больше 10 - обновлять нечего`
+					`[${store}]: Все остатки больше 20 - обновлять нечего`
 				)
 			}
 		}
