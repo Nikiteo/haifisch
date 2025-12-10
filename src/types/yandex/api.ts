@@ -15332,6 +15332,7 @@ export interface UpdatePriceWithDiscountDTO {
 	 * @memberof UpdatePriceWithDiscountDTO
 	 */
 	discountBase?: number
+	minimumForBestseller?: number
 }
 
 /**

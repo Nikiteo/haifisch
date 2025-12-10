@@ -41,6 +41,12 @@ export const updateYandexPrice = async (
 												item.priceType.id ===
 												'4f9e295d-f557-11ed-0a80-11cd001da711'
 										)?.value ?? 0
+									const minimumForBestsellerPrice =
+										product.salePrices?.find(
+											item =>
+												item.priceType.id ===
+												'a5608f73-630f-11f0-0a80-197e00103deb'
+										)?.value ?? 0
 
 									acc.offers.push({
 										offerId: cur.offer.offerId,
@@ -49,6 +55,7 @@ export const updateYandexPrice = async (
 											discountBase:
 												basicPrice / 100 + 500,
 											currencyId: 'RUR',
+											minimumForBestseller: minimumForBestsellerPrice !== 0 ? minimumForBestsellerPrice / 100 : basicPrice / 100
 										},
 									})
 								}
